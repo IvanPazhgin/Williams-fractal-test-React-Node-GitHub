@@ -1,0 +1,33 @@
+{
+  "name": "react_node",
+  "version": "1.0.0",
+  "description": "test Williams fractal",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "server": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvanPazhgin/Williams-fractal-test.git"
+  },
+  "keywords": [
+    "react",
+    "node",
+    "js",
+    "eth",
+    "btc",
+    "usdt",
+    "crypto",
+    "binance"
+  ],
+  "author": "Ivan Pazhgin <ivan.pazhgin@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvanPazhgin/Williams-fractal-test/issues"
+  },
+  "homepage": "https://github.com/IvanPazhgin/Williams-fractal-test#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
