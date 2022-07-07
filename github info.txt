@@ -1,0 +1,5 @@
+git init
+git add app.js (git add .)
+git commit -m "initial"
+git remote add origin https://github.com/IvanPazhgin/Williams-fractal-test.git
+git push -u origin master

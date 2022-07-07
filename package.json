@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "server": "nodemon app.js"
+    "server": "nodemon app.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,12 @@
   },
   "homepage": "https://github.com/IvanPazhgin/Williams-fractal-test#readme",
   "devDependencies": {
+    "concurrently": "^7.2.2",
     "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "config": "^3.3.7",
+    "express": "^4.18.1",
+    "express-validator": "^6.14.2"
   }
 }
