@@ -6,11 +6,15 @@
 // npx create-react-app client <ok> (client - папка для размещения)
 // rm -rf node_modules/ <ok> (in folder "client")
 // in "client": npm i (чтобы заново скачать всю папку node_modules)
+// npm install materialize-css@next <ok> (for client)
+// npm i react-router-dom <ok> (for client)
 
 const express = require('express')
 const config = require('config')
 
 const app = express()
+
+app.use(express.json({ extended: true }))
 
 app.use('/api/userrequest', require('./routes/symbol.TF'))
 
