@@ -7,13 +7,15 @@ const router = Router()
 
 // /api/userrequest/datarequest
 router.post(
-  '/datarequest',
+  //'/datarequest',
+  '/',
   [
     check('symbol', 'Некорректный symbol').isLength({ min: 6 }),
     check('seniorTimeFrame', 'Неверный старший тайм фрейм').isLength({
       min: 2,
     }),
     check('lowerTimeFrame', 'Неверный младший тайм фрейм').isLength({ min: 2 }),
+    // добавить проверки indexof(seniorTimeFrame) < indexof (lowerTimeFrame)
   ],
   async (req, res) => {
     try {
@@ -43,7 +45,8 @@ router.post(
         lowerTimeFrame,
       })
 
-      await dataRequest.save()
+      // await dataRequest.save()
+      console.log(`data request in symbol.TF.js = ${dataRequest}`)
 
       // res.json({ symbol, seniorTimeFrame, lowerTimeFrame })
       res

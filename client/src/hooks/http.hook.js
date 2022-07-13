@@ -6,6 +6,7 @@ export const useHttp = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  // метод Минина
   const request = useCallback(
     async (url, method = 'GET', body = null, headers = {}) => {
       setLoading(true)
@@ -14,12 +15,14 @@ export const useHttp = () => {
           body = JSON.stringify(body)
           headers['Content-Type'] = 'application/json'
         }
+        console.log(`url in http.hoos.js = ${url}`)
 
         const response = await fetch(url, {
           method,
           body,
           headers,
         })
+
         const data = await response.json()
 
         if (!response.ok) {

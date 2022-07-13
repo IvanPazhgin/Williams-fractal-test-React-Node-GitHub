@@ -5,6 +5,19 @@ import { TestResult } from './pages/TestResult'
 import { HistoryPage } from './pages/HistoryPage'
 
 export const useRoutes = (isData) => {
+  return (
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/result" element={<TestResult />} />
+      <Route path="/history" element={<HistoryPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
+}
+
+// по принципу Владилена Минина
+/*
+export const useRoutes = (isData) => {
   if (isData) {
     return (
       <Routes>
@@ -23,3 +36,4 @@ export const useRoutes = (isData) => {
     </Routes>
   )
 }
+*/

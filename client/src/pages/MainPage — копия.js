@@ -26,32 +26,14 @@ export const MainPage = () => {
   }
 
   // создаем запрос на сервер на основе своего hook
-
   const registerHandler = async () => {
     try {
-      //const data = await request('/api/userrequest/datarequest', 'POST', {
-      const data = await request('/', 'POST', {
+      const data = await request('/api/userrequest/datarequest', 'POST', {
         ...form,
       })
       message(data.message)
     } catch (e) {}
   }
-
-  /*
-  const registerHandler = async () => {
-    try {
-      const data = await request('/api/userrequest/datarequest', {
-        method: 'POST',
-        headers: {
-          //'Content-Type': 'application/json;charset=utf-8',
-          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-        },
-        body: JSON.stringify(...form),
-      })
-      message(data.message)
-    } catch (e) {}
-  }
-  */
 
   return (
     <div className="row">
