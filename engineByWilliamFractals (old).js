@@ -1,7 +1,5 @@
 const { USDMClient } = require('binance')
 
-// полностью избавился от глобальных переменных
-
 const API_KEY = ''
 const API_SECRET = ''
 
@@ -13,15 +11,47 @@ const client = new USDMClient({
 // let symbol = 'ETHUSDT'
 // let seniorTimeFrame = '1h'
 // let lowerTimeFrame = '5m'
-let limitSeniorTrend = 100
-const limitInTrend = 1000
+let limit = 100
+// let candlesFutures = []
+let globalSumProfit = 0
+const startProgramAt = new Date().getTime() // для расчета времени работы приложения
+let startOfTrend = 0 // для подсчета кол-ва торговых дней
+let maxOfTrend = 0 // максимальное кол-во свечей в тренде
+let statInTredn = [] // для статистики внутри тренда
+let jj = 0
 
+// let dealsGlobal = []
+// startProgram() // запуск обычный. Требуется активировать глобальную переменную dealsGlobal
 // startProgram2() // запуск через асинхронные функции
 
-module.exports = startProgram2
+function startProgram() {
+  client
+    .getKlines({ symbol: symbol, interval: seniorTimeFrame, limit: limit })
+    .then((result) => {
+      return candlesToObject(result) // преобразуем массив в объект
+    })
+    .then((candlesSenior) => {
+      return findTrends(candlesSenior) // определяем тренды
+    })
+    .then((trends) => {
+      return getTrends(trends)
+    })
+    .then((printValue) => {
+      //console.log('результат выполнения всего приложения (!!!):')
+      // console.table(printValue)
+      //printGlobalProfit(printValue)
+      setTimeout(printGlobalProfit, 5000, printValue)
+    })
+    .catch((err) => {
+      console.error('getAccountTradeList error: ', err)
+    })
+}
 
-async function startProgram2(symbol, seniorTimeFrame, lowerTimeFrame) {
-  const startProgramAt = new Date().getTime() // для расчета времени работы приложения
+module.exports = async function startProgram2(
+  symbol,
+  seniorTimeFrame,
+  lowerTimeFrame
+) {
   const delay = (ms) => {
     return new Promise((response) => setTimeout(() => response(), ms))
   }
@@ -29,26 +59,13 @@ async function startProgram2(symbol, seniorTimeFrame, lowerTimeFrame) {
     const candlesSenior = await client.getKlines({
       symbol: symbol,
       interval: seniorTimeFrame,
-      limit: limitSeniorTrend,
+      limit: limit,
     })
     const objectSenior = candlesToObject(candlesSenior)
-    const [trends, startOfTrend] = findTrends(objectSenior)
-    const [deals, maxOfTrend, statInTredn] = await getTrendsAsync(
-      trends,
-      symbol,
-      lowerTimeFrame
-    )
+    const trends = findTrends(objectSenior)
+    const deals = await getTrendsAsync(trends, symbol, lowerTimeFrame)
     // await delay(5000)
-    printGlobalProfit(
-      deals,
-      startOfTrend,
-      maxOfTrend,
-      statInTredn,
-      startProgramAt,
-      symbol,
-      seniorTimeFrame,
-      lowerTimeFrame
-    )
+    printGlobalProfit(deals, symbol, seniorTimeFrame, lowerTimeFrame)
   } catch (err) {
     console.error('getAccountTradeList error: ', err)
   }
@@ -93,40 +110,29 @@ function timestampToDateHuman(arg) {
 }
 
 function printGlobalProfit(
-  deals,
-  startOfTrend,
-  maxOfTrend,
-  statInTredn,
-  startProgramAt,
+  dealsKostil,
   symbol,
   seniorTimeFrame,
   lowerTimeFrame
 ) {
+  //dealsKostil = dealsGlobal // костыль
   console.log('')
   console.log(`ОБЩАЯ СТАТИСТИКА:`)
   console.log(
     `symbol = ${symbol} | старший ТФ = ${seniorTimeFrame} | младший ТФ = ${lowerTimeFrame}`
   )
   console.log(
-    `Общее кол-во сделок = ${deals.length} шт (длина передаваемого массива deals)`
-  )
-
-  // проверка вычисления прибыли по передаваемому массиву deals
-  let sum = 0
-  deals.forEach(function (item) {
-    if (typeof item.profit == 'number')
-      if (item.profit != '') {
-        sum += item.profit
-      }
-  })
-  console.log(
-    `итоговая прибыль = ${+sum.toFixed(
+    `Общая сумма прибыли globalSumProfit = ${+globalSumProfit.toFixed(
       2
-    )} USD (проверка по передаваемому deals)`
+    )} USD (суммируется внутри функции trade)`
+  )
+  //console.log(`Общее кол-во сделок (Длина массива globalDeals) = ${globalDeals.length} шт`)
+  console.log(
+    `Общее кол-во сделок (Длина массива dealsGlobal) = ${dealsKostil.length} шт`
   )
 
-  const deposit = deals[0].openPrice // как будто депозит равен цене первого хая из массива трендов
-  const roi = (sum / deposit) * 100
+  const deposit = dealsKostil[0].openPrice // как будто депозит равен цене первого хая из массива трендов
+  const roi = (globalSumProfit / deposit) * 100
   console.log(`ROI = ${+roi.toFixed(2)}%`)
 
   const currentTime = new Date().getTime() // текущая дата
@@ -138,9 +144,8 @@ function printGlobalProfit(
   const roiPerYear = (365 * roi) / diffInDays
   console.log(`годовая доходность была бы: ${+roiPerYear.toFixed(2)}%`)
 
-  // поиск максимальной просадки
   let drawdown = []
-  deals.forEach(function (item) {
+  dealsKostil.forEach(function (item, i, deals) {
     drawdown.push(item.profit)
   })
   let min = Math.min.apply(null, drawdown)
@@ -155,15 +160,27 @@ function printGlobalProfit(
   // сортировка массива со сделками - важная функция
   // dealsKostil.sort((a, b) => a.openTimestamp - b.openTimestamp)
 
+  // проверка вычисления прибыли по глобальному массиву deals
+  let sumTest = 0
+  dealsKostil.forEach(function (item, i, deadealsKostills) {
+    if (typeof item.profit == 'number')
+      if (item.profit != '') {
+        sumTest += item.profit
+      }
+  })
+  console.log(
+    `итоговая прибыль = ${+sumTest.toFixed(2)} USD (проверка по dealsKostil)`
+  )
+
   console.log('')
-  console.log('Все сделки (вывод deals):')
-  console.table(deals)
+  console.log('Все сделки (вывод dealsKostil):')
+  console.table(dealsKostil)
 
   // статистика по сделкам
   let countOfPositive = 0
   let countOfNegative = 0
   let countOfZero = 0
-  deals.forEach(function (item) {
+  dealsKostil.forEach(function (item, i, dealsKostil) {
     if (item.profit > 0) {
       countOfPositive++
     } else if (item.profit < 0) {
@@ -184,7 +201,7 @@ function printGlobalProfit(
   console.log('статистика сделок по трендам:')
   console.table(statInTredn)
   let sumTestStat = 0
-  statInTredn.forEach(function (item) {
+  statInTredn.forEach(function (item, i, statInTredn) {
     if (typeof item.profitInTrend == 'number')
       if (item.profitInTrend != '') {
         sumTestStat += item.profitInTrend
@@ -230,6 +247,7 @@ function findTrends(arg) {
       arg[i - 1].highPrice < arg[i - 2].highPrice &&
       arg[i].highPrice < arg[i - 2].highPrice
     ) {
+      //fractalsOfTrend.push(['Bearish Fractal', arg[i-2].highPrice, timestampToDateHuman(arg[i-2].openTime), timestampToDate(arg[i-2].openTime)])
       FractalsUp = true
       FractalsUpPrice = arg[i - 2].highPrice
       FractalUpTime = arg[i - 2].openTime
@@ -241,6 +259,7 @@ function findTrends(arg) {
         arg[i - 1].lowPrice > arg[i - 2].lowPrice &&
         arg[i].lowPrice > arg[i - 2].lowPrice
       ) {
+        //fractalsOfTrend.push(['Bullish Fractal', arg[i-2].lowPrice, timestampToDateHuman(arg[i-2].openTime), timestampToDate(arg[i-2].openTime)])
         FractalsDown = true
         FractalsDownPrice = arg[i - 2].lowPrice
         FractalDownTime = arg[i - 2].openTime
@@ -250,6 +269,7 @@ function findTrends(arg) {
     // PS в реальном времени необходимо сравнивать фрактал с текущей ценой на рынке
     if (FractalsDown) {
       if (arg[i].lowPrice < FractalsDownPrice) {
+        //whatTrend3.push(['DownTrend', arg[i].lowPrice, arg[i].openTime]) // тренд между цинами пробития фракталов
         whatTrend[numberOfTrend] = {
           trend: 'DownTrend',
           fractalTime: timestampToDateHuman(FractalDownTime),
@@ -257,7 +277,7 @@ function findTrends(arg) {
           fractalPrice: FractalsDownPrice,
           priceTimeStamp: arg[i].openTime,
           priceTime: timestampToDateHuman(arg[i].openTime),
-          price: arg[i].lowPrice, // поле носит чисто ифнормационный характер
+          price: arg[i].lowPrice,
         }
         numberOfTrend += 1
         FractalsDown = false
@@ -267,6 +287,7 @@ function findTrends(arg) {
     }
     if (FractalsUp) {
       if (arg[i].highPrice > FractalsUpPrice) {
+        //whatTrend3.push(['UpTrend', arg[i].highPrice, arg[i].openTime]) // тренд между цинами пробития фракталов
         whatTrend[numberOfTrend] = {
           trend: 'UpTrend',
           fractalTime: timestampToDateHuman(FractalUpTime),
@@ -284,7 +305,7 @@ function findTrends(arg) {
     }
   }
 
-  // фильтруем массив c трендами: соединяем повторяющиеся тренды
+  // фильтруем массив c трендами: удаляем повторяющиеся тренды
   whatTrendFiltered[j] = whatTrend[0]
   for (let i = 1; i < whatTrend.length; i++) {
     if (whatTrendFiltered[j].trend == whatTrend[i].trend) continue
@@ -300,28 +321,30 @@ function findTrends(arg) {
   console.log('тренды (после фильтрации):')
   console.table(whatTrendFiltered)
 
+  // console.log('тренды для обработки с датой для binance после фильтрации')
+  // console.table(whatTrendTrue)
+  // console.log(`общее кол-во трендов = ${whatTrendTrue.length} шт (вызов из функции findTrends)`)
   console.log(
     `общее кол-во трендов = ${whatTrendFiltered.length} шт (вызов по whatTrendFiltered из функции findTrends)`
   )
-  let startOfTrend = whatTrendFiltered[0].priceTimeStamp
+  startOfTrend = whatTrendFiltered[0].priceTimeStamp
 
-  return [whatTrendFiltered, startOfTrend]
+  return whatTrendFiltered
 }
 
 async function getTrendsAsync(array, symbol, lowerTimeFrame) {
-  let dealsGlobal = [] // собирает все сделки
-  let temp // собирает информацию внутри каждого тренда (сделки и статистику по тренду)
-  let maxOfTrend = 0 // вычисляем длину самого большого тренда
-  const currentTime = new Date().getTime() // текущая дата для последнего тренда
-  let statInTredn = [] // для статистики сделок внутри тренда
+  let dealsGlobal = [] // перенесено в глобальную переменную, т.к. функция возвращает значение еще до завершения расчета сделок по трендам
+  // let temp = []
+  const currentTime = new Date().getTime()
+  //let summProfit = 0
+  // globalTimeOut = (array.length + 1) * 5000
   console.log(
     `общее кол-во трендов = ${array.length} шт (передано в функцию getTrends)`
   )
-  const oneHourStamp = 1000 * 60 * 60 // добавляем 1 час к каждому тренду
+  const oneHourStamp = 1000 * 60 * 60
 
   for (let i = 0; i < array.length; i++) {
     if (i != array.length - 1) {
-      // берем все тренды, кроме последнего
       try {
         // const candlesJunior = await client.getKlines({ symbol: symbol, interval: lowerTimeFrame, startTime: array[i].priceTimeStamp, endTime: (array[i+1].priceTimeStamp + oneHourStamp), limit: 1000})
         const candlesJunior = await client.getKlines({
@@ -329,7 +352,7 @@ async function getTrendsAsync(array, symbol, lowerTimeFrame) {
           interval: lowerTimeFrame,
           startTime: array[i].priceTimeStamp,
           endTime: array[i + 1].priceTimeStamp,
-          limit: limitInTrend,
+          limit: 1000,
         })
         const objectJunior = candlesToObject(candlesJunior)
         console.log('')
@@ -349,11 +372,11 @@ async function getTrendsAsync(array, symbol, lowerTimeFrame) {
         if (maxOfTrend < objectJunior.length) {
           maxOfTrend = objectJunior.length
         }
-        temp = trade(objectJunior, array[i].trend, i)
-        dealsGlobal = dealsGlobal.concat(temp.deals)
-        statInTredn = statInTredn.concat(temp.statInTredn)
+        // temp = await trade(objectJunior, array[i].trend, i)
+        // dealsGlobal = await dealsGlobal.concat(temp)
+        dealsGlobal = dealsGlobal.concat(trade(objectJunior, array[i].trend, i))
       } catch (err) {
-        console.error('get Account Trade List error: ', err)
+        console.error('getAccountTradeList error: ', err)
       }
     } else {
       // если это последний тренд, то берем текущую последнюю дату
@@ -363,7 +386,7 @@ async function getTrendsAsync(array, symbol, lowerTimeFrame) {
           interval: lowerTimeFrame,
           startTime: array[i].priceTimeStamp,
           endTime: currentTime,
-          limit: limitInTrend,
+          limit: 1000,
         })
         const objectJunior = candlesToObject(candlesJunior)
         console.log('')
@@ -381,17 +404,19 @@ async function getTrendsAsync(array, symbol, lowerTimeFrame) {
         if (maxOfTrend < objectJunior.length) {
           maxOfTrend = objectJunior.length
         }
-        temp = trade(objectJunior, array[i].trend, i)
-        dealsGlobal = dealsGlobal.concat(temp.deals)
-        statInTredn = statInTredn.concat(temp.statInTredn)
+        // temp = await trade(objectJunior, array[i].trend, i)
+        // dealsGlobal = await dealsGlobal.concat(temp)
+        dealsGlobal = dealsGlobal.concat(trade(objectJunior, array[i].trend, i))
       } catch (err) {
-        console.error('get Account Trade List error: ', err)
+        console.error('getAccountTradeList error: ', err)
       }
     }
   }
+
+  // console.log(`общая прибыль составляет (функция getTrends) = ${summProfit}`)
   // console.log('ЗАВЕРШЕНИЕ функции getTrends')
   // console.log(`передано из getTrends общее кол-во сделок: ${dealsGlobal.length}`)
-  return [dealsGlobal, maxOfTrend, statInTredn]
+  return dealsGlobal
 }
 
 function trade(array, trend, index) {
@@ -405,12 +430,13 @@ function trade(array, trend, index) {
   let inLongPosition = false
   let inShortPosition = false
   let numberOfPosition = 0
+  //let deals = [] // [ long/short, buy/sell, price, human(open time deal), timestamp(open time deal), sell/buy, price, close time deal ]
   let positionUp = 0
   let positionDown = 0
   let positionTime = 0
   let lastFractal = 0 // для закрытия сделок в конце тренда
-  let deals = [] // сделки внутри тренда
-  let varMaxProfit = 0 // расчет максимально возможной потенциальной прибыли в каждой сделке
+  let deals = []
+  let varMaxProfit = 0 // расчет максимально возможной потенциальной прибыли в каждой сделки
   let timeOfVMP = 0 // время наступленмя varMaxProfit
 
   console.log(`передаваемое значение тренда = ${trend}`)
@@ -428,6 +454,7 @@ function trade(array, trend, index) {
     ) {
       FractalsDown = true
       FractalsDownPrice = array[i - 2].lowPrice
+      // FractalDownTime = array[i-2][0]
       // console.log(`фрактал снизу =  ${FractalsDownPrice}, дата ${timestampToDateHuman(FractalDownTime)}`)
     } else if (
       array[i - 4].highPrice < array[i - 2].highPrice &&
@@ -435,8 +462,10 @@ function trade(array, trend, index) {
       array[i - 1].highPrice < array[i - 2].highPrice &&
       array[i].highPrice < array[i - 2].highPrice
     ) {
+      // fractalsOfTrend.push(['Bearish Fractal', Number(array[i-2][2]), array[i-2][0], array[i-2][0]])
       FractalsUp = true
       FractalsUpPrice = array[i - 2].highPrice
+      // FractalUpTime = array[i-2][0]
     }
 
     if (trend == 'UpTrend') {
@@ -447,6 +476,16 @@ function trade(array, trend, index) {
           if (array[i].highPrice > FractalsUpPrice) {
             stopLoss = FractalsDownPrice
             lastFractal = FractalsDownPrice
+            //deals.push(['LONG', 'Buy', Number(array[i][2]), timestampToDateHuman(array[i][0]), array[i][0]])
+            /*                            
+                      dealsClass[numberOfPosition] = {
+                          openPosition: 'Buy', 
+                          openPrice: Number(array[i][2]), 
+                          openTime: timestampToDateHuman(array[i][0]), 
+                          openTimestamp: array[i][0]
+                      }                           
+                      */
+            // globalDeals.push(['LONG', 'Buy', Number(array[i][2]), timestampToDateHuman(array[i][0])])
             // FractalsUp = false
             // FractalsUpPrice = 0
             // positionUp = Number(array[i][2])
@@ -467,13 +506,21 @@ function trade(array, trend, index) {
             timeOfVMP = array[i].openTime
           }
           if (array[i].lowPrice < stopLoss) {
+            //deals[numberOfPosition].push('Sell', Number(array[i][3]), timestampToDateHuman(array[i][0]), +(Number(array[i][3])-positionUp).toFixed(2))
+            // globalDeals[numberOfPosition].push('Sell', Number(array[i][3]), timestampToDateHuman(array[i][0]))
+
+            // dealsClass.closePosition = 'Sell'
+            // dealsClass.closePrice = Number(array[i][3])
+            // dealsClass.closeTime = timestampToDateHuman(array[i][0])
+            // dealsClass.profit = +(Number(array[i][3])-positionUp).toFixed(2)
+
             deals[numberOfPosition] = {
               openPosition: 'Buy',
               openPrice: positionUp,
               openTime: timestampToDateHuman(positionTime),
               //openTimestamp: positionTime,
               closePosition: 'Sell',
-              // closePrice: Number(array[i][3]), // неправильно
+              // closePrice: Number(array[i][3]),
               closePrice: stopLoss, // выходим по цене Stop Loss
               closeTime: timestampToDateHuman(array[i].openTime),
               profit: +(array[i].lowPrice - positionUp).toFixed(2),
@@ -481,7 +528,7 @@ function trade(array, trend, index) {
                 ((array[i].lowPrice - positionUp) / positionUp) *
                 100
               ).toFixed(2),
-              // stopLoss: stopLoss, // избыточная информация
+              stopLoss: stopLoss,
               varMaxProfit: +(varMaxProfit - positionUp).toFixed(2),
               procentVMP: +((varMaxProfit / positionUp - 1) * 100).toFixed(2),
               timeOfVMP: timestampToDateHuman(timeOfVMP),
@@ -499,6 +546,8 @@ function trade(array, trend, index) {
             // если тренд закончен, но сделка еще не закрыта
             if (array[i].lowPrice >= lastFractal) {
               // если текущая цена еще выше последнего нижнего фрактала
+              //deals[numberOfPosition].push('Sell', Number(array[i][3]), timestampToDateHuman(array[i][0]), +(Number(array[i][3])-positionUp).toFixed(2))
+
               deals[numberOfPosition] = {
                 openPosition: 'Buy',
                 openPrice: positionUp,
@@ -519,8 +568,10 @@ function trade(array, trend, index) {
               }
             } else {
               // если текущая цена ниже последнего нижнего фрактала, то закрываем по цене фрактала
+              //deals[numberOfPosition].push('Sell', lastFractal, timestampToDateHuman(array[i][0]), lastFractal-positionUp)
 
-              // продумать как на боевом роботе будут закрываться позиции после окончания тренда, т.к. ниже позиция закрывается по последнему фракталу
+              // продумать как на боевом роботе будут закрываться позиции после окончания тренда,
+              // т.к. ниже позиция закрывается по последнему фракталу
               deals[numberOfPosition] = {
                 openPosition: 'Buy',
                 openPrice: positionUp,
@@ -552,6 +603,8 @@ function trade(array, trend, index) {
           if (array[i].lowPrice < FractalsDownPrice) {
             stopLoss = FractalsUpPrice
             lastFractal = FractalsUpPrice
+            //deals.push(['SHORT', 'Sell', Number(array[i][3]), timestampToDateHuman(array[i][0]), array[i][0]])
+            // globalDeals.push(['SHORT', 'Sell', Number(array[i][3]), timestampToDateHuman(array[i][0])])
             // FractalsUp = false
             // FractalsUpPrice = 0
             inShortPosition = true
@@ -573,6 +626,8 @@ function trade(array, trend, index) {
           }
           //if (stopLoss > 0)
           if (array[i].highPrice > stopLoss) {
+            // deals[numberOfPosition].push('Buy', Number(array[i][2]), timestampToDateHuman(array[i][0]), +(positionDown - Number(array[i][2])).toFixed(2))
+            // globalDeals[numberOfPosition].push('Buy', Number(array[i][2]), timestampToDateHuman(array[i][0]))
             if (stopLoss > 0) {
               // бывают ситуации, когда в начале нового тренда верхний фрактал еще не сформировался
               deals[numberOfPosition] = {
@@ -589,7 +644,7 @@ function trade(array, trend, index) {
                   ((positionDown - array[i].highPrice) / positionDown) *
                   100
                 ).toFixed(2),
-                // stopLoss: stopLoss, // избыточная информация
+                stopLoss: stopLoss,
                 varMaxProfit: +(positionDown - varMaxProfit).toFixed(2),
                 procentVMP: +((positionDown / varMaxProfit - 1) * 100).toFixed(
                   2
@@ -610,6 +665,8 @@ function trade(array, trend, index) {
             // если тренд закончен, но сделка еще не закрыта
             if (array[i].highPrice <= lastFractal) {
               // если текущая цена еще ниже последнего верхнего фрактала
+              //deals[numberOfPosition].push('Buy', Number(array[i][2]), timestampToDateHuman(array[i][0]), +(positionDown - Number(array[i][2])).toFixed(2))
+
               deals[numberOfPosition] = {
                 openPosition: 'Sell',
                 openPrice: positionDown,
@@ -631,6 +688,8 @@ function trade(array, trend, index) {
                 timeOfVMP: timestampToDateHuman(timeOfVMP),
               }
             } else {
+              //deals[numberOfPosition].push('Buy', lastFractal, timestampToDateHuman(array[i][0]), positionDown-lastFractal)
+
               deals[numberOfPosition] = {
                 openPosition: 'Sell',
                 openPrice: positionDown,
@@ -662,13 +721,16 @@ function trade(array, trend, index) {
   console.log('сделки внутри функции trade:')
   console.table(deals)
 
+  //globalDeals = globalDeals.concat(deals)
+  //!!! dealsClassGlobal = dealsClassGlobal.concat(dealsClass)
+
   console.log(
     `кол-во сделок внутри тренда = ${deals.length} штук (внутри функции trade)`
   )
 
   // подсчет прибыли внутри тренда по dealsClass
   let summProfit = 0
-  deals.forEach(function (item) {
+  deals.forEach(function (item, i, deals) {
     if (typeof item.profit == 'number') summProfit += item.profit
   })
   console.log(
@@ -676,11 +738,9 @@ function trade(array, trend, index) {
       2
     )} USD (функция считает по полю profit)`
   )
+  globalSumProfit += summProfit
 
   // для статистики внутри трендов
-  let statInTredn = []
-  let jj = 0
-
   statInTredn[jj] = {
     indexOfTrend: index,
     trendIs: trend,
@@ -690,8 +750,152 @@ function trade(array, trend, index) {
   }
   jj++
 
-  return {
-    deals: deals,
-    statInTredn: statInTredn,
+  return deals
+}
+
+// тестовые функции
+function findFractals(arg) {}
+
+function getTrends2(array) {
+  console.log(
+    `общее кол-во трендов = ${array.length} шт (передано в функцию getTrends)`
+  )
+  console.table(array)
+}
+
+function getTrends(array) {
+  // let dealsGlobal = [] // перенесено в глобальную переменную, т.к. функция возвращает значение еще до завершения расчета сделок по трендам
+  let temp = []
+  const currentTime = new Date().getTime()
+  //let summProfit = 0
+  // const candlesArray2 = array
+  // globalTimeOut = (array.length + 1) * 5000
+  console.log(
+    `общее кол-во трендов = ${array.length} шт (передано в функцию getTrends)`
+  )
+  //console.log(array[1].priceTimeStamp)
+  //console.log(`priceTimeStamp[0] = ${array[0].priceTimeStamp}`)
+  const oneHourStamp = 1000 * 60 * 60
+
+  for (let i = 0; i < array.length; i++) {
+    if (i != array.length - 1) {
+      // console.log(`промежуточная i = ${i}`)
+      // client.getKlines({ symbol: symbol, interval: lowerTimeFrame, startTime: array[i].priceTimeStamp, endTime: (array[i+1].priceTimeStamp + oneHourStamp), limit: 1000})
+      client
+        .getKlines({
+          symbol: symbol,
+          interval: lowerTimeFrame,
+          startTime: array[i].priceTimeStamp,
+          endTime: array[i + 1].priceTimeStamp,
+          limit: 1000,
+        })
+        //client.getKlines({ symbol: symbol, interval: lowerTimeFrame, startTime: 1656669600000, endTime: 1656914400000, limit: 1000})
+        .then((response) => {
+          // console.log('свечи внутри тренда:')
+          // console.table(response.data)
+          candles = candlesToObject(response)
+          //candles = response.data
+          // console.log('')
+          // console.log(`кол-во свечей внутри ${i}-го тренда = ${candles.length}`)
+          // console.log(`список ${i}-го тренда:`)
+          // console.table(candles)
+        })
+        .then(() => {
+          console.log('')
+          console.log(`обработка данных ${i}-го тренда...`)
+          console.log(`Длина ${i} тренда составляет ${candles.length} свечей`)
+          console.log(
+            `Начало тренда: ${timestampToDateHuman(
+              array[i].priceTimeStamp
+            )}, заверщение тренда: ${timestampToDateHuman(
+              array[i + 1].priceTimeStamp
+            )}`
+          )
+          // console.log(`плюс 1 час = ${timestampToDateHuman(oneHourStamp + array[i+1].priceTimeStamp)}`)
+
+          // вычисляем самый длинный массив младшего ТФ
+          if (maxOfTrend < candles.length) {
+            maxOfTrend = candles.length
+          }
+
+          // summProfit += trade(candles, array[i][0])
+          // setTimeout(trade, i * 5000, candles, array[i][0])
+          // trade(candles, array[i][0])
+          // dealsClassGlobal = dealsClassGlobal.concat(trade(candles, array[i][0]))
+          temp = trade(candles, array[i].trend, i)
+          // console.log(`Кол-во возвращенных сделок ${i} тренда = ${temp.length}`)
+          dealsGlobal = dealsGlobal.concat(temp)
+          // console.log(`Суммарно сделок = ${dealsGlobal.length}`)
+        })
+        .catch((err) => {
+          console.error('getAccountTradeList error: ', err)
+        })
+    } else {
+      // если это последний тренд, то берем текущую последнюю дату
+      client
+        .getKlines({
+          symbol: symbol,
+          interval: lowerTimeFrame,
+          startTime: array[i].priceTimeStamp,
+          endTime: currentTime,
+          limit: 1000,
+        })
+        .then((response) => {
+          candles = candlesToObject(response)
+        })
+        .then(() => {
+          console.log('')
+          console.log(`обработка данных ${i}-го тренда...`)
+          console.log(`Длина ${i} тренда составляет ${candles.length} свечей`)
+          console.log(
+            `Начало тренда: ${timestampToDateHuman(
+              array[i].priceTimeStamp
+            )}, заверщение тренда: ${timestampToDateHuman(currentTime)}`
+          )
+          // summProfit += trade(candles, array[i][0])
+          // setTimeout(trade, i * 5000, candles, array[i][0])
+          // trade(candles, array[i][0])
+          //dealsClassGlobal = dealsClassGlobal.concat(trade(candles, array[i][0]))
+          temp = trade(candles, array[i].trend, i)
+          // console.log(`Кол-во возвращенных сделок ${i} тренда = ${temp.length}`)
+          dealsGlobal = dealsGlobal.concat(temp)
+          // console.log(`Суммарно сделок = ${dealsGlobal.length}`)
+        })
+        .catch((err) => {
+          console.error('getAccountTradeList error: ', err)
+        }) /*
+              .then(() => { // удалить цепочку
+                console.log(`итого общее кол-во сделок (dealsGlobal) = ${dealsGlobal.length} (конец функции getTrends)`)
+                console.log('все сделки: (конец функции getTrends)')
+                console.table(dealsGlobal)
+                // return dealsGlobal
+              })*/
+    }
   }
+  // dealsClassGlobalTemp = dealsClassGlobalTemp.concat(dealsClassGlobal) // реализация костыля
+
+  // console.log(`общая прибыль составляет (функция getTrends) = ${summProfit}`)
+  // console.log('ЗАВЕРШЕНИЕ функции getTrends')
+  // console.log(`передано из getTrends общее кол-во сделок: ${dealsGlobal.length}`)
+  // return dealsGlobal
+}
+
+function printGlobalProfit2(arg) {
+  console.log('')
+  console.log('ИТОГОВЫЙ РЕЗУЛЬТАТ (вызов из функции printGlobalProfit):')
+  console.table(dealsGlobal)
+  console.log(
+    `длина передаваемого массива в функцию (printValue) = ${dealsGlobal.length}`
+  )
+
+  const endProgram = new Date().getTime() // текущая дата
+  const diffInTimeProgram = endProgram - startProgramAt
+  const OneSecond = 1000
+  const diffInSecond = Math.round(diffInTimeProgram / OneSecond)
+  console.log('')
+  console.log(
+    `время выполнения скрипта = ${diffInSecond} секунд (${
+      diffInSecond / 60
+    } минут)`
+  )
 }

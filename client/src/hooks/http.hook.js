@@ -8,7 +8,7 @@ export const useHttp = () => {
 
   // метод Минина
   const request = useCallback(
-    async (url, method = 'GET', body = null, headers = {}) => {
+    async (url, method = 'POST', body = null, headers = {}) => {
       setLoading(true)
       try {
         if (body) {
@@ -22,8 +22,12 @@ export const useHttp = () => {
           body,
           headers,
         })
+        console.log(`response = ${response}`)
+        console.log(response)
 
         const data = await response.json()
+        console.log(`data =  ${data}`)
+        console.log(data)
 
         if (!response.ok) {
           throw new Error(data.message || 'Что-то пошло не так')

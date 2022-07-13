@@ -1,14 +1,16 @@
 // по видео Владилена Минина
-/*
+
 const express = require('express')
 const config = require('config')
+const startProgram2 = require('./engineByWilliamFractals')
 
 const app = express()
 
 app.use(express.json({ extended: true }))
 
 //app.use('/api/userrequest', require('./routes/symbol.TF'))
-app.use('/', require('./routes/symbol.TF'))
+app.use('localhost:5000', require('./routes/symbol.TF')) // передает параметры запроса на сервен, но возвращает ошибку в браузере: Unexpected token o in JSON at position 0
+//app.use('/', require('./routes/symbol.TF')) // в консоли браузера выдает ошибку: POST http://localhost:3000/ 500 (Internal Server Error)
 
 const PORT = config.get('port') || 5000
 
@@ -25,14 +27,15 @@ async function start() {
 }
 
 start()
-*/
 
-/*
 app.post('/', function (req, res) {
-  console.log(req.query)
-  res.send('1')
+  console.log(req.body)
+  console.log(`тип req.body = ${req.body}`)
+  console.table(req.body)
+  //let params = JSON.parse(req.body)
+  //startProgram2(params.symbol, params.seniorTimeFrame, params.lowerTimeFrame)
+  res.send('ok')
 })
-*/
 
 // попытка прикрутить обработку POST запроса в express
 
@@ -48,15 +51,16 @@ app.post('/', urlencodedParser, function (request, response) {
 */
 
 // вариант № 2
-
+/*
 // const { response } = require('express')
+// import startProgram2 from './engineByWilliamFractals'
 const http = require('http')
 // const url = require('url')
 const config = require('config')
 // const { startProgram2 } = require('./engineByWilliamFractals')
 const startProgram2 = require('./engineByWilliamFractals')
 // import { startProgram2 } from './engineByWilliamFractals'
-const ppp = require('./engineByWilliamFractals')
+// const ppp = require('./engineByWilliamFractals')
 // const { parse } = require('path')
 
 const PORT = config.get('port') || 5000
@@ -86,3 +90,4 @@ const server = http.createServer((request, response) => {
 server.listen(PORT, () => {
   console.log(`Server has been started on ${PORT}...`)
 })
+*/
