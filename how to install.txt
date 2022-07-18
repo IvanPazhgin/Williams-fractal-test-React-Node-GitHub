@@ -8,4 +8,5 @@
 // in "client": npm i (чтобы заново скачать всю папку node_modules)
 // npm install materialize-css@next <ok> (for client)
 // npm i react-router-dom <ok> (for client)
+npm install --save-dev cross-env <ok>
 // https://youtu.be/ivDjWYcKDZI

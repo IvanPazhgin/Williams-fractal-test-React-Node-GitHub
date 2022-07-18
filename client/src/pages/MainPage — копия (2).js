@@ -63,12 +63,8 @@ export const MainPage = () => {
 
   return (
     <>
-      {/* Запрос пользователя */}
-      <h2>Тестер стратегии</h2>
-      <h3>фракталы Билла Вильямса</h3>
-      <hr></hr>
       <form action="/" method="POST">
-        <h4>Введите параметры:</h4>
+        <h4>введите параметры</h4>
 
         <div class="input-field">
           <input type="text" name="symbol" onChange={changeHandler} />
@@ -102,17 +98,92 @@ export const MainPage = () => {
           Запустить тест!
         </button>
       </form>
-      <h5>Внимание! Отсутствует защита от дурака!</h5>
-      <h6>Поэтому вводи корректные данные:</h6>
-      <h6>Пример названия контракта: btcusdt, ETHUSDT.</h6>
-      <h6>
-        Тайм фреймы: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w,
-        1M
-      </h6>
-      <h6>где: m - minutes; h - hours; d - days; w - weeks; M - months</h6>
 
+      {/* Запрос пользователя */}
+      <div className="row">
+        <div className="col s6 offset-s3">
+          <h1>Тестер стратегии</h1>
+          <h3>фракталы Билла Вильямса</h3>
+          <h5>Внимание! Пока отсутствует защита от дурака!</h5>
+          <h6>Поэтому вводи корректные данные:</h6>
+          <h6>Пример названия контракта: btcusdt, ETHUSDT.</h6>
+          <h6>
+            Тайм фреймы: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d,
+            1w, 1M
+          </h6>
+          <h6>где: m - minutes; h - hours; d - days; w - weeks; M - months</h6>
+          <div className="card blue darken-1">
+            <div className="card-content white-text">
+              <span className="card-title">Выбор параметров</span>
+              <div>
+                <div className="input-field">
+                  <input
+                    placeholder="Например: ETHUSDT"
+                    id="symbol"
+                    type="text"
+                    name="symbol"
+                    className="yellow-input"
+                    onChange={changeHandler}
+                  />
+                  <label htmlFor="Symbol">Введите название фьючерса</label>
+                </div>
+
+                <div className="input-field">
+                  <input
+                    placeholder="Например: 1h"
+                    id="seniorTimeFrame"
+                    type="text"
+                    name="seniorTimeFrame"
+                    className="yellow-input"
+                    onChange={changeHandler}
+                  />
+                  <label htmlFor="seniorTimeFrame">
+                    Введите старший тайм фрэйм
+                  </label>
+                </div>
+
+                <div className="input-field">
+                  <input
+                    placeholder="Например: 5m"
+                    id="lowerTimeFrame"
+                    type="text"
+                    name="lowerTimeFrame"
+                    className="yellow-input"
+                    onChange={changeHandler}
+                  />
+                  <label htmlFor="lowerTimeFrame">
+                    Введите младший тайм фрэйм
+                  </label>
+                </div>
+
+                <div className="input-field">
+                  <input
+                    placeholder="Например: 1000"
+                    id="limitSeniorTrend"
+                    type="text"
+                    name="limitSeniorTrend"
+                    className="yellow-input"
+                    onChange={changeHandler}
+                  />
+                  <label htmlFor="lowerTimeFrame">
+                    Введите количество свечей старшего ТФ, но не более 1000
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="card-action">
+              <button
+                className="btn yellow darken-4"
+                onClick={registerHandler}
+                disabled={loading}
+              >
+                Запустить скрипт
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       {/*<div>re re: {startTrend}</div> */}
-      <hr></hr>
       {/* справочные данные */}
       <h4>Общая статистика:</h4>
 
@@ -146,7 +217,6 @@ export const MainPage = () => {
       )}
 
       <p>Ниже вся детальная информация</p>
-      <hr></hr>
       {/* Список трендов (после фильтрации) */}
       <h4>Список трендов</h4>
       <p>PS: соединил повторяющиеся тренды</p>
@@ -178,7 +248,6 @@ export const MainPage = () => {
             ))}
         </table>
       </div>
-      <hr></hr>
       {/* Статистика внутри трендов*/}
       <h4>Статистика внутри трендов</h4>
       <p>Прибыль или убыток внутри каждого тренда:</p>
@@ -208,7 +277,6 @@ export const MainPage = () => {
             ))}
         </table>
       </div>
-      <hr></hr>
       {/*таблица всех сделок*/}
       <h4>Таблица всех сделок</h4>
       <p>
@@ -271,7 +339,6 @@ export const MainPage = () => {
             ))}
         </table>
       </div>
-      <hr></hr>
       <p>Спасибо!</p>
     </>
   )

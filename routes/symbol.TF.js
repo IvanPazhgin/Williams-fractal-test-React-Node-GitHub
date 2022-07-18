@@ -39,16 +39,21 @@ router.post(
       }
       */
 
+      //создаем новый запрос на основе модели
+
       const dataRequest = new UserRequest({
         symbol,
         seniorTimeFrame,
         lowerTimeFrame,
       })
 
-      // await dataRequest.save()
+      //await dataRequest.save()
       console.log(`data request in symbol.TF.js = ${dataRequest}`)
+      onsole.log(dataRequest)
 
       // res.json({ symbol, seniorTimeFrame, lowerTimeFrame })
+      //res.json({ message: 'Запрос отправлен на сервер для обработки...' })
+
       res
         .status(201)
         .json({ message: 'Запрос отправлен на сервер для обработки...' })

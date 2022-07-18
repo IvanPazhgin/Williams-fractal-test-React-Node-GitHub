@@ -13,18 +13,25 @@ const client = new USDMClient({
 // let symbol = 'ETHUSDT'
 // let seniorTimeFrame = '1h'
 // let lowerTimeFrame = '5m'
-let limitSeniorTrend = 100
+// let limitSeniorTrend = 1000
 const limitInTrend = 1000
 
 // startProgram2() // запуск через асинхронные функции
 
-module.exports = startProgram2
+//module.exports = startProgram2
+module.exports = { startProgram2, findTrends, trade }
 
-async function startProgram2(symbol, seniorTimeFrame, lowerTimeFrame) {
+async function startProgram2(
+  symbol,
+  seniorTimeFrame,
+  lowerTimeFrame,
+  limitSeniorTrend
+) {
   const startProgramAt = new Date().getTime() // для расчета времени работы приложения
   const delay = (ms) => {
     return new Promise((response) => setTimeout(() => response(), ms))
   }
+  // if (limitSeniorTrend/1000 <= 1000) {}
   try {
     const candlesSenior = await client.getKlines({
       symbol: symbol,
@@ -33,14 +40,14 @@ async function startProgram2(symbol, seniorTimeFrame, lowerTimeFrame) {
     })
     const objectSenior = candlesToObject(candlesSenior)
     const [trends, startOfTrend] = findTrends(objectSenior)
-    const [deals, maxOfTrend, statInTredn] = await getTrendsAsync(
+    const [allDeals, maxOfTrend, statInTredn] = await getTrendsAsync(
       trends,
       symbol,
       lowerTimeFrame
     )
     // await delay(5000)
-    printGlobalProfit(
-      deals,
+    const statistics = printGlobalProfit(
+      allDeals,
       startOfTrend,
       maxOfTrend,
       statInTredn,
@@ -49,6 +56,15 @@ async function startProgram2(symbol, seniorTimeFrame, lowerTimeFrame) {
       seniorTimeFrame,
       lowerTimeFrame
     )
+    // вернуть все данные на фронт
+    const startProgramAtToHuman = timestampToDateHuman(startProgramAt)
+    return {
+      allDeals, // выгружаю таблицу всех сделок
+      statInTredn, // выгружаю статистику по трендам
+      startProgramAtToHuman, // начало запуска скрипта
+      trends, // список отфильтрованных трендов
+      statistics, // итоговая статистика
+    }
   } catch (err) {
     console.error('getAccountTradeList error: ', err)
   }
@@ -87,8 +103,18 @@ function timestampToDateHuman(arg) {
   const year = bbb.getFullYear()
   const month = bbb.getMonth() + 1
   const date = bbb.getDate()
-  const hours = bbb.getHours()
-  const minutes = bbb.getMinutes()
+  // const hours = bbb.getHours()
+  // const minutes = bbb.getMinutes()
+
+  let hours = String(bbb.getHours())
+  let minutes = String(bbb.getMinutes())
+  if (hours.length == 1) {
+    hours = '0' + hours
+  }
+  if (minutes.length == 1) {
+    minutes = '0' + minutes
+  }
+
   return `${year}.${month}.${date} at ${hours}:${minutes}`
 }
 
@@ -111,7 +137,7 @@ function printGlobalProfit(
     `Общее кол-во сделок = ${deals.length} шт (длина передаваемого массива deals)`
   )
 
-  // проверка вычисления прибыли по передаваемому массиву deals
+  // вычисление прибыли по передаваемому массиву deals
   let sum = 0
   deals.forEach(function (item) {
     if (typeof item.profit == 'number')
@@ -196,6 +222,54 @@ function printGlobalProfit(
     )} USD (проверка по statInTredn)`
   )
 
+  // вычисление потенциальной средней прибыли по убыточным сделкам
+  // PS: можно сделать внутри кода после строчки 195
+  const negativeDeals = []
+  let jj = 0
+  deals.forEach(function (item) {
+    if (item.profit < 0) {
+      negativeDeals[jj] = {
+        profit: item.profit,
+        percent: item.percent,
+        varMaxProfit: item.varMaxProfit,
+        procentVMP: item.procentVMP,
+      }
+      jj += 1
+    }
+  })
+  console.log(``)
+  console.log(`убыточные сделки:`)
+  console.table(negativeDeals)
+
+  let arrayOfVMP = []
+  negativeDeals.forEach(function (item) {
+    if (item.procentVMP > 0) {
+      arrayOfVMP.push(item.procentVMP)
+    }
+  })
+  let minOfVMP = Math.min.apply(null, arrayOfVMP)
+  let maxOfVMP = Math.max.apply(null, arrayOfVMP)
+  let averageOfVMP = arrayOfVMP.reduce((a, b) => a + b) / arrayOfVMP.length
+  console.log(`minOfVMP = ${minOfVMP}%`)
+  console.log(`maxOfVMP = ${maxOfVMP}%`)
+  console.log(`averageOfVMP = ${+averageOfVMP.toFixed(2)}%`)
+
+  let countMoreAverageOfVMP = 0
+  let countLessAverageOfVMP = 0
+  negativeDeals.forEach(function (item) {
+    if (item.procentVMP > averageOfVMP) {
+      countMoreAverageOfVMP++
+    } else {
+      countLessAverageOfVMP++
+    }
+  })
+  console.log(
+    `кол-во убыточных сделок, которые можно закрыть в TP выше averageOfVMP = ${countMoreAverageOfVMP}`
+  )
+  console.log(
+    `кол-во убыточных сделок, которые нельзя закрыть в TP выше averageOfVMP = ${countLessAverageOfVMP}`
+  )
+
   // вычисление времени работы всего скрипта
   const endProgram = new Date().getTime() // текущая дата
   const diffInTimeProgram = endProgram - startProgramAt
@@ -207,7 +281,28 @@ function printGlobalProfit(
     } минут)`
   )
 
+  const statistics = {
+    deposit: deposit,
+    allDealsCount: deals.length,
+    globalProfit: +sum.toFixed(2),
+    roi: +roi.toFixed(2),
+    dayOfTrade: diffInDays,
+    roiPerYear: +roiPerYear.toFixed(2),
+    drawdown: min,
+    drawdownPer: Math.round((min / deposit) * 10000) / 100,
+    diffInSecond: diffInSecond,
+    countOfPositive: countOfPositive,
+    countOfNegative: countOfNegative,
+    minOfVMP: minOfVMP,
+    maxOfVMP: maxOfVMP,
+    averageOfVMP: averageOfVMP,
+    countMoreAverageOfVMP: countMoreAverageOfVMP,
+    countLessAverageOfVMP: countLessAverageOfVMP,
+  }
+
   console.log('программа завершена (ОК)')
+
+  return statistics
 }
 
 function findTrends(arg) {
@@ -476,11 +571,12 @@ function trade(array, trend, index) {
               // closePrice: Number(array[i][3]), // неправильно
               closePrice: stopLoss, // выходим по цене Stop Loss
               closeTime: timestampToDateHuman(array[i].openTime),
-              profit: +(array[i].lowPrice - positionUp).toFixed(2),
-              percent: +(
-                ((array[i].lowPrice - positionUp) / positionUp) *
-                100
-              ).toFixed(2),
+              //profit: +(array[i].lowPrice - positionUp).toFixed(2), // неправильно
+              profit: +(stopLoss - positionUp).toFixed(2),
+              //percent: +(((array[i].lowPrice - positionUp) / positionUp) * 100).toFixed(2), // неправильно
+              percent: +(((stopLoss - positionUp) / positionUp) * 100).toFixed(
+                2
+              ),
               // stopLoss: stopLoss, // избыточная информация
               varMaxProfit: +(varMaxProfit - positionUp).toFixed(2),
               procentVMP: +((varMaxProfit / positionUp - 1) * 100).toFixed(2),
@@ -584,9 +680,11 @@ function trade(array, trend, index) {
                 // closePrice: Number(array[i][2]),
                 closePrice: stopLoss, // выходим по цене Stol Loss
                 closeTime: timestampToDateHuman(array[i].openTime),
-                profit: +(positionDown - array[i].highPrice).toFixed(2),
+                // profit: +(positionDown - array[i].highPrice).toFixed(2), // неправильно
+                profit: +(positionDown - stopLoss).toFixed(2),
+                // percent: +(((positionDown - array[i].highPrice) / positionDown) * 100).toFixed(2), // неправильно
                 percent: +(
-                  ((positionDown - array[i].highPrice) / positionDown) *
+                  ((positionDown - stopLoss) / positionDown) *
                   100
                 ).toFixed(2),
                 // stopLoss: stopLoss, // избыточная информация

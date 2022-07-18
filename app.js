@@ -2,21 +2,30 @@
 
 const express = require('express')
 const config = require('config')
-const startProgram2 = require('./engineByWilliamFractals')
+const path = require('path')
+const { startProgram2, findTrends } = require('./engineByWilliamFractals')
 
 const app = express()
 
 app.use(express.json({ extended: true }))
 
 //app.use('/api/userrequest', require('./routes/symbol.TF'))
-app.use('localhost:5000', require('./routes/symbol.TF')) // передает параметры запроса на сервен, но возвращает ошибку в браузере: Unexpected token o in JSON at position 0
+//app.use('localhost:5000', require('./routes/symbol.TF')) // передает параметры запроса на сервен, но возвращает ошибку в браузере: Unexpected token o in JSON at position 0
 //app.use('/', require('./routes/symbol.TF')) // в консоли браузера выдает ошибку: POST http://localhost:3000/ 500 (Internal Server Error)
+
+if (process.env.NODE_ENV === 'production') {
+  app.use('/', express.static(path.join(__dirname, 'client', 'build')))
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+  })
+}
 
 const PORT = config.get('port') || 5000
 
 async function start() {
   try {
-    // подключаемся к базе данных
+    // подключаемся к базе данных, если она есть
     app.listen(PORT, () =>
       console.log(`App has been started on port ${PORT}...`)
     )
@@ -28,13 +37,21 @@ async function start() {
 
 start()
 
-app.post('/', function (req, res) {
+app.post('/', async function (req, res) {
+  console.log('прилетел запрос на сервер:')
   console.log(req.body)
-  console.log(`тип req.body = ${req.body}`)
-  console.table(req.body)
-  //let params = JSON.parse(req.body)
-  //startProgram2(params.symbol, params.seniorTimeFrame, params.lowerTimeFrame)
-  res.send('ok')
+  //startProgram2(req.body.symbol, req.body.seniorTimeFrame, req.body.lowerTimeFrame)
+  //res.send('ok')
+
+  const result = await startProgram2(
+    req.body.symbol,
+    req.body.seniorTimeFrame,
+    req.body.lowerTimeFrame,
+    Number(req.body.limitSeniorTrend)
+  )
+  res.json(result)
+
+  // console.log(typeof Number(req.body.limitSeniorTrend))
 })
 
 // попытка прикрутить обработку POST запроса в express
@@ -75,6 +92,7 @@ const server = http.createServer((request, response) => {
     })
     request.on('end', () => {
       let params = JSON.parse(body)
+      // console.log(body)
       // console.log(params)
       // console.log(`symbol = ${params.symbol}, seniorTimeFrame = ${params.seniorTimeFrame}, lowerTimeFrame = ${params.lowerTimeFrame}`)
       startProgram2(
