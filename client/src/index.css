@@ -18,8 +18,18 @@ input.yellow-input:focus {
   box-shadow: 0 1px 0 0 #ffeb3b !important;
 }
 
+/*
 table {
   margin: auto;
+}
+*/
+
+div.table {
+  text-align: center;
+}
+
+td.table {
+  text-align: center;
 }
 
 /* 

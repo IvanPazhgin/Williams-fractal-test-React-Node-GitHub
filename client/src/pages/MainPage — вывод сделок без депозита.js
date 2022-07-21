@@ -80,16 +80,12 @@ export const MainPage = () => {
           15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
         </p>
         <p>где: m - minutes; h - hours; d - days; w - weeks; M - months</p>
-
+        <p>
+          <b>ВАЖНО! Приложение пока работает на ТФ: 2h, 1h, 15, 5m</b>
+        </p>
         <div class="input-field">
           <input type="text" name="seniorTimeFrame" onChange={changeHandler} />
-          <label>
-            Старший тайм фрейм. Например: 1h.{' '}
-            <b>
-              ВАЖНО! Приложение пока работает только на ТФ: 5m, 15m, 30m, 1h,
-              2h, 4h, 6h, 8h, 12h, 1d.
-            </b>
-          </label>
+          <label>Старший тайм фрейм. Например: 1h</label>
         </div>
 
         <div class="input-field">
@@ -156,27 +152,28 @@ export const MainPage = () => {
       <div>Время запуска скрипта: {data.startProgramAtToHuman}</div>
       {data && data.statistics && (
         <div>
-          <div>Депозит в начале: {data.statistics.deposit} USD</div>
-          <div>Депозит в конце: {data.statistics.resultOfDeposit} USD</div>
-          <div>Итоговая прибыль/убыток: {data.statistics.globalProfit} USD</div>
+          <div>
+            Депозит: {data.statistics.deposit} USD (равен цене входа в первую
+            сделку)
+          </div>
+          <div>Всего сделок: {data.statistics.allDealsCount} штук</div>
+          <div>Итоговая прибыль: {data.statistics.globalProfit} USD</div>
           <div>ROI: {data.statistics.roi} %</div>
           <div>Дней торговли: {data.statistics.dayOfTrade}</div>
           <div>ROI годовых: {data.statistics.roiPerYear} %</div>
           <div>
             Максимальная просадка: {data.statistics.drawdown} USD, (
-            {data.statistics.drawdownPer} %, соответственно, потенциальное плечо
-            = {data.statistics.multiplierMayBe})
-          </div>
-          <div>Всего сделок: {data.statistics.allDealsCount}, из которых:</div>
-          <div>
-            - кол-во положительных сделок: {data.statistics.countOfPositive}
+            {data.statistics.drawdownPer} % (соответственно, можно рассчитать
+            плечо))
           </div>
           <div>
-            - кол-во отрицательных сделок: {data.statistics.countOfNegative}
+            кол-во положительных сделок: {data.statistics.countOfPositive}
           </div>
-
           <div>
-            Время работы приложения: {data.statistics.diffInSecond} секунд(ы)
+            кол-во отрицательных сделок: {data.statistics.countOfNegative}
+          </div>
+          <div>
+            Время выполнения скрипта: {data.statistics.diffInSecond} секунд
           </div>
         </div>
       )}
@@ -276,79 +273,33 @@ export const MainPage = () => {
             <td>Открываем</td>
             <td>Цена входа</td>
             <td>Время входа</td>
-            <td>Объем сделки</td>
             <td>Закрываем</td>
             <td>Цена выхода</td>
             <td>Время выхода</td>
             <td>Прибыль / Убыток</td>
             <td>в процентах</td>
+            <td>varMaxProfit</td>
+            <td>procentVMP</td>
+            <td>timeOfVMP</td>
             <td>lastPrice</td>
-            <td>Депозит</td>
           </tr>
           {data &&
-            data.allDealsReal &&
-            data.allDealsReal.map((deal, i) => (
+            data.allDeals &&
+            data.allDeals.map((deal, i) => (
               <tr>
                 <td>{i + 1}</td>
                 <td>{deal.openPosition}</td>
                 <td>{deal.openPrice}</td>
                 <td>{deal.openTime}</td>
-                <td>{deal.amountOfPosition}</td>
                 <td>{deal.closePosition}</td>
                 <td>{deal.closePrice}</td>
                 <td>{deal.closeTime}</td>
                 <td>{deal.profit}</td>
                 <td>{deal.percent}</td>
+                <td>{deal.varMaxProfit}</td>
+                <td>{deal.procentVMP}</td>
+                <td>{deal.timeOfVMP}</td>
                 <td>{deal.lastPrice}</td>
-                <td>{deal.deposit}</td>
-              </tr>
-            ))}
-        </table>
-      </div>
-      <hr></hr>
-      <h4>Таблица всех сделок с разбивкой по трендам</h4>
-      <div className="table">
-        <table>
-          <tr>
-            <td>№ тренда</td>
-          </tr>
-          {data &&
-            data.allDealsReal2 &&
-            data.allDealsReal2.map((trends, i) => (
-              <tr>
-                <td>
-                  <b>{i + 1}</b>
-                </td>
-                <tr>
-                  <td>№ сделки</td>
-                  <td>Открываем</td>
-                  <td>Цена входа</td>
-                  <td>Время входа</td>
-                  <td>Объем сделки</td>
-                  <td>Закрываем</td>
-                  <td>Цена выхода</td>
-                  <td>Время выхода</td>
-                  <td>Прибыль / Убыток</td>
-                  <td>в процентах</td>
-                  <td>lastPrice</td>
-                  <td>Депозит</td>
-                </tr>
-                {trends.map((deal, j) => (
-                  <tr text-align="center">
-                    <td>{j + 1}</td>
-                    <td>{deal.openPosition}</td>
-                    <td>{deal.openPrice}</td>
-                    <td>{deal.openTime}</td>
-                    <td>{deal.amountOfPosition}</td>
-                    <td>{deal.closePosition}</td>
-                    <td>{deal.closePrice}</td>
-                    <td>{deal.closeTime}</td>
-                    <td text-align="center">{deal.profit}</td>
-                    <td>{deal.percent}</td>
-                    <td>{deal.lastPrice}</td>
-                    <td>{deal.deposit}</td>
-                  </tr>
-                ))}
               </tr>
             ))}
         </table>

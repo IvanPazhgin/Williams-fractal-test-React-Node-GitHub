@@ -1,7 +1,5 @@
 const { USDMClient } = require('binance')
 
-// полностью избавился от глобальных переменных
-
 const API_KEY = ''
 const API_SECRET = ''
 
@@ -10,64 +8,223 @@ const client = new USDMClient({
   api_secret: API_SECRET,
 })
 
-// let symbol = 'ETHUSDT'
-// let seniorTimeFrame = '1h'
-// let lowerTimeFrame = '5m'
-// let limitSeniorTrend = 1000
+const limitSeniorTrend = 1000
 const limitInTrend = 1000
 
 // startProgram2() // запуск через асинхронные функции
 
 //module.exports = startProgram2
-module.exports = { startProgram2, findTrends, trade }
+module.exports = { startProgram2, findTrends, diffCandle }
 
 async function startProgram2(
   symbol,
   seniorTimeFrame,
   lowerTimeFrame,
-  limitSeniorTrend
+  dateStart,
+  dateFinish,
+  deposit,
+  partOfDeposit,
+  multiplier
 ) {
   const startProgramAt = new Date().getTime() // для расчета времени работы приложения
   const delay = (ms) => {
     return new Promise((response) => setTimeout(() => response(), ms))
   }
-  // if (limitSeniorTrend/1000 <= 1000) {}
+
+  const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, seniorTimeFrame)
+  let candlesSeniorFull = []
+
   try {
-    const candlesSenior = await client.getKlines({
-      symbol: symbol,
-      interval: seniorTimeFrame,
-      limit: limitSeniorTrend,
-    })
-    const objectSenior = candlesToObject(candlesSenior)
-    const [trends, startOfTrend] = findTrends(objectSenior)
-    const [allDeals, maxOfTrend, statInTredn] = await getTrendsAsync(
+    for (let i = 0; i < arrayOf1kPeriod.length; i++) {
+      const candlesSenior = await client.getKlines({
+        symbol: symbol,
+        interval: seniorTimeFrame,
+        startTime: arrayOf1kPeriod[i].dateFirst,
+        endTime: arrayOf1kPeriod[i].dateSecond,
+        limit: limitSeniorTrend,
+      })
+      candlesSeniorFull = candlesSeniorFull.concat(candlesSenior)
+    }
+
+    const objectSenior = candlesToObject(candlesSeniorFull)
+    //const [trends, startOfTrend] = findTrends(objectSenior)
+    const trends = findTrends(objectSenior)
+    const [
+      allDeals,
+      maxOfTrend,
+      statInTredn,
+      allDeals2,
+      depositTemp, // итоговый депозит после трейдинга на исторических данных
+      allDealsReal,
+      allDealsReal2,
+    ] = await getTrendsAsync(
       trends,
       symbol,
-      lowerTimeFrame
+      lowerTimeFrame,
+      dateFinish,
+      deposit,
+      partOfDeposit,
+      multiplier
     )
     // await delay(5000)
     const statistics = printGlobalProfit(
       allDeals,
-      startOfTrend,
+      arrayOf1kPeriod,
       maxOfTrend,
       statInTredn,
       startProgramAt,
       symbol,
       seniorTimeFrame,
-      lowerTimeFrame
+      lowerTimeFrame,
+      deposit,
+      allDealsReal
     )
     // вернуть все данные на фронт
     const startProgramAtToHuman = timestampToDateHuman(startProgramAt)
+    //statistics = statistics.concat(timestampToDateHuman(startProgramAt))
+    //statistics.push(timestampToDateHuman(startProgramAt))
     return {
       allDeals, // выгружаю таблицу всех сделок
+      allDeals2, // выгружаю таблицу всех сделок внутри трендов
+      allDealsReal, // выгружаю таблицу всех сделок с учетом: депозита, % его использования и плеча
+      allDealsReal2,
       statInTredn, // выгружаю статистику по трендам
       startProgramAtToHuman, // начало запуска скрипта
       trends, // список отфильтрованных трендов
       statistics, // итоговая статистика
+      // depositTemp, // итоговый депозит после трейдинга на исторических данных
     }
   } catch (err) {
     console.error('getAccountTradeList error: ', err)
   }
+}
+
+function diffCandle(date1, date2, timeFrame) {
+  // const timeFrame = '1h'
+  let dateFirst = Date.parse(date1) // первая дата partOfTimeFrame
+  let dateSecond = Date.parse(date2) // вторая дата partOfTimeFrame
+  let dateMiddle = new Date()
+  const diffday = dateSecond - dateFirst
+  let countOfCandles = 0 // кол-во свечей внутри запрос пользователя
+  let needTimeFrame = 0 // кол-во массивов по 1000 свечей
+
+  let partOfTimeFrame = [] // массив временных периодов между needTimeFrame
+  //let dateSecond = new Date() // вторая дата partOfTimeFrame
+
+  let shiftTime = 0 // свдиг времени для разбивки большого массива по циклам
+  let shiftOndeCandle = 0 // сдвиг времени на 1 бар
+  const lengthOfPart = 1000 // кол-во свечей в каждой части
+
+  const hour = diffday / 1000 / 60 / 60
+  //console.log(`разница между датами составляет ${hour} часов (${hour / 24} дней)`)
+
+  switch (timeFrame) {
+    case '1d':
+      console.log('1d свечи')
+      countOfCandles = diffday / 1000 / 60 / 60 / 24
+      shiftOndeCandle = 24 * 60 * 60 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
+    case '12h':
+      console.log('12h свечи')
+      countOfCandles = diffday / 1000 / 60 / 60 / 12
+      shiftOndeCandle = 12 * 60 * 60 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
+    case '8h':
+      console.log('8h свечи')
+      countOfCandles = diffday / 1000 / 60 / 60 / 8
+      shiftOndeCandle = 8 * 60 * 60 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
+    case '6h':
+      console.log('6h свечи')
+      countOfCandles = diffday / 1000 / 60 / 60 / 6
+      shiftOndeCandle = 6 * 60 * 60 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
+    case '4h':
+      console.log('4h свечи')
+      countOfCandles = diffday / 1000 / 60 / 60 / 4
+      shiftOndeCandle = 4 * 60 * 60 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
+    case '2h':
+      console.log('2h свечи')
+      countOfCandles = diffday / 1000 / 60 / 60 / 2
+      shiftOndeCandle = 2 * 60 * 60 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
+    case '1h':
+      console.log('1h свечи')
+      countOfCandles = diffday / 1000 / 60 / 60
+      shiftOndeCandle = 60 * 60 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
+    case '30m':
+      console.log('30m свечи')
+      countOfCandles = diffday / 1000 / 60 / 30
+      shiftOndeCandle = 60 * 30 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
+    case '15m':
+      console.log('15m свечи')
+      countOfCandles = diffday / 1000 / 60 / 15
+      shiftOndeCandle = 60 * 15 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      //shiftTime = Date.parse(date1) + lengthOfPart * 60 * 15 * 1000
+      break
+    case '5m':
+      console.log('5m свечи')
+      countOfCandles = diffday / 1000 / 60 / 5
+      shiftOndeCandle = 60 * 5 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
+    default:
+      console.log('нет таких свечей')
+  }
+  console.log(`кол-во свечей = ${countOfCandles}`)
+  //console.log(`сдвиг времени = ${timestampToDateHuman(shiftTime)}`)
+
+  if (countOfCandles <= 1000) {
+    partOfTimeFrame[0] = {
+      //dateFirst: timestampToDateHuman(dateFirst),
+      //dateSecond: timestampToDateHuman(dateSecond),
+      dateFirst: dateFirst,
+      dateSecond: dateSecond,
+    }
+  } else {
+    needTimeFrame = Math.ceil(countOfCandles / 1000)
+    console.log(`кол-во периодов = ${needTimeFrame}`)
+    for (let i = 0; i < needTimeFrame; i++) {
+      if (i == needTimeFrame - 1) {
+        partOfTimeFrame[i] = {
+          //dateFirst: timestampToDateHuman(dateFirst),
+          //dateSecond: timestampToDateHuman(dateSecond),
+          dateFirst: dateFirst,
+          dateSecond: dateSecond,
+        }
+        // partOfTimeFrame[i] = [timestampToDateHuman(dateFirst),timestampToDateHuman(dateSecond)]
+        // partOfTimeFrame[i] = [dateFirst, dateSecond]
+        // console.log(`длина [${i}] периода = ${(dateSecond - dateFirst) / 60 / 60 / 1000}`)
+        //break
+      } else {
+        dateMiddle = dateFirst + shiftTime
+        // partOfTimeFrame[i] = [dateFirst, dateMiddle]
+        partOfTimeFrame[i] = {
+          //dateFirst: timestampToDateHuman(dateFirst),
+          //dateSecond: timestampToDateHuman(dateMiddle),
+          dateFirst: dateFirst,
+          dateSecond: dateMiddle,
+        }
+        // partOfTimeFrame[i] = [timestampToDateHuman(dateFirst), timestampToDateHuman(dateMiddle)]
+        // console.log(`длина [${i}] периода = ${(dateMiddle - dateFirst) / 60 / 60 / 1000}`)
+        dateFirst = dateMiddle + shiftOndeCandle
+      }
+    }
+  }
+  console.table(partOfTimeFrame)
+  return partOfTimeFrame
 }
 
 function usdmBalance() {
@@ -120,13 +277,15 @@ function timestampToDateHuman(arg) {
 
 function printGlobalProfit(
   deals,
-  startOfTrend,
+  arrayOf1kPeriod,
   maxOfTrend,
   statInTredn,
   startProgramAt,
   symbol,
   seniorTimeFrame,
-  lowerTimeFrame
+  lowerTimeFrame,
+  deposit,
+  allDealsReal
 ) {
   console.log('')
   console.log(`ОБЩАЯ СТАТИСТИКА:`)
@@ -134,10 +293,11 @@ function printGlobalProfit(
     `symbol = ${symbol} | старший ТФ = ${seniorTimeFrame} | младший ТФ = ${lowerTimeFrame}`
   )
   console.log(
-    `Общее кол-во сделок = ${deals.length} шт (длина передаваемого массива deals)`
+    `Общее кол-во сделок = ${allDealsReal.length} шт (длина передаваемого массива deals)`
   )
 
   // вычисление прибыли по передаваемому массиву deals
+  /*
   let sum = 0
   deals.forEach(function (item) {
     if (typeof item.profit == 'number')
@@ -145,18 +305,26 @@ function printGlobalProfit(
         sum += item.profit
       }
   })
+  console.log(`итоговая прибыль = ${+sum.toFixed(2)} USD (проверка по передаваемому deals)`)
+  */
+
+  const resultOfDeposit = allDealsReal[allDealsReal.length - 1].deposit
+  const profit = resultOfDeposit - deposit
+  const roi = (profit / resultOfDeposit) * 100
+  console.log(`Итого на счете = ${resultOfDeposit} USD (real trade)`)
   console.log(
-    `итоговая прибыль = ${+sum.toFixed(
-      2
-    )} USD (проверка по передаваемому deals)`
+    `Итоговая прибыль/убыток = ${+profit.toFixed(2)} USD (real trade)`
   )
+  console.log(`ROI = ${+roi.toFixed(2)}% (real trade)`)
 
-  const deposit = deals[0].openPrice // как будто депозит равен цене первого хая из массива трендов
-  const roi = (sum / deposit) * 100
-  console.log(`ROI = ${+roi.toFixed(2)}%`)
+  // const deposit = deals[0].openPrice // как будто депозит равен цене первого хая из массива трендов
+  // const roi = (sum / deposit) * 100
+  // console.log(`ROI = ${+roi.toFixed(2)}%`)
 
-  const currentTime = new Date().getTime() // текущая дата
-  const diffInTime = currentTime - startOfTrend // Calculating the time difference between two dates
+  //const currentTime = new Date().getTime() // текущая дата
+  const startOfTrend = arrayOf1kPeriod[0].dateFirst
+  const endOfTrend = arrayOf1kPeriod[arrayOf1kPeriod.length - 1].dateSecond
+  const diffInTime = endOfTrend - startOfTrend // Calculating the time difference between two dates
   const oneDay = 1000 * 60 * 60 * 24 // One day in milliseconds
   const diffInDays = Math.round(diffInTime / oneDay) // Calculating the no. of days between two dates
   console.log(`общее кол-во дней торговли = ${diffInDays}`)
@@ -166,30 +334,35 @@ function printGlobalProfit(
 
   // поиск максимальной просадки
   let drawdown = []
-  deals.forEach(function (item) {
+  allDealsReal.forEach(function (item) {
     drawdown.push(item.profit)
   })
   let min = Math.min.apply(null, drawdown)
   console.log(
     `Максимальная просадка = ${min} USD (${
-      Math.round((min / deposit) * 10000) / 100
+      Math.round((min / resultOfDeposit) * 10000) / 100
     } %)`
   )
+  const multiplierMayBe = -Math.ceil(resultOfDeposit / min) // расчет потенциального плеча
 
   console.log(`максимальное кол-во свечей в младшем ТФ = ${maxOfTrend} штук`)
 
   // сортировка массива со сделками - важная функция
   // dealsKostil.sort((a, b) => a.openTimestamp - b.openTimestamp)
 
+  // console.log('')
+  // console.log('Все сделки (вывод deals):')
+  // console.table(deals)
+
   console.log('')
-  console.log('Все сделки (вывод deals):')
-  console.table(deals)
+  console.log('Все сделки (вывод allDealsReal):')
+  console.table(allDealsReal)
 
   // статистика по сделкам
   let countOfPositive = 0
   let countOfNegative = 0
   let countOfZero = 0
-  deals.forEach(function (item) {
+  allDealsReal.forEach(function (item) {
     if (item.profit > 0) {
       countOfPositive++
     } else if (item.profit < 0) {
@@ -205,10 +378,13 @@ function printGlobalProfit(
   )
 
   // статистика сделок по трендам
-  statInTredn.sort((a, b) => a.indexOfTrend - b.indexOfTrend)
+  // statInTredn.sort((a, b) => a.indexOfTrend - b.indexOfTrend)
   console.log('')
   console.log('статистика сделок по трендам:')
   console.table(statInTredn)
+
+  // дополнительная проверка прибыли при наличии депозита не работает
+  /*
   let sumTestStat = 0
   statInTredn.forEach(function (item) {
     if (typeof item.profitInTrend == 'number')
@@ -216,11 +392,8 @@ function printGlobalProfit(
         sumTestStat += item.profitInTrend
       }
   })
-  console.log(
-    `итоговая прибыль = ${+sumTestStat.toFixed(
-      2
-    )} USD (проверка по statInTredn)`
-  )
+  console.log(`итоговая прибыль = ${+sumTestStat.toFixed(2)} USD (проверка по statInTredn)`)
+  */
 
   // вычисление потенциальной средней прибыли по убыточным сделкам
   // PS: можно сделать внутри кода после строчки 195
@@ -283,8 +456,8 @@ function printGlobalProfit(
 
   const statistics = {
     deposit: deposit,
-    allDealsCount: deals.length,
-    globalProfit: +sum.toFixed(2),
+    allDealsCount: allDealsReal.length,
+    globalProfit: +profit.toFixed(2),
     roi: +roi.toFixed(2),
     dayOfTrade: diffInDays,
     roiPerYear: +roiPerYear.toFixed(2),
@@ -298,6 +471,8 @@ function printGlobalProfit(
     averageOfVMP: averageOfVMP,
     countMoreAverageOfVMP: countMoreAverageOfVMP,
     countLessAverageOfVMP: countLessAverageOfVMP,
+    resultOfDeposit: resultOfDeposit,
+    multiplierMayBe: multiplierMayBe,
   }
 
   console.log('программа завершена (ОК)')
@@ -392,22 +567,34 @@ function findTrends(arg) {
   console.log('тренды (без фильтрации):')
   console.table(whatTrend)
 
+  /*
   console.log('тренды (после фильтрации):')
   console.table(whatTrendFiltered)
+  console.log(`общее кол-во трендов = ${whatTrendFiltered.length} шт (вызов по whatTrendFiltered из функции findTrends)`)
+  */
+  // let startOfTrend = whatTrendFiltered[0].priceTimeStamp
 
-  console.log(
-    `общее кол-во трендов = ${whatTrendFiltered.length} шт (вызов по whatTrendFiltered из функции findTrends)`
-  )
-  let startOfTrend = whatTrendFiltered[0].priceTimeStamp
-
-  return [whatTrendFiltered, startOfTrend]
+  //return [whatTrendFiltered, startOfTrend]
+  //return whatTrendFiltered
+  return whatTrend
 }
 
-async function getTrendsAsync(array, symbol, lowerTimeFrame) {
+async function getTrendsAsync(
+  array,
+  symbol,
+  lowerTimeFrame,
+  dateFinish,
+  deposit,
+  partOfDeposit,
+  multiplier
+) {
   let dealsGlobal = [] // собирает все сделки
+  let dealsGlobal2 = [] // собирает массивы сделок по трендам
+  let dealsGlobalReal = [] // собираем сделки с учетом: депозита, % использования депозита и плеча
+  let dealsGlobalReal2 = [] // собирает массивы сделок по трендам
+  let depositTemp = deposit
   let temp // собирает информацию внутри каждого тренда (сделки и статистику по тренду)
   let maxOfTrend = 0 // вычисляем длину самого большого тренда
-  const currentTime = new Date().getTime() // текущая дата для последнего тренда
   let statInTredn = [] // для статистики сделок внутри тренда
   console.log(
     `общее кол-во трендов = ${array.length} шт (передано в функцию getTrends)`
@@ -444,41 +631,83 @@ async function getTrendsAsync(array, symbol, lowerTimeFrame) {
         if (maxOfTrend < objectJunior.length) {
           maxOfTrend = objectJunior.length
         }
-        temp = trade(objectJunior, array[i].trend, i)
-        dealsGlobal = dealsGlobal.concat(temp.deals)
-        statInTredn = statInTredn.concat(temp.statInTredn)
+        temp = trade(
+          objectJunior,
+          array[i].trend,
+          i,
+          depositTemp,
+          partOfDeposit,
+          multiplier
+        )
+        dealsGlobal = dealsGlobal.concat(temp.deals) // собираем все сделки
+        dealsGlobal2.push(temp.deals) // для вывода клиенту сделок внутри каждого тренда
+        statInTredn = statInTredn.concat(temp.statInTredn) // собираем статистику по трендам
+        dealsGlobalReal = dealsGlobalReal.concat(temp.dealsReal) // собираем сделки с реальным депозитом
+        dealsGlobalReal2.push(temp.dealsReal) // собираем сделки в массив по трендам
+        depositTemp = temp.depositTemp // сохраняем накопившийся депозит
       } catch (err) {
         console.error('get Account Trade List error: ', err)
       }
     } else {
       // если это последний тренд, то берем текущую последнюю дату
+      // console.log(`блок расчета последнего тренда!!`)
+      // let currentTime = new Date().getTime() // текущая дата для последнего тренда
+      // console.log(`currentTime вначале = ${timestampToDateHuman(currentTime)}`)
+      // console.log(`последняя дата последнего тренда = ${timestampToDateHuman(array[i].priceTimeStamp)}`)
+      /*
+
+      if (currentTime > array[i].priceTimeStamp) {
+        console.log(
+          `разница между currentTime и последней датой в массиве = ${
+            currentTime - array[i].priceTimeStamp
+          }`
+        )
+        currentTime = array[i].priceTimeStamp
+      }
+      console.log(
+        `currentTime после сравнения = ${timestampToDateHuman(currentTime)}`
+      )
+      */
       try {
         const candlesJunior = await client.getKlines({
           symbol: symbol,
           interval: lowerTimeFrame,
           startTime: array[i].priceTimeStamp,
-          endTime: currentTime,
+          endTime: Date.parse(dateFinish),
           limit: limitInTrend,
         })
         const objectJunior = candlesToObject(candlesJunior)
         console.log('')
-        console.log(`обработка данных ${i}-го тренда...`)
+        console.log(`обработка данных ${i}-го тренда из ${array.length - 1}...`)
         console.log(
           `Длина ${i} тренда составляет ${objectJunior.length} свечей`
         )
         console.log(
           `Начало тренда: ${timestampToDateHuman(
             array[i].priceTimeStamp
-          )}, заверщение тренда: ${timestampToDateHuman(currentTime)}`
+          )}, заверщение тренда: ${timestampToDateHuman(
+            Date.parse(dateFinish)
+          )}`
         )
 
         // вычисляем самый длинный массив младшего ТФ
         if (maxOfTrend < objectJunior.length) {
           maxOfTrend = objectJunior.length
         }
-        temp = trade(objectJunior, array[i].trend, i)
-        dealsGlobal = dealsGlobal.concat(temp.deals)
-        statInTredn = statInTredn.concat(temp.statInTredn)
+        temp = trade(
+          objectJunior,
+          array[i].trend,
+          i,
+          depositTemp,
+          partOfDeposit,
+          multiplier
+        )
+        dealsGlobal = dealsGlobal.concat(temp.deals) // собираем все сделки
+        dealsGlobal2.push(temp.deals) // для вывода клиенту сделок внутри каждого тренда
+        statInTredn = statInTredn.concat(temp.statInTredn) // собираем статистику по трендам
+        dealsGlobalReal = dealsGlobalReal.concat(temp.dealsReal) // собираем сделки с реальным депозитом
+        dealsGlobalReal2.push(temp.dealsReal) // собираем сделки в массив по трендам
+        depositTemp = temp.depositTemp // сохраняем накопившийся депозит
       } catch (err) {
         console.error('get Account Trade List error: ', err)
       }
@@ -486,10 +715,18 @@ async function getTrendsAsync(array, symbol, lowerTimeFrame) {
   }
   // console.log('ЗАВЕРШЕНИЕ функции getTrends')
   // console.log(`передано из getTrends общее кол-во сделок: ${dealsGlobal.length}`)
-  return [dealsGlobal, maxOfTrend, statInTredn]
+  return [
+    dealsGlobal,
+    maxOfTrend,
+    statInTredn,
+    dealsGlobal2,
+    depositTemp,
+    dealsGlobalReal,
+    dealsGlobalReal2,
+  ]
 }
 
-function trade(array, trend, index) {
+function trade(array, trend, index, deposit, partOfDeposit, multiplier) {
   let FractalsUp = false // факт наличия фрактала на младшем ТФ
   let FractalsDown = false
   let FractalsUpPrice = 0 // значение цены фрактала
@@ -505,6 +742,10 @@ function trade(array, trend, index) {
   let positionTime = 0
   let lastFractal = 0 // для закрытия сделок в конце тренда
   let deals = [] // сделки внутри тренда
+  let dealsReal = [] // сделки с учетом: депозита, % использования депозита и плеча
+  let amountOfPosition = 0 // для расчета объема входа в сделку
+  let depositTemp = Number(deposit)
+  let profit = 0 // прибыль или убыток внутри каждой сделки
   let varMaxProfit = 0 // расчет максимально возможной потенциальной прибыли в каждой сделке
   let timeOfVMP = 0 // время наступленмя varMaxProfit
 
@@ -582,6 +823,27 @@ function trade(array, trend, index) {
               procentVMP: +((varMaxProfit / positionUp - 1) * 100).toFixed(2),
               timeOfVMP: timestampToDateHuman(timeOfVMP),
             }
+            // формируем инфу по сделке на реальном депо:
+            amountOfPosition = +(
+              (depositTemp / positionUp) *
+              partOfDeposit *
+              multiplier
+            ).toFixed(8)
+            profit = (stopLoss - positionUp) * amountOfPosition
+            depositTemp += profit
+            // console.log(`тип deposit = ${typeof deposit}, тип amountOfPosition = ${typeof amountOfPosition}, тип depositTemp = ${typeof depositTemp}`)
+            dealsReal[numberOfPosition] = {
+              openPosition: 'Buy',
+              openPrice: positionUp,
+              openTime: timestampToDateHuman(positionTime),
+              amountOfPosition: amountOfPosition,
+              closePosition: 'Sell',
+              closePrice: stopLoss, // выходим по цене Stop Loss
+              closeTime: timestampToDateHuman(array[i].openTime),
+              profit: +profit.toFixed(2),
+              percent: +((profit / positionUp) * 100).toFixed(2),
+              deposit: +depositTemp.toFixed(2),
+            }
 
             inLongPosition = false
             stopLoss = 0
@@ -613,6 +875,29 @@ function trade(array, trend, index) {
                 procentVMP: +((varMaxProfit / positionUp - 1) * 100).toFixed(2),
                 timeOfVMP: timestampToDateHuman(timeOfVMP),
               }
+
+              // формируем инфу по сделке на реальном депо:
+              amountOfPosition = +(
+                (depositTemp / positionUp) *
+                partOfDeposit *
+                multiplier
+              ).toFixed(8)
+              profit = (array[i].lowPrice - positionUp) * amountOfPosition
+              depositTemp += profit
+              // console.log(`тип deposit = ${typeof deposit}, тип amountOfPosition = ${typeof amountOfPosition}, тип depositTemp = ${typeof depositTemp}`)
+              dealsReal[numberOfPosition] = {
+                openPosition: 'Buy',
+                openPrice: positionUp,
+                openTime: timestampToDateHuman(positionTime),
+                amountOfPosition: amountOfPosition,
+                closePosition: 'Sell',
+                closePrice: array[i].lowPrice,
+                closeTime: timestampToDateHuman(array[i].openTime),
+                profit: +profit.toFixed(2),
+                percent: +((profit / positionUp) * 100).toFixed(2),
+                deposit: +depositTemp.toFixed(2),
+                lastPrice: array[i].lowPrice,
+              }
             } else {
               // если текущая цена ниже последнего нижнего фрактала, то закрываем по цене фрактала
 
@@ -634,6 +919,29 @@ function trade(array, trend, index) {
                 varMaxProfit: +(varMaxProfit - positionUp).toFixed(2),
                 procentVMP: +((varMaxProfit / positionUp - 1) * 100).toFixed(2),
                 timeOfVMP: timestampToDateHuman(timeOfVMP),
+              }
+
+              // формируем инфу по сделке на реальном депо:
+              amountOfPosition = +(
+                (depositTemp / positionUp) *
+                partOfDeposit *
+                multiplier
+              ).toFixed(2)
+              profit = (lastFractal - positionUp) * amountOfPosition
+              depositTemp += profit
+              // console.log(`тип deposit = ${typeof deposit}, тип amountOfPosition = ${typeof amountOfPosition}, тип depositTemp = ${typeof depositTemp}`)
+              dealsReal[numberOfPosition] = {
+                openPosition: 'Buy',
+                openPrice: positionUp,
+                openTime: timestampToDateHuman(positionTime),
+                amountOfPosition: amountOfPosition,
+                closePosition: 'Sell',
+                closePrice: lastFractal,
+                closeTime: timestampToDateHuman(array[i].openTime),
+                profit: +profit.toFixed(2),
+                percent: +((profit / positionUp) * 100).toFixed(2),
+                deposit: +depositTemp.toFixed(2),
+                lf: lastFractal,
               }
             }
             lastFractal = 0
@@ -694,6 +1002,28 @@ function trade(array, trend, index) {
                 ),
                 timeOfVMP: timestampToDateHuman(timeOfVMP),
               }
+              // формируем инфу по сделке на реальном депо:
+
+              amountOfPosition = +(
+                (depositTemp / positionDown) *
+                partOfDeposit *
+                multiplier
+              ).toFixed(8)
+              profit = (positionDown - stopLoss) * amountOfPosition
+              depositTemp += profit
+              // console.log(`тип deposit = ${typeof deposit}, тип amountOfPosition = ${typeof amountOfPosition}, тип depositTemp = ${typeof depositTemp}`)
+              dealsReal[numberOfPosition] = {
+                openPosition: 'Sell',
+                openPrice: positionDown,
+                openTime: timestampToDateHuman(positionTime),
+                amountOfPosition: amountOfPosition,
+                closePosition: 'Buy',
+                closePrice: stopLoss, // выходим по цене Stop Loss
+                closeTime: timestampToDateHuman(array[i].openTime),
+                profit: +profit.toFixed(2),
+                percent: +((profit / positionDown) * 100).toFixed(2),
+                deposit: +depositTemp.toFixed(2),
+              }
 
               inShortPosition = false
               stopLoss = 0
@@ -728,6 +1058,29 @@ function trade(array, trend, index) {
                 ),
                 timeOfVMP: timestampToDateHuman(timeOfVMP),
               }
+
+              // формируем инфу по сделке на реальном депо:
+              amountOfPosition = +(
+                (depositTemp / positionDown) *
+                partOfDeposit *
+                multiplier
+              ).toFixed(8)
+              profit = (positionDown - array[i].highPrice) * amountOfPosition
+              depositTemp += profit
+              // console.log(`тип deposit = ${typeof deposit}, тип amountOfPosition = ${typeof amountOfPosition}, тип depositTemp = ${typeof depositTemp}`)
+              dealsReal[numberOfPosition] = {
+                openPosition: 'Sell',
+                openPrice: positionDown,
+                openTime: timestampToDateHuman(positionTime),
+                amountOfPosition: amountOfPosition,
+                closePosition: 'Buy',
+                closePrice: array[i].highPrice,
+                closeTime: timestampToDateHuman(array[i].openTime),
+                profit: +profit.toFixed(2),
+                percent: +((profit / positionDown) * 100).toFixed(2),
+                deposit: +depositTemp.toFixed(2),
+                lastPrice: array[i].highPrice,
+              }
             } else {
               deals[numberOfPosition] = {
                 openPosition: 'Sell',
@@ -749,6 +1102,28 @@ function trade(array, trend, index) {
                 ),
                 timeOfVMP: timestampToDateHuman(timeOfVMP),
               }
+              // формируем инфу по сделке на реальном депо:
+              amountOfPosition = +(
+                (depositTemp / positionDown) *
+                partOfDeposit *
+                multiplier
+              ).toFixed(8)
+              profit = (positionDown - lastFractal) * amountOfPosition
+              depositTemp += profit
+              // console.log(`тип deposit = ${typeof deposit}, тип amountOfPosition = ${typeof amountOfPosition}, тип depositTemp = ${typeof depositTemp}`)
+              dealsReal[numberOfPosition] = {
+                openPosition: 'Sell',
+                openPrice: positionDown,
+                openTime: timestampToDateHuman(positionTime),
+                amountOfPosition: amountOfPosition,
+                closePosition: 'Buy',
+                closePrice: lastFractal,
+                closeTime: timestampToDateHuman(array[i].openTime),
+                profit: +profit.toFixed(2),
+                percent: +((profit / positionDown) * 100).toFixed(2),
+                deposit: +depositTemp.toFixed(2),
+                lf: lastFractal,
+              }
             }
             lastFractal = 0
           }
@@ -757,23 +1132,30 @@ function trade(array, trend, index) {
     }
   }
 
-  console.log('сделки внутри функции trade:')
-  console.table(deals)
+  // console.log('сделки внутри функции trade:')
+  // console.table(deals)
+  // console.log(`кол-во сделок внутри тренда = ${deals.length} штук (внутри функции trade)`)
 
-  console.log(
-    `кол-во сделок внутри тренда = ${deals.length} штук (внутри функции trade)`
-  )
+  console.log('РЕАЛЬНЫЕ сделки внутри функции trade:')
+  console.table(dealsReal)
 
   // подсчет прибыли внутри тренда по dealsClass
+  /*
   let summProfit = 0
   deals.forEach(function (item) {
     if (typeof item.profit == 'number') summProfit += item.profit
   })
-  console.log(
-    `прибыль внутри тренда = ${+summProfit.toFixed(
-      2
-    )} USD (функция считает по полю profit)`
-  )
+  console.log(`прибыль внутри тренда = ${+summProfit.toFixed(2)} USD (функция считает по полю profit)`)
+  */
+  let summProfit = 0
+  if (dealsReal.length) {
+    summProfit = dealsReal[dealsReal.length - 1].deposit - dealsReal[0].deposit
+    console.log(
+      `прибыль внутри тренда = ${+summProfit.toFixed(
+        2
+      )} USD (функция считает по разнице между депозитом в начале тренда и в конце тренда)`
+    )
+  }
 
   // для статистики внутри трендов
   let statInTredn = []
@@ -791,5 +1173,7 @@ function trade(array, trend, index) {
   return {
     deals: deals,
     statInTredn: statInTredn,
+    dealsReal: dealsReal,
+    depositTemp: +depositTemp.toFixed(2),
   }
 }

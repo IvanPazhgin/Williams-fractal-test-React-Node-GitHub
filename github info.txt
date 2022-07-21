@@ -1,7 +1,9 @@
 git init
 git add app.js (git add .)
 git commit -m "initial"
+(git remote rm origin)
 git remote add origin https://github.com/IvanPazhgin/Williams-fractal-test.git
+git remote add origin https://github.com/IvanPazhgin/Williams-fractal-test-React_Node.git
 git push -u origin master
 
 
