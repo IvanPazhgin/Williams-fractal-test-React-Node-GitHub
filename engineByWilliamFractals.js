@@ -310,7 +310,7 @@ function printGlobalProfit(
 
   const resultOfDeposit = allDealsReal[allDealsReal.length - 1].deposit
   const profit = resultOfDeposit - deposit
-  const roi = (profit / resultOfDeposit) * 100
+  const roi = (profit / deposit) * 100
   console.log(`Итого на счете = ${resultOfDeposit} USD (real trade)`)
   console.log(
     `Итоговая прибыль/убыток = ${+profit.toFixed(2)} USD (real trade)`
@@ -554,7 +554,11 @@ function findTrends(arg) {
     }
   }
 
+  console.log('тренды (без фильтрации):')
+  console.table(whatTrend)
+
   // фильтруем массив c трендами: соединяем повторяющиеся тренды
+  /*
   whatTrendFiltered[j] = whatTrend[0]
   for (let i = 1; i < whatTrend.length; i++) {
     if (whatTrendFiltered[j].trend == whatTrend[i].trend) continue
@@ -562,12 +566,7 @@ function findTrends(arg) {
       j++
       whatTrendFiltered[j] = whatTrend[i]
     }
-  }
-
-  console.log('тренды (без фильтрации):')
-  console.table(whatTrend)
-
-  /*
+  }  
   console.log('тренды (после фильтрации):')
   console.table(whatTrendFiltered)
   console.log(`общее кол-во трендов = ${whatTrendFiltered.length} шт (вызов по whatTrendFiltered из функции findTrends)`)
@@ -576,6 +575,11 @@ function findTrends(arg) {
 
   //return [whatTrendFiltered, startOfTrend]
   //return whatTrendFiltered
+
+  // скорее всего придется передавать массив со сдвигом влево на одну свечу, для проверки условия ниже
+  // передаем значения фракталов чтобы начать торговлю на младшем ТФ именно с момента пробития фракталов ценой
+  // return [whatTrend, FractalsUpPrice, FractalsDownPrice]
+
   return whatTrend
 }
 
@@ -1148,7 +1152,9 @@ function trade(array, trend, index, deposit, partOfDeposit, multiplier) {
   console.log(`прибыль внутри тренда = ${+summProfit.toFixed(2)} USD (функция считает по полю profit)`)
   */
   let summProfit = 0
-  if (dealsReal.length) {
+  if (dealsReal.length == 1) {
+    summProfit = dealsReal[0].deposit - Number(deposit)
+  } else {
     summProfit = dealsReal[dealsReal.length - 1].deposit - dealsReal[0].deposit
     console.log(
       `прибыль внутри тренда = ${+summProfit.toFixed(

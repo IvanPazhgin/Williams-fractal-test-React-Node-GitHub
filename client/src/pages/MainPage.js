@@ -76,10 +76,12 @@ export const MainPage = () => {
         </div>
 
         <p>
-          Ниже введи старший и младщий таймфрейм. Таймфреймы бывают: 1m, 3m, 5m,
-          15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
+          Ниже введи старший и младщий таймфрейм.
+          <br />
+          Таймфреймы бывают: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d,
+          3d, 1w, 1M, где:
+          <br />m - minutes; h - hours; d - days; w - weeks; M - months
         </p>
-        <p>где: m - minutes; h - hours; d - days; w - weeks; M - months</p>
 
         <div class="input-field">
           <input type="text" name="seniorTimeFrame" onChange={changeHandler} />
@@ -99,9 +101,12 @@ export const MainPage = () => {
 
         <p>
           Ниже укажи временной интервал в формате YYYY-MM-DDTHH:mm:ss.sss, где:
-          YYYY-MM-DD – дата в формате год-месяц-день. Обычный символ T
-          используется как разделитель. HH:mm:ss.sss – время:
-          часы-минуты-секунды-миллисекунды.
+          <br />
+          YYYY-MM-DD – дата в формате год-месяц-день.
+          <br />
+          Обычный символ T используется как разделитель.
+          <br />
+          HH:mm:ss.sss – время: часы-минуты-секунды-миллисекунды.
         </p>
 
         <div class="input-field">
@@ -248,20 +253,16 @@ export const MainPage = () => {
       {/*таблица всех сделок*/}
       <h4>Таблица всех сделок</h4>
       <p>
-        <b>Цена выхода</b> - закрытие сделки по последнему фракталу
-      </p>
-      <p>
+        <b>Цена выхода</b> - закрытие сделки по последнему фракталу.
+        <br />
         <b>varMaxProfit</b> - Потенциальная максимальая прибыль до закрытия
         сделки по stopLoss.
-      </p>
-      <p>
+        <br />
         <b>procentVMP</b> - процент varMaxProfit. Можно вычислить средний
         процент.
-      </p>
-      <p>
+        <br />
         <b>timeOfVMP</b> - время наступленмя varMaxProfit.
-      </p>
-      <p>
+        <br />
         <b>lastPrice</b> - закрытие сделки по цене последней свечки в конце
         тренда.
       </p>
@@ -328,10 +329,14 @@ export const MainPage = () => {
                   <td>Закрываем</td>
                   <td>Цена выхода</td>
                   <td>Время выхода</td>
-                  <td>Прибыль / Убыток</td>
+                  <td>
+                    <b>Прибыль / Убыток</b>
+                  </td>
                   <td>в процентах</td>
                   <td>lastPrice</td>
-                  <td>Депозит</td>
+                  <td>
+                    <b>Депозит</b>
+                  </td>
                 </tr>
                 {trends.map((deal, j) => (
                   <tr text-align="center">
@@ -343,10 +348,14 @@ export const MainPage = () => {
                     <td>{deal.closePosition}</td>
                     <td>{deal.closePrice}</td>
                     <td>{deal.closeTime}</td>
-                    <td text-align="center">{deal.profit}</td>
+                    <td text-align="center">
+                      <b>{deal.profit}</b>
+                    </td>
                     <td>{deal.percent}</td>
                     <td>{deal.lastPrice}</td>
-                    <td>{deal.deposit}</td>
+                    <td>
+                      <b>{deal.deposit}</b>
+                    </td>
                   </tr>
                 ))}
               </tr>
@@ -355,6 +364,20 @@ export const MainPage = () => {
       </div>
       <hr></hr>
       <p>Спасибо!</p>
+      <p>
+        <b>Доработки:</b>
+        <br />
+        <b>Release candidate 3.1</b>:
+        <br /> - исправлен расчет ROI
+        <br /> - исправлен подсчет прибыли внутри тренда если была всего 1
+        сделка
+        <br /> - выделил столбцы "Прибыль / Убыток" и "Депозит" жирным цветом
+        <br />
+        <b>Release candidate 3.0</b>:
+        <br /> - добавлен запуск тестов на любом диапозоне дат
+        <br /> - добавлены: депозит, плечо, % от дипозита (в дальнейшем: для
+        распределения депозита среди нескольких инструментов)
+      </p>
     </>
   )
 }

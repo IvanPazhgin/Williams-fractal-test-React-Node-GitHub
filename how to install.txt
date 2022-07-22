@@ -17,6 +17,9 @@ npm install --save-dev cross-env <ok>
 2. посмотреть что есть: команда ls
 3. обновить всё: команда sudo apt update
 
+4. удалить всё: 
+sudo rm -rf Williams-test
+
 --- установка программ:
 1. sudo apt install git (установка git)
 2. git --version (проверка, установлен ли git)
