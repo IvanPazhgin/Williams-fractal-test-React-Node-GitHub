@@ -1,4 +1,8 @@
 {
   "port": 5000,
-  "baseUrl": "http://localhost:5000"
+  "baseUrl": "http://localhost:5000",
+  "limitSeniorTrend": 1000,
+  "limitInTrend": 1000,
+  "API_KEY": "",
+  "API_SECRET": ""
 }

@@ -64,7 +64,7 @@ export const MainPage = () => {
   return (
     <>
       {/* Запрос пользователя */}
-      <h2>Тестер стратегии</h2>
+      <h2>Тестер стратегии RC 3.2</h2>
       <h3>фракталы Билла Вильямса</h3>
       <hr></hr>
       <form action="/" method="POST">
@@ -172,6 +172,7 @@ export const MainPage = () => {
             {data.statistics.drawdownPer} %, соответственно, потенциальное плечо
             = {data.statistics.multiplierMayBe})
           </div>
+          <p></p>
           <div>Всего сделок: {data.statistics.allDealsCount}, из которых:</div>
           <div>
             - кол-во положительных сделок: {data.statistics.countOfPositive}
@@ -179,6 +180,26 @@ export const MainPage = () => {
           <div>
             - кол-во отрицательных сделок: {data.statistics.countOfNegative}
           </div>
+          <p></p>
+          <div>
+            Так же рассчитывается потенциальная прибыль по убыточным сделкам,
+            которую можно было получить до выхода по stopLoss. Соответственно:
+          </div>
+          <div>Минимальная доходность = {data.statistics.minOfVMP}%</div>
+          <div>Максимальная доходность = {data.statistics.maxOfVMP}%</div>
+          <div>
+            Средняя доходность averageOfVMP = {data.statistics.averageOfVMP}%
+          </div>
+          <div>
+            Кол-во убыточных сделок, которые можно закрыть в TP выше
+            averageOfVMP = {data.statistics.countMoreAverageOfVMP}
+          </div>
+          <div>
+            Кол-во убыточных сделок, которые нельзя закрыть в TP выше
+            averageOfVMP = {data.statistics.countLessAverageOfVMP}
+          </div>
+          <div>Это хороший повод задуматься!..</div>
+          <p></p>
 
           <div>
             Время работы приложения: {data.statistics.diffInSecond} секунд(ы)
@@ -366,6 +387,10 @@ export const MainPage = () => {
       <p>Спасибо!</p>
       <p>
         <b>Доработки:</b>
+        <br />
+        <b>Release candidate 3.2</b>:
+        <br /> - Добавлена статистика по сокращению убыточных сделок
+        <br /> - Разделил функции приложения по отдельным файлам
         <br />
         <b>Release candidate 3.1</b>:
         <br /> - исправлен расчет ROI

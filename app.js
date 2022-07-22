@@ -3,11 +3,7 @@
 const express = require('express')
 const config = require('config')
 const path = require('path')
-const {
-  startProgram2,
-  findTrends,
-  diffCandle,
-} = require('./engineByWilliamFractals')
+const { startProgram2 } = require('./expert_advisers/Williams_fractal/main')
 
 const app = express()
 
@@ -43,7 +39,7 @@ start()
 
 app.post('/', async function (req, res) {
   console.log('прилетел запрос на сервер:')
-  console.log(req.body)
+  console.table(req.body)
   // diffCandle(req.body.dateStart, req.body.dateFinish, req.body.seniorTimeFrame)
   //startProgram2(req.body.symbol, req.body.seniorTimeFrame, req.body.lowerTimeFrame)
   //res.send('ok')
