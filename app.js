@@ -3,7 +3,10 @@
 const express = require('express')
 const config = require('config')
 const path = require('path')
-const { startProgram2 } = require('./expert_advisers/Williams_fractal/main')
+const {
+  startWilliams,
+} = require('./expert_advisers/Williams_fractal/mainWilliams')
+const startAlex = require('./expert_advisers/Alex/mainAlex')
 
 const app = express()
 
@@ -38,13 +41,13 @@ async function start() {
 start()
 
 app.post('/', async function (req, res) {
-  console.log('прилетел запрос на сервер:')
+  console.log('Williams: прилетел запрос на сервер:')
   console.table(req.body)
   // diffCandle(req.body.dateStart, req.body.dateFinish, req.body.seniorTimeFrame)
   //startProgram2(req.body.symbol, req.body.seniorTimeFrame, req.body.lowerTimeFrame)
   //res.send('ok')
 
-  const result = await startProgram2(
+  const result = await startWilliams(
     req.body.symbol,
     req.body.seniorTimeFrame,
     req.body.lowerTimeFrame,
@@ -57,6 +60,22 @@ app.post('/', async function (req, res) {
   res.json(result)
 
   // console.log(typeof Number(req.body.limitSeniorTrend))
+})
+
+app.post('/alexPage', async function (req, res) {
+  console.log('Alex: прилетел запрос на сервер:')
+  console.table(req.body)
+
+  const result = await startAlex(
+    req.body.symbol,
+    req.body.TimeFrame,
+    req.body.dateStart,
+    req.body.dateFinish,
+    req.body.deposit,
+    req.body.partOfDeposit,
+    req.body.multiplier
+  )
+  res.json(result)
 })
 
 // попытка прикрутить обработку POST запроса в express

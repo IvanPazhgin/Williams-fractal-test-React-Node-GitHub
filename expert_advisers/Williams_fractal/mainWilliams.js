@@ -9,9 +9,9 @@ const getCandles = require('./getCandles')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
 
-module.exports = { startProgram2 }
+module.exports = { startWilliams }
 
-async function startProgram2(
+async function startWilliams(
   symbol,
   seniorTimeFrame,
   lowerTimeFrame,
