@@ -412,6 +412,9 @@ function trade(array, trend, index, deposit, partOfDeposit, multiplier) {
 
   console.log('РЕАЛЬНЫЕ сделки внутри функции trade:')
   console.table(dealsReal)
+  console.log(
+    `кол-во сделок внутри тренда = ${dealsReal.length} штук (внутри функции trade)`
+  )
 
   // подсчет прибыли внутри тренда по dealsClass
   /*
@@ -424,7 +427,7 @@ function trade(array, trend, index, deposit, partOfDeposit, multiplier) {
   let summProfit = 0
   if (dealsReal.length == 1) {
     summProfit = dealsReal[0].deposit - Number(deposit)
-  } else {
+  } else if (dealsReal.length > 1) {
     summProfit = dealsReal[dealsReal.length - 1].deposit - Number(deposit)
     console.log(
       `прибыль внутри тренда = ${+summProfit.toFixed(

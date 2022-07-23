@@ -1,8 +1,10 @@
-const { USDMClient } = require('binance')
+// const { USDMClient } = require('binance')
 const trade = require('./trade')
 const config = require('config')
 const candlesToObject = require('./candlesToObject')
 const timestampToDateHuman = require('./timestampToDateHuman')
+const getCandles = require('./getCandles')
+
 const limitInTrend = config.get('limitInTrend') || 1000
 
 async function getTrendsAsync(
@@ -14,6 +16,7 @@ async function getTrendsAsync(
   partOfDeposit,
   multiplier
 ) {
+  /*
   const API_KEY = config.get('API_KEY') || ''
   const API_SECRET = config.get('API_SECRET') || ''
 
@@ -21,6 +24,7 @@ async function getTrendsAsync(
     api_key: API_KEY,
     api_secret: API_SECRET,
   })
+  */
 
   let dealsGlobal = [] // собирает все сделки
   let dealsGlobal2 = [] // собирает массивы сделок по трендам
@@ -40,6 +44,7 @@ async function getTrendsAsync(
       // берем все тренды, кроме последнего
       try {
         // const candlesJunior = await client.getKlines({ symbol: symbol, interval: lowerTimeFrame, startTime: array[i].priceTimeStamp, endTime: (array[i+1].priceTimeStamp + oneHourStamp), limit: 1000})
+        /*
         const candlesJunior = await client.getKlines({
           symbol: symbol,
           interval: lowerTimeFrame,
@@ -47,6 +52,16 @@ async function getTrendsAsync(
           endTime: array[i + 1].priceTimeStamp,
           limit: limitInTrend,
         })
+        */
+
+        const candlesJunior = await getCandles(
+          symbol,
+          lowerTimeFrame,
+          array[i].priceTimeStamp,
+          array[i + 1].priceTimeStamp,
+          limitInTrend
+        )
+
         const objectJunior = candlesToObject(candlesJunior)
         console.log('')
         console.log(`обработка данных ${i}-го тренда...`)
@@ -103,6 +118,16 @@ async function getTrendsAsync(
       )
       */
       try {
+        console.log('')
+        console.log(`обработка данных ${i}-го тренда из ${array.length - 1}...`)
+        console.log(
+          `Начало тренда: ${timestampToDateHuman(
+            array[i].priceTimeStamp
+          )}, заверщение тренда: ${timestampToDateHuman(
+            Date.parse(dateFinish)
+          )}`
+        )
+        /*
         const candlesJunior = await client.getKlines({
           symbol: symbol,
           interval: lowerTimeFrame,
@@ -110,18 +135,19 @@ async function getTrendsAsync(
           endTime: Date.parse(dateFinish),
           limit: limitInTrend,
         })
+        */
+
+        const candlesJunior = await getCandles(
+          symbol,
+          lowerTimeFrame,
+          array[i].priceTimeStamp,
+          Date.parse(dateFinish),
+          limitInTrend
+        )
+
         const objectJunior = candlesToObject(candlesJunior)
-        console.log('')
-        console.log(`обработка данных ${i}-го тренда из ${array.length - 1}...`)
         console.log(
           `Длина ${i} тренда составляет ${objectJunior.length} свечей`
-        )
-        console.log(
-          `Начало тренда: ${timestampToDateHuman(
-            array[i].priceTimeStamp
-          )}, заверщение тренда: ${timestampToDateHuman(
-            Date.parse(dateFinish)
-          )}`
         )
 
         // вычисляем самый длинный массив младшего ТФ
@@ -154,7 +180,7 @@ async function getTrendsAsync(
     maxOfTrend,
     statInTredn,
     dealsGlobal2,
-    depositTemp,
+    //depositTemp,
     dealsGlobalReal,
     dealsGlobalReal2,
   ]

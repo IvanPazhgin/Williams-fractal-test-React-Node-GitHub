@@ -1,4 +1,3 @@
-const { USDMClient } = require('binance')
 const config = require('config')
 const diffCandle = require('./diffCandle')
 const candlesToObject = require('./candlesToObject')
@@ -6,14 +5,7 @@ const findTrends = require('./findTrends')
 const getTrendsAsync = require('./getTrends')
 const timestampToDateHuman = require('./timestampToDateHuman')
 const printGlobalProfit = require('./printGlobalProfit')
-
-const API_KEY = config.get('API_KEY') || ''
-const API_SECRET = config.get('API_SECRET') || ''
-
-const client = new USDMClient({
-  api_key: API_KEY,
-  api_secret: API_SECRET,
-})
+const getCandles = require('./getCandles')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
 
@@ -35,17 +27,18 @@ async function startProgram2(
   }
 
   const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, seniorTimeFrame)
+  // let candlesSenior = []
   let candlesSeniorFull = []
 
   try {
     for (let i = 0; i < arrayOf1kPeriod.length; i++) {
-      const candlesSenior = await client.getKlines({
-        symbol: symbol,
-        interval: seniorTimeFrame,
-        startTime: arrayOf1kPeriod[i].dateFirst,
-        endTime: arrayOf1kPeriod[i].dateSecond,
-        limit: limitSeniorTrend,
-      })
+      const candlesSenior = await getCandles(
+        symbol,
+        seniorTimeFrame,
+        arrayOf1kPeriod[i].dateFirst,
+        arrayOf1kPeriod[i].dateSecond,
+        limitSeniorTrend
+      )
       candlesSeniorFull = candlesSeniorFull.concat(candlesSenior)
     }
 
@@ -57,7 +50,7 @@ async function startProgram2(
       maxOfTrend,
       statInTredn,
       allDeals2,
-      depositTemp, // итоговый депозит после трейдинга на исторических данных
+      //depositTemp, // итоговый депозит после трейдинга на исторических данных
       allDealsReal,
       allDealsReal2,
     ] = await getTrendsAsync(
