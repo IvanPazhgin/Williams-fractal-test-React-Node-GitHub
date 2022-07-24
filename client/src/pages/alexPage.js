@@ -17,6 +17,7 @@ export const AlexPage = () => {
     partOfDeposit: '',
     multiplier: '',
     diffVolume: '',
+    takeProfit: '',
   })
 
   // обработка ошибок на клиенте
@@ -48,7 +49,7 @@ export const AlexPage = () => {
   return (
     <>
       <div>
-        <h2>Тест стратегии Алекса. RC 1.0</h2>
+        <h2>Тест стратегии Алекса. RC 1.2</h2>
       </div>
       <hr></hr>
       {/* Запрос пользователя */}
@@ -97,7 +98,8 @@ export const AlexPage = () => {
         <div class="input-field">
           <input type="text" name="partOfDeposit" onChange={changeHandler} />
           <label>
-            Введите % от депозита для работы: от 0.01 до 1. Например: 0.25
+            Введите % от депозита для работы: от 0.01 до 1 (через точку).
+            Например: 0.25
           </label>
         </div>
 
@@ -108,7 +110,14 @@ export const AlexPage = () => {
 
         <div class="input-field">
           <input type="text" name="diffVolume" onChange={changeHandler} />
-          <label>Отсекать сделки при разнице в объемах (%). Например: 50</label>
+          <label>
+            Отсекать сделки при разнице в объемах (считаем в %). Например: 50
+          </label>
+        </div>
+
+        <div class="input-field">
+          <input type="text" name="takeProfit" onChange={changeHandler} />
+          <label>Введите размер ручного Take Profit (%). Например: 3</label>
         </div>
 
         <h6>
@@ -127,8 +136,11 @@ export const AlexPage = () => {
       </form>
 
       <hr></hr>
-      {/*таблица всех сделок*/}
-      <h4>Таблица всех сделок</h4>
+      <div>
+        <b>Время запуска скрипта: {data.startProgramAt}</b>
+      </div>
+      {/*таблица всех сделок № 1*/}
+      <h4>Стратегия №1: Таблица всех сделок</h4>
       <div>
         <table>
           <tr>
@@ -167,6 +179,49 @@ export const AlexPage = () => {
                 <td>{deal.diffVolume}</td>
                 <td>{deal.volumeGreen}</td>
                 <td>{deal.volumeRed}</td>
+                <td>{deal.takeProfit}</td>
+                <td>{deal.stopLoss}</td>
+              </tr>
+            ))}
+        </table>
+      </div>
+
+      <hr></hr>
+
+      {/*таблица всех сделок № 1*/}
+      <h4>Стратегия №2: Таблица всех сделок</h4>
+      <div>
+        <table>
+          <tr>
+            <td>№</td>
+            <td>Открываем</td>
+            <td>Цена входа</td>
+            <td>Время входа</td>
+            <td>Объем сделки</td>
+            <td>Закрываем</td>
+            <td>Цена выхода</td>
+            <td>Время выхода</td>
+            <td>Прибыль / Убыток</td>
+            <td>в процентах</td>
+            <td>Депозит</td>
+            <td>Take Profit</td>
+            <td>Stop Loss</td>
+          </tr>
+          {data &&
+            data.deals2 &&
+            data.deals2.map((deal, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>{deal.openPosition}</td>
+                <td>{deal.openPrice}</td>
+                <td>{deal.openTime}</td>
+                <td>{deal.amountOfPosition}</td>
+                <td>{deal.closePosition}</td>
+                <td>{deal.closePrice}</td>
+                <td>{deal.closeTime}</td>
+                <td>{deal.profit}</td>
+                <td>{deal.percent}</td>
+                <td>{deal.deposit}</td>
                 <td>{deal.takeProfit}</td>
                 <td>{deal.stopLoss}</td>
               </tr>

@@ -1,3 +1,5 @@
 unfiusdt
 xemusdt
 crvusdt
+imxusdt
+manausdt

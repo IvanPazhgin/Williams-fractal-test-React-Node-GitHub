@@ -1,9 +1,23 @@
 const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
 
-const takeProfitConst = 0.021 // вынести в config
+// const takeProfitConst = 0.021 // вынести в config
 const stopLossConst = 0.02
 
-function tradeAlex(array, deposit, partOfDeposit, multiplier, diffVolumeUser) {
+/* VERSION 2. Изменения:
++ пятая свеча красная
++ входим на 6й свече по уровню close 5й
+
++ TP и SL переносим на 6й свече на уровень входа
+*/
+
+function tradeAlex1(
+  array,
+  deposit,
+  partOfDeposit,
+  multiplier,
+  diffVolumeUser,
+  takeProfitConst
+) {
   let positionDown = 0 // цена входа в шорт
   let positionTime = 0 // дата и время входа в позицию
 
@@ -20,33 +34,39 @@ function tradeAlex(array, deposit, partOfDeposit, multiplier, diffVolumeUser) {
   let depositTemp = Number(deposit)
 
   let profit = 0
+  let percent = 0
 
   let diffVolume = 0
 
   let volumeRed = 0 // для проверки условия разницы объема между свечками
   let volumeGreen = 0 // для проверки условия разницы объема между свечками
 
-  for (let i = 4; i < array.length; i++) {
+  let indexOfPostion = 0
+
+  // первая стратегия
+  for (let i = 5; i < array.length; i++) {
     // поиск условия для входа в short
     if (!inShortPosition) {
       if (
-        array[i - 4].openPrice < array[i - 4].closePrice && // первая - зелена
-        array[i - 3].openPrice < array[i - 3].closePrice && // вторая - зеленая
-        array[i - 2].openPrice > array[i - 2].closePrice && // третья - красная (по факту первая красная)
-        array[i - 2].volume > array[i - 3].volume && // объем на красной больше объема на зеленой
+        array[i - 5].openPrice < array[i - 5].closePrice && // первая - зелена
+        array[i - 4].openPrice < array[i - 4].closePrice && // вторая - зеленая
+        array[i - 3].openPrice > array[i - 3].closePrice && // третья - красная (по факту первая красная)
+        array[i - 3].volume > array[i - 4].volume && // объем на красной больше объема на зеленой
         // решить вопрос пропорции volume
-        array[i - 1].closePrice < array[i - 1].openPrice && // четвертая - красная (по факту вторая красная)
-        array[i].highPrice >= array[i - 1].openPrice // условие входа в short
+        array[i - 2].closePrice < array[i - 2].openPrice && // четвертая - красная (по факту вторая красная) -- УБРАТЬ на 2й стратегии
+        array[i - 1].closePrice < array[i - 1].openPrice && // пятая свеча красная
+        array[i].highPrice >= array[i - 1].closePrice // условие входа в short
       ) {
-        diffVolume = (array[i - 2].volume / array[i - 3].volume - 1) * 100
+        diffVolume = (array[i - 3].volume / array[i - 4].volume - 1) * 100
         if (diffVolume >= Number(diffVolumeUser)) {
           // если разница volume > пользовательского параметра
           // входим в шорт
-          positionDown = array[i - 1].openPrice // входим в сделку на уровне цены открытия предыдущей свечи
+          positionDown = array[i - 1].closePrice // входим в сделку на уровне цены открытия предыдущей свечи
           takeProfit = positionDown * (1 - takeProfitConst)
           stopLoss = positionDown * (1 + stopLossConst)
           positionTime = array[i].openTime
           inShortPosition = true
+          indexOfPostion = i
 
           // до входа в сделку считаем объем сделки
           amountOfPosition = +(
@@ -70,6 +90,7 @@ function tradeAlex(array, deposit, partOfDeposit, multiplier, diffVolumeUser) {
       // условия выхода из сделки
       if (array[i].lowPrice <= takeProfit) {
         profit = (positionDown - takeProfit) * amountOfPosition
+        percent = +((profit / depositTemp) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
         depositTemp += profit
 
         deals[numberOfPosition] = {
@@ -79,16 +100,16 @@ function tradeAlex(array, deposit, partOfDeposit, multiplier, diffVolumeUser) {
           openTime: timestampToDateHuman(positionTime),
           amountOfPosition: amountOfPosition,
           closePosition: 'Buy',
-          closePrice: takeProfit,
+          closePrice: +takeProfit.toFixed(8),
           closeTime: timestampToDateHuman(array[i].openTime),
           profit: +profit.toFixed(2),
-          percent: +((profit / depositTemp) * 100).toFixed(2),
+          percent: percent,
           deposit: +depositTemp.toFixed(2),
           diffVolume: +diffVolume.toFixed(2), // для проверки движка
           volumeGreen: volumeGreen, // для проверки движка
           volumeRed: volumeRed, // для проверки движка
           takeProfit: takeProfit, // для проверки движка
-          stopLoss: stopLoss, // для проверки движка
+          stopLoss: +stopLoss.toFixed(8), // для проверки движка
         }
         // allDeals = allDeals.concat(deals)
         numberOfPosition += 1
@@ -101,10 +122,12 @@ function tradeAlex(array, deposit, partOfDeposit, multiplier, diffVolumeUser) {
         inShortPosition = false
         amountOfPosition = 0
         profit = 0
+        percent = 0
       } // отработка выхода из сделки по TP
       // далее, если цена пробила SL
       else if (array[i].highPrice >= stopLoss) {
         profit = (positionDown - stopLoss) * amountOfPosition
+        percent = +((profit / depositTemp) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
         depositTemp += profit
 
         deals[numberOfPosition] = {
@@ -114,16 +137,16 @@ function tradeAlex(array, deposit, partOfDeposit, multiplier, diffVolumeUser) {
           openTime: timestampToDateHuman(positionTime),
           amountOfPosition: amountOfPosition,
           closePosition: 'Buy',
-          closePrice: stopLoss,
+          closePrice: +stopLoss.toFixed(8),
           closeTime: timestampToDateHuman(array[i].openTime),
           profit: +profit.toFixed(2),
-          percent: +((profit / depositTemp) * 100).toFixed(2),
+          percent: percent,
           deposit: +depositTemp.toFixed(2),
           diffVolume: +diffVolume.toFixed(2), // для проверки движка
           volumeGreen: volumeGreen, // для проверки движка
           volumeRed: volumeRed, // для проверки движка
           takeProfit: takeProfit, // для проверки движка
-          stopLoss: stopLoss, // для проверки движка
+          stopLoss: +stopLoss.toFixed(8), // для проверки движка
         }
         //allDeals = allDeals.concat(deals)
         numberOfPosition += 1
@@ -136,27 +159,35 @@ function tradeAlex(array, deposit, partOfDeposit, multiplier, diffVolumeUser) {
         inShortPosition = false
         amountOfPosition = 0
         profit = 0
+        percent = 0
       } // отработка выхода из сделки по SL
 
-      // условие изменения TP и SL
+      // условие изменения SL
+      if (i == indexOfPostion + 6) {
+        stopLoss = positionDown
+        takeProfit = positionDown
+      }
+
+      /*
+      // условие изменения TP
       if (
         array[i].closePrice > array[i].lowPrice && //если появилась зеленая свеча
-        // ниже: если рынок пошел против позиции и мы вариативно находимся в убытке, то ...
-        array[i].closePrice > positionDown
+        array[i].closePrice > positionDown // если рынок пошел против позиции и мы вариативно находимся в убытке, то ...
       ) {
         takeProfit = positionDown
       }
 
-      // сдвигаем SL
+      // условие изменения SL
       if (array[i].closePrice < positionDown) {
         stopLoss = positionDown
       }
+      */
     } // if (inShortPosition)
   } // for (let i = 4; i < array.length; i++)
   return deals
 }
 
-module.exports = tradeAlex
+module.exports = tradeAlex1
 
 /*
 

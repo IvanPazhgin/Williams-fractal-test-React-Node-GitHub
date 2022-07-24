@@ -2,7 +2,9 @@ const config = require('config')
 const candlesToObject = require('../Alex/candlesToObject')
 const diffCandle = require('../Williams_fractal/diffCandle')
 const getCandles = require('../Williams_fractal/getCandles')
-const tradeAlex = require('./tradeAlex')
+const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
+const tradeAlex1 = require('./tradeAlex1')
+const tradeAlex2 = require('./tradeAlex2')
 // const bookTickerFunc = require('./bookOfSymbol')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
@@ -15,10 +17,11 @@ async function startAlex(
   deposit,
   partOfDeposit,
   multiplier,
-  diffVolumeUser
+  diffVolumeUser,
+  takeProfit
 ) {
   // const bookOfSymbol = bookTickerFunc()
-  const startProgramAt = new Date().getTime() // для расчета времени работы приложения
+  const startProgramAt = timestampToDateHuman(new Date().getTime()) // для расчета времени работы приложения
 
   const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, TimeFrame)
   let candlesSeniorFull = []
@@ -36,16 +39,26 @@ async function startAlex(
     }
 
     const objectSenior = candlesToObject(candlesSeniorFull)
-    const deals = tradeAlex(
+    const deals = tradeAlex1(
       objectSenior,
       deposit,
       partOfDeposit,
       multiplier,
-      diffVolumeUser
+      diffVolumeUser,
+      takeProfit
     )
+
+    const deals2 = tradeAlex2(
+      objectSenior,
+      deposit,
+      partOfDeposit,
+      multiplier,
+      takeProfit
+    )
+
     console.log(`программа завершена (ОК)`)
 
-    return { deals }
+    return { deals, deals2, startProgramAt }
   } catch (err) {
     console.error('get Account Trade List error: ', err)
   }
