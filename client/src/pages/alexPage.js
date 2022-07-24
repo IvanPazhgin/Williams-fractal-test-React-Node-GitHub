@@ -49,7 +49,7 @@ export const AlexPage = () => {
   return (
     <>
       <div>
-        <h2>Тест стратегии Алекса. RC 1.2</h2>
+        <h2>Тест стратегии Алекса. RC 1.3</h2>
       </div>
       <hr></hr>
       {/* Запрос пользователя */}
@@ -140,7 +140,7 @@ export const AlexPage = () => {
         <b>Время запуска скрипта: {data.startProgramAt}</b>
       </div>
       {/*таблица всех сделок № 1*/}
-      <h4>Стратегия №1: Таблица всех сделок</h4>
+      <h4>Стратегия №1: "три красных". Таблица всех сделок:</h4>
       <div>
         <table>
           <tr>
@@ -162,8 +162,8 @@ export const AlexPage = () => {
             <td>Stop Loss</td>
           </tr>
           {data &&
-            data.deals &&
-            data.deals.map((deal, i) => (
+            data.deals1 &&
+            data.deals1.map((deal, i) => (
               <tr>
                 <td>{i + 1}</td>
                 <td>{deal.openPosition}</td>
@@ -188,8 +188,8 @@ export const AlexPage = () => {
 
       <hr></hr>
 
-      {/*таблица всех сделок № 1*/}
-      <h4>Стратегия №2: Таблица всех сделок</h4>
+      {/*таблица всех сделок № 2*/}
+      <h4>Стратегия №2: "требуются доработки". Таблица всех сделок:</h4>
       <div>
         <table>
           <tr>
@@ -210,6 +210,49 @@ export const AlexPage = () => {
           {data &&
             data.deals2 &&
             data.deals2.map((deal, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>{deal.openPosition}</td>
+                <td>{deal.openPrice}</td>
+                <td>{deal.openTime}</td>
+                <td>{deal.amountOfPosition}</td>
+                <td>{deal.closePosition}</td>
+                <td>{deal.closePrice}</td>
+                <td>{deal.closeTime}</td>
+                <td>{deal.profit}</td>
+                <td>{deal.percent}</td>
+                <td>{deal.deposit}</td>
+                <td>{deal.takeProfit}</td>
+                <td>{deal.stopLoss}</td>
+              </tr>
+            ))}
+        </table>
+      </div>
+
+      <hr></hr>
+
+      {/*таблица всех сделок № 3*/}
+      <h4>Стратегия №3: "без теневая". Таблица всех сделок:</h4>
+      <div>
+        <table>
+          <tr>
+            <td>№</td>
+            <td>Открываем</td>
+            <td>Цена входа</td>
+            <td>Время входа</td>
+            <td>Объем сделки</td>
+            <td>Закрываем</td>
+            <td>Цена выхода</td>
+            <td>Время выхода</td>
+            <td>Прибыль / Убыток</td>
+            <td>в процентах</td>
+            <td>Депозит</td>
+            <td>Take Profit</td>
+            <td>Stop Loss</td>
+          </tr>
+          {data &&
+            data.deals3 &&
+            data.deals3.map((deal, i) => (
               <tr>
                 <td>{i + 1}</td>
                 <td>{deal.openPosition}</td>
