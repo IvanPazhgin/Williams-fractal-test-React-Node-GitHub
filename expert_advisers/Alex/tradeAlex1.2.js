@@ -3,11 +3,12 @@ const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
 // const takeProfitConst = 0.021 // вынести в config
 const stopLossConst = 0.02
 
-/* VERSION 2. Изменения:
-+ пятая свеча красная
-+ входим на 6й свече по уровню close 5й
-
-+ TP и SL переносим на 6й свече на уровень входа
+// name: три красных
+/* VERSION 1.2 
+Изменения:
+пятая свеча красная
+входим на 6й свече по уровню close 5й
+TP и SL переносим на 6й свече на уровень входа
 */
 
 function tradeAlex1(
@@ -53,7 +54,7 @@ function tradeAlex1(
         array[i - 3].openPrice > array[i - 3].closePrice && // третья - красная (по факту первая красная)
         array[i - 3].volume > array[i - 4].volume && // объем на красной больше объема на зеленой
         // решить вопрос пропорции volume
-        array[i - 2].closePrice < array[i - 2].openPrice && // четвертая - красная (по факту вторая красная) -- УБРАТЬ на 2й стратегии
+        array[i - 2].closePrice < array[i - 2].openPrice && // четвертая - красная (по факту вторая красная)
         array[i - 1].closePrice < array[i - 1].openPrice && // пятая свеча красная
         array[i].highPrice >= array[i - 1].closePrice // условие входа в short
       ) {

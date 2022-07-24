@@ -3,7 +3,7 @@ const candlesToObject = require('../Alex/candlesToObject')
 const diffCandle = require('../Williams_fractal/diffCandle')
 const getCandles = require('../Williams_fractal/getCandles')
 const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
-const tradeAlex1 = require('./tradeAlex1')
+const tradeAlex1 = require('./tradeAlex1.3')
 const tradeAlex2 = require('./tradeAlex2')
 // const bookTickerFunc = require('./bookOfSymbol')
 
