@@ -59,3 +59,6 @@ https://techviewleo.com/how-to-install-node-js-18-lts-on-ubuntu/
 21. pm2 start npm -- start
 --- остановить процесс
 22. pm2 stop 0
+
+--- при обновлении резила необходимо удалить процесс
+23. pm2 delete 0

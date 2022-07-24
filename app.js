@@ -73,7 +73,8 @@ app.post('/alexPage', async function (req, res) {
     req.body.dateFinish,
     req.body.deposit,
     req.body.partOfDeposit,
-    req.body.multiplier
+    req.body.multiplier,
+    req.body.diffVolume
   )
   res.json(result)
 })

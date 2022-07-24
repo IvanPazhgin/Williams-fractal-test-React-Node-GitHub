@@ -3,7 +3,7 @@ const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
 const takeProfitConst = 0.021 // вынести в config
 const stopLossConst = 0.02
 
-function tradeAlex(array, deposit, partOfDeposit, multiplier) {
+function tradeAlex(array, deposit, partOfDeposit, multiplier, diffVolumeUser) {
   let positionDown = 0 // цена входа в шорт
   let positionTime = 0 // дата и время входа в позицию
 
@@ -38,27 +38,31 @@ function tradeAlex(array, deposit, partOfDeposit, multiplier) {
         array[i - 1].closePrice < array[i - 1].openPrice && // четвертая - красная (по факту вторая красная)
         array[i].highPrice >= array[i - 1].openPrice // условие входа в short
       ) {
-        // входим в шорт
-        positionDown = array[i - 1].openPrice
-        takeProfit = positionDown * (1 - takeProfitConst)
-        stopLoss = positionDown * (1 + stopLossConst)
-        positionTime = array[i].openTime
-        inShortPosition = true
         diffVolume = (array[i - 2].volume / array[i - 3].volume - 1) * 100
-        // до входа в сделку считаем объем сделки
-        amountOfPosition = +(
-          (depositTemp / positionDown) *
-          partOfDeposit *
-          multiplier
-        ).toFixed(8)
+        if (diffVolume >= Number(diffVolumeUser)) {
+          // если разница volume > пользовательского параметра
+          // входим в шорт
+          positionDown = array[i - 1].openPrice // входим в сделку на уровне цены открытия предыдущей свечи
+          takeProfit = positionDown * (1 - takeProfitConst)
+          stopLoss = positionDown * (1 + stopLossConst)
+          positionTime = array[i].openTime
+          inShortPosition = true
 
-        // проверки значений volume в console.log
-        volumeRed = array[i - 2].volume
-        volumeGreen = array[i - 3].volume
-        console.log(`найдено условие для входа в short`)
-        console.log(`volume Green Candle = ${volumeGreen}`)
-        console.log(`volume Red Candle = ${volumeRed}`)
-        console.log(`разница diffVolume = ${+diffVolume.toFixed(2)}%`)
+          // до входа в сделку считаем объем сделки
+          amountOfPosition = +(
+            (depositTemp / positionDown) *
+            partOfDeposit *
+            multiplier
+          ).toFixed(8)
+
+          // проверки значений volume в console.log
+          volumeRed = array[i - 2].volume
+          volumeGreen = array[i - 3].volume
+          // console.log(`найдено условие для входа в short`)
+          // console.log(`volume Green Candle = ${volumeGreen}`)
+          // console.log(`volume Red Candle = ${volumeRed}`)
+          // console.log(`разница diffVolume = ${+diffVolume.toFixed(2)}%`)
+        }
       } // отработали условия входа в сделку
     } // if (!inShortPosition)
 
@@ -78,7 +82,7 @@ function tradeAlex(array, deposit, partOfDeposit, multiplier) {
           closePrice: takeProfit,
           closeTime: timestampToDateHuman(array[i].openTime),
           profit: +profit.toFixed(2),
-          percent: +((profit / positionDown) * 100).toFixed(2),
+          percent: +((profit / depositTemp) * 100).toFixed(2),
           deposit: +depositTemp.toFixed(2),
           diffVolume: +diffVolume.toFixed(2), // для проверки движка
           volumeGreen: volumeGreen, // для проверки движка
@@ -113,7 +117,7 @@ function tradeAlex(array, deposit, partOfDeposit, multiplier) {
           closePrice: stopLoss,
           closeTime: timestampToDateHuman(array[i].openTime),
           profit: +profit.toFixed(2),
-          percent: +((profit / positionDown) * 100).toFixed(2),
+          percent: +((profit / depositTemp) * 100).toFixed(2),
           deposit: +depositTemp.toFixed(2),
           diffVolume: +diffVolume.toFixed(2), // для проверки движка
           volumeGreen: volumeGreen, // для проверки движка

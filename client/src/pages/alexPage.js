@@ -16,6 +16,7 @@ export const AlexPage = () => {
     deposit: '',
     partOfDeposit: '',
     multiplier: '',
+    diffVolume: '',
   })
 
   // обработка ошибок на клиенте
@@ -103,6 +104,11 @@ export const AlexPage = () => {
         <div class="input-field">
           <input type="text" name="multiplier" onChange={changeHandler} />
           <label>Введите плечо: от 1 до 20. Например: 10</label>
+        </div>
+
+        <div class="input-field">
+          <input type="text" name="diffVolume" onChange={changeHandler} />
+          <label>Отсекать сделки при разнице в объемах (%). Например: 50</label>
         </div>
 
         <h6>

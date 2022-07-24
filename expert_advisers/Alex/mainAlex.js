@@ -14,7 +14,8 @@ async function startAlex(
   dateFinish,
   deposit,
   partOfDeposit,
-  multiplier
+  multiplier,
+  diffVolumeUser
 ) {
   // const bookOfSymbol = bookTickerFunc()
   const startProgramAt = new Date().getTime() // для расчета времени работы приложения
@@ -35,7 +36,14 @@ async function startAlex(
     }
 
     const objectSenior = candlesToObject(candlesSeniorFull)
-    const deals = tradeAlex(objectSenior, deposit, partOfDeposit, multiplier)
+    const deals = tradeAlex(
+      objectSenior,
+      deposit,
+      partOfDeposit,
+      multiplier,
+      diffVolumeUser
+    )
+    console.log(`программа завершена (ОК)`)
 
     return { deals }
   } catch (err) {
