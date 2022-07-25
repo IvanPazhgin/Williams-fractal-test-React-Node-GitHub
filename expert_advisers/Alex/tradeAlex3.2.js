@@ -34,7 +34,7 @@ function tradeAlex3(
 
   let indexOfPostion = 0 // сохраняем № свечки точки входа для дальнейшего изменения SL
 
-  let control = [] // для проверочных данных
+  let control3 = [] // для проверочных данных
 
   let bodyOfRedCandle = 0 // тело красной свечи
   let bodyOfGreenCandle = 0 // тело зеленой свечи
@@ -48,6 +48,7 @@ function tradeAlex3(
       if (
         array[i - 2].closePrice > array[i - 2].openPrice && // 1 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 2 свеча красная
+        array[i - 1].openPrice == array[i - 1].highPrice && // у которой сверху нет тени
         bodyOfRedCandle < bodyOfGreenCandle // тело красной свечи меньше тела зеленой свечи
       ) {
         // входим в шорт
