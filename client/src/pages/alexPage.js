@@ -249,6 +249,7 @@ export const AlexPage = () => {
             <td>Депозит</td>
             <td>Take Profit</td>
             <td>Stop Loss</td>
+            <td>Время изменения TP/SL</td>
           </tr>
           {data &&
             data.deals3 &&
@@ -267,6 +268,7 @@ export const AlexPage = () => {
                 <td>{deal.deposit}</td>
                 <td>{deal.takeProfit}</td>
                 <td>{deal.stopLoss}</td>
+                <td>{deal.dateChangeTPSL}</td>
               </tr>
             ))}
         </table>

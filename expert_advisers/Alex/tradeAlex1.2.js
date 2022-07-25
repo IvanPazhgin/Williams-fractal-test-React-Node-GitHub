@@ -63,7 +63,7 @@ function tradeAlex1(
           // если разница volume > пользовательского параметра
           // входим в шорт
           positionDown = array[i - 1].closePrice // входим в сделку на уровне цены открытия предыдущей свечи
-          takeProfit = positionDown * (1 - takeProfitConst)
+          takeProfit = positionDown * (1 - takeProfitConst / 100)
           stopLoss = positionDown * (1 + stopLossConst)
           positionTime = array[i].openTime
           inShortPosition = true

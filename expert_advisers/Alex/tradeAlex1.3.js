@@ -79,7 +79,7 @@ function tradeAlex1(
         array[i].highPrice >= priceOf5Candle
       ) {
         positionDown = priceOf5Candle // входим в сделку на уровне цены пятой свечи из первого if
-        takeProfit = positionDown * (1 - takeProfitConst)
+        takeProfit = positionDown * (1 - takeProfitConst / 100)
         stopLoss = positionDown * (1 + stopLossConst)
         positionTime = array[i].openTime
         inShortPosition = true

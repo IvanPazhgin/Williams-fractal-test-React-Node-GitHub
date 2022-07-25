@@ -5,7 +5,7 @@ const getCandles = require('../Williams_fractal/getCandles')
 const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
 const tradeAlex1 = require('./tradeAlex1.3')
 const tradeAlex2 = require('./tradeAlex2')
-const tradeAlex3 = require('./tradeAlex3')
+const tradeAlex3 = require('./tradeAlex3.2')
 // const bookTickerFunc = require('./bookOfSymbol')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000

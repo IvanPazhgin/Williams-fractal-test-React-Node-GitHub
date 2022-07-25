@@ -6,6 +6,7 @@ const stopLossConst = 0.02
 
 // name: без теневая
 // VERSION 3.0
+// !!! в отчет добавил дату изменения SL и TP
 
 function tradeAlex3(
   array,
@@ -33,16 +34,24 @@ function tradeAlex3(
 
   let indexOfPostion = 0 // сохраняем № свечки точки входа для дальнейшего изменения SL
 
+  let control = [] // для проверочных данных
+
+  let bodyOfRedCandle = 0 // тело красной свечи
+  let bodyOfGreenCandle = 0 // тело зеленой свечи
+  let dateChangeTPSL = 0 // для фиксации даты изменения TP и SL
+
   for (let i = 2; i < array.length; i++) {
     // поиск условия для входа в short
     if (!inShortPosition) {
+      bodyOfGreenCandle = array[i - 2].closePrice - array[i - 2].openPrice
+      bodyOfRedCandle = array[i - 1].openPrice - array[i - 1].closePrice
       if (
-        // array[i - 2].highPrice < array[i - 1].highPrice && // цена тени зеленой свечи меньше цены тени красной свечи
-        array[i - 1].openPrice > array[i - 1].closePrice && // берем одну красную свечку
-        array[i - 1].openPrice == array[i - 1].highPrice // у которой сверху нет тени
+        array[i - 2].closePrice > array[i - 2].openPrice && // 1 свеча зелёная
+        array[i - 1].openPrice > array[i - 1].closePrice && // 2 свеча красная
+        bodyOfRedCandle < bodyOfGreenCandle // тело красной свечи меньше тела зеленой свечи
       ) {
         // входим в шорт
-        positionDown = array[i - 1].closePrice // входим в сделку на уровне цены закрытия предыдущей свечи
+        positionDown = array[i - 1].closePrice // Открытие сделки на 3 свече на точке закрытия 2 свечи
         takeProfit = positionDown * (1 - takeProfitConst / 100)
         stopLoss = positionDown * (1 + stopLossConst)
         positionTime = array[i].openTime
@@ -59,14 +68,16 @@ function tradeAlex3(
     } // if (!inShortPosition)
 
     if (inShortPosition) {
-      // условие изменения SL и TP: ставим только что то одно
-      if (i == indexOfPostion + 5) {
-        // проверяем на 5й свечке после входа
-        // после закрытия 4й свечки
+      // условие изменения SL и TP: (? ставим только что то одно)
+      if (i == indexOfPostion + 4) {
+        // проверяем на 4й свечке после входа
+        // после закрытия 3й свечки
         if (positionDown < array[i].closePrice) {
           takeProfit = positionDown // если сидим в минусе, то переносим TP
+          dateChangeTPSL = array[i].openTime // запоминаем время переноса TP или SL
         } else {
           stopLoss = positionDown /// если в плюcе, то переносим SL
+          dateChangeTPSL = array[i].openTime // запоминаем время переноса TP или SL
         }
       }
 
@@ -87,8 +98,9 @@ function tradeAlex3(
           profit: +profit.toFixed(2),
           percent: percent,
           deposit: +depositTemp.toFixed(2),
-          takeProfit: takeProfit, // для проверки движка
+          takeProfit: +takeProfit.toFixed(8), // для проверки движка
           stopLoss: +stopLoss.toFixed(8), // для проверки движка
+          dateChangeTPSL: timestampToDateHuman(dateChangeTPSL), // запоминаем время переноса TP или SL
         }
         numberOfPosition += 1
         positionDown = 0
@@ -118,8 +130,9 @@ function tradeAlex3(
           profit: +profit.toFixed(2),
           percent: percent,
           deposit: +depositTemp.toFixed(2),
-          takeProfit: takeProfit, // для проверки движка
+          takeProfit: +takeProfit.toFixed(8), // для проверки движка
           stopLoss: +stopLoss.toFixed(8), // для проверки движка
+          dateChangeTPSL: timestampToDateHuman(dateChangeTPSL), // запоминаем время переноса TP или SL
         }
         numberOfPosition += 1
         positionDown = 0
