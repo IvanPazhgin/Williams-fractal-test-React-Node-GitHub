@@ -2,19 +2,21 @@ const { isWsFormattedMarkPriceUpdateArray } = require('binance')
 const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
 
 // const takeProfitConst = 0.021 // вынести в config
-const stopLossConst = 0.02
+const stopLossConst = 0.03
 
 // name: без теневая
-// VERSION 3.0
-// !!! в отчет добавил дату изменения SL и TP
+// VERSION 3.3
+// добавили второе условие для входа. Открываем short если срабатывает хотя бы один из сигналов
+// при входе жесткие SL и TP
 
 function tradeAlex3(
   array,
   deposit,
   partOfDeposit,
   multiplier,
-  takeProfitConst
+  takeProfitConstUser
 ) {
+  const takeProfitConst = 4 // жесткий TP = 4%
   let positionDown = 0 // цена входа в шорт
   let positionTime = 0 // дата и время входа в позицию
 
@@ -36,28 +38,60 @@ function tradeAlex3(
 
   let control3 = [] // для проверочных данных
 
+  let canShort = false // есть ли сигнал для входа в шорт или нет
+
+  // для первого сигнала
   let bodyOfRedCandle = 0 // тело красной свечи
   let bodyOfGreenCandle = 0 // тело зеленой свечи
+
+  let conditionSL = 4 // кол-во свечей, в течение которых мы можем изменить SL
+  let diffSL = 0 // для расчета разницы lowPrice и точки входа => меняем SL
+
   let dateChangeTPSL = new Date().getTime() // для фиксации даты изменения TP и SL
 
-  for (let i = 2; i < array.length; i++) {
+  for (let i = 3; i < array.length; i++) {
+    // i = 3 для расчета второго условия
     // поиск условия для входа в short
     if (!inShortPosition) {
+      // расчет тела свечей
       bodyOfGreenCandle = array[i - 2].closePrice - array[i - 2].openPrice
       bodyOfRedCandle = array[i - 1].openPrice - array[i - 1].closePrice
       if (
-        array[i - 2].closePrice > array[i - 2].openPrice && // 1 свеча зелёная
-        array[i - 1].openPrice > array[i - 1].closePrice && // 2 свеча красная
+        // главное условие входа в шорт для обоих сигналов - красная свеча без тени
+        array[i - 1].openPrice > array[i - 1].closePrice && // 2 свеча красная (если бы: let i = 2)
         array[i - 1].openPrice == array[i - 1].highPrice && // у которой сверху нет тени
         bodyOfRedCandle < bodyOfGreenCandle // тело красной свечи меньше тела зеленой свечи
       ) {
+        // если выполняются общие условия
+        if (
+          // условие для первого сигнала
+          array[i - 2].closePrice > array[i - 2].openPrice && // 1 свеча зелёная (если бы: let i = 2)
+          array[i - 1].volume > array[i - 2].volume // vol красной > vol зеленой
+        ) {
+          canShort = true
+        } // первый сигнал: конец условия
+        else {
+          // второй сигнал
+          if (
+            array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
+            array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
+            array[i - 2].volume > array[i - 3].volume // vol 2й свечи > vol 1й свечи
+          ) {
+            canShort = true
+          }
+        } // второй сигнал: конец условия
+      } // главное условие входа в шорт для обоих сигналов - красная свеча без тени
+
+      if (canShort) {
         // входим в шорт
-        positionDown = array[i - 1].closePrice // Открытие сделки на 3 свече на точке закрытия 2 свечи
+        positionDown = array[i - 1].closePrice // Открытие сделки на 4 свече по цене закрытия 3 свечи
         takeProfit = positionDown * (1 - takeProfitConst / 100)
         stopLoss = positionDown * (1 + stopLossConst)
         positionTime = array[i].openTime
         inShortPosition = true
         indexOfPostion = i
+        canShort = false
+        conditionSL = 4 // кол-во свечей, в течение которых мы можем изменить SL
 
         // считаем объем сделки
         amountOfPosition = +(
@@ -69,17 +103,25 @@ function tradeAlex3(
     } // if (!inShortPosition)
 
     if (inShortPosition) {
-      // условие изменения SL и TP: (? ставим только что то одно)
-      if (i == indexOfPostion + 4) {
-        // проверяем на 4й свечке после входа
-        // после закрытия 3й свечки
-        if (positionDown < array[i].closePrice) {
-          takeProfit = positionDown // если сидим в минусе, то переносим TP
-          dateChangeTPSL = array[i].openTime // запоминаем время переноса TP или SL
-        } else {
-          stopLoss = positionDown /// если в плюcе, то переносим SL
-          dateChangeTPSL = array[i].openTime // запоминаем время переноса TP или SL
+      // на открытии 4й свече (точка входа) мы двигаем SL и TP
+
+      // условие изменения TP
+      // 1. если свеча без теневая
+      // 2. если после нее следующая зеленая, тогда переносим TP = точка входа (проверка 1 раз)
+      if (array[indexOfPostion].closePrice > array[indexOfPostion].openPrice) {
+        takeProfit = positionDown
+        dateChangeTPSL = array[i].openTime // запоминаем время переноса TP
+      }
+
+      // условие изменения SL
+      // если лой 4й свечи (точка входа) и всех последующих трех ниже точки входа на 1.5%, тогда SL = точки входа
+      if (conditionSL != 0) {
+        diffSL = (positionDown / array[i].lowPrice - 1) * 100
+        if (diffSL > 1.5) {
+          stopLoss = positionDown
+          dateChangeTPSL = array[i].openTime // запоминаем время переноса SL
         }
+        conditionSL--
       }
 
       // условия выхода из сделки
