@@ -124,7 +124,7 @@ function tradeAlex2(
           // diffVolume: +diffVolume.toFixed(2), // для проверки движка
           // volumeGreen: volumeGreen, // для проверки движка
           // volumeRed: volumeRed, // для проверки движка
-          takeProfit: takeProfit, // для проверки движка
+          takeProfit: +takeProfit.toFixed(8), // для проверки движка
           stopLoss: +stopLoss.toFixed(8), // для проверки движка
         }
         // allDeals = allDeals.concat(deals)
@@ -161,7 +161,7 @@ function tradeAlex2(
           // diffVolume: +diffVolume.toFixed(2), // для проверки движка
           // volumeGreen: volumeGreen, // для проверки движка
           // volumeRed: volumeRed, // для проверки движка
-          takeProfit: takeProfit, // для проверки движка
+          takeProfit: +takeProfit.toFixed(8), // для проверки движка
           stopLoss: +stopLoss.toFixed(8), // для проверки движка
         }
         //allDeals = allDeals.concat(deals)
