@@ -8,6 +8,12 @@ function timestampToDateHuman(arg) {
 
   let hours = String(bbb.getHours())
   let minutes = String(bbb.getMinutes())
+
+  const diff = new Date().getTimezoneOffset() // Возвращает разницу в минутах между UTC и местным часовым поясом
+  if (diff == 0) {
+    hours += 3
+  }
+
   if (hours.length == 1) {
     hours = '0' + hours
   }

@@ -33,16 +33,17 @@ function tradeAlex3(
 
   let indexOfPostion = 0 // сохраняем № свечки точки входа для дальнейшего изменения SL
 
-  for (let i = 1; i < array.length; i++) {
+  for (let i = 2; i < array.length; i++) {
     // поиск условия для входа в short
     if (!inShortPosition) {
       if (
+        // array[i - 2].highPrice < array[i - 1].highPrice && // цена тени зеленой свечи меньше цены тени красной свечи
         array[i - 1].openPrice > array[i - 1].closePrice && // берем одну красную свечку
         array[i - 1].openPrice == array[i - 1].highPrice // у которой сверху нет тени
       ) {
         // входим в шорт
         positionDown = array[i - 1].closePrice // входим в сделку на уровне цены закрытия предыдущей свечи
-        takeProfit = positionDown * (1 - takeProfitConst)
+        takeProfit = positionDown * (1 - takeProfitConst / 100)
         stopLoss = positionDown * (1 + stopLossConst)
         positionTime = array[i].openTime
         inShortPosition = true
