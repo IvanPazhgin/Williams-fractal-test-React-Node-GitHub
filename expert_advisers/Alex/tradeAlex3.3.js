@@ -1,8 +1,7 @@
-const { isWsFormattedMarkPriceUpdateArray } = require('binance')
 const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
 
 // const takeProfitConst = 0.021 // вынести в config
-const stopLossConst = 0.03
+//const stopLossConst = 0.03
 
 // name: без теневая
 // VERSION 3.3
@@ -14,9 +13,10 @@ function tradeAlex3(
   deposit,
   partOfDeposit,
   multiplier,
-  takeProfitConstUser
+  takeProfitConst,
+  stopLossConst
 ) {
-  const takeProfitConst = 4 // жесткий TP = 4%
+  // const takeProfitConst = 3 // жесткий TP = 4% для 2h, 3% для 15m
   let positionDown = 0 // цена входа в шорт
   let positionTime = 0 // дата и время входа в позицию
 
@@ -65,7 +65,8 @@ function tradeAlex3(
         // если выполняются общие условия
         if (
           // условие для первого сигнала
-          array[i - 2].closePrice > array[i - 2].openPrice && // 1 свеча зелёная (если бы: let i = 2)
+          array[i - 3].closePrice < array[i - 3].openPrice && // 1 свеча красная
+          array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
           array[i - 1].volume > array[i - 2].volume // vol красной > vol зеленой
         ) {
           canShort = true
@@ -86,11 +87,11 @@ function tradeAlex3(
         // входим в шорт
         positionDown = array[i - 1].closePrice // Открытие сделки на 4 свече по цене закрытия 3 свечи
         takeProfit = positionDown * (1 - takeProfitConst / 100)
-        stopLoss = positionDown * (1 + stopLossConst)
+        stopLoss = positionDown * (1 + stopLossConst / 100)
         positionTime = array[i].openTime
         inShortPosition = true
-        indexOfPostion = i
         canShort = false
+        indexOfPostion = i
         conditionSL = 4 // кол-во свечей, в течение которых мы можем изменить SL
 
         // считаем объем сделки
@@ -107,25 +108,37 @@ function tradeAlex3(
 
       // условие изменения TP
       // 1. если свеча без теневая
-      // 2. если после нее следующая зеленая, тогда переносим TP = точка входа (проверка 1 раз)
-      if (array[indexOfPostion].closePrice > array[indexOfPostion].openPrice) {
+      // 2. если после нее следующая зеленая (на которой мы зашли в short), тогда переносим TP = точка входа (проверка 1 раз)
+
+      if (
+        i == indexOfPostion + 1 &&
+        array[indexOfPostion].closePrice > array[indexOfPostion].openPrice
+      ) {
+        takeProfit = positionDown
+        dateChangeTPSL = array[i].openTime // запоминаем время переноса TP
+      }
+
+      // второй вариант изменения TP
+      if (i == indexOfPostion + 3 && positionDown < array[i].closePrice) {
         takeProfit = positionDown
         dateChangeTPSL = array[i].openTime // запоминаем время переноса TP
       }
 
       // условие изменения SL
       // если лой 4й свечи (точка входа) и всех последующих трех ниже точки входа на 1.5%, тогда SL = точки входа
-      if (conditionSL != 0) {
+
+      if (conditionSL > 0 && i > indexOfPostion) {
         diffSL = (positionDown / array[i].lowPrice - 1) * 100
         if (diffSL > 1.5) {
           stopLoss = positionDown
           dateChangeTPSL = array[i].openTime // запоминаем время переноса SL
+          conditionSL = 0
         }
         conditionSL--
       }
 
       // условия выхода из сделки
-      if (array[i].lowPrice <= takeProfit) {
+      if (array[i].lowPrice <= takeProfit && i > indexOfPostion) {
         profit = (positionDown - takeProfit) * amountOfPosition
         percent = +((profit / depositTemp) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
         depositTemp += profit
@@ -144,6 +157,7 @@ function tradeAlex3(
           takeProfit: +takeProfit.toFixed(8), // для проверки движка
           stopLoss: +stopLoss.toFixed(8), // для проверки движка
           dateChangeTPSL: timestampToDateHuman(dateChangeTPSL), // запоминаем время переноса TP или SL
+          diffSL: +diffSL.toFixed(2),
         }
         numberOfPosition += 1
         positionDown = 0
@@ -157,7 +171,7 @@ function tradeAlex3(
         indexOfPostion = 0
       } // отработка выхода из сделки по TP
       // далее, если цена пробила SL
-      else if (array[i].highPrice >= stopLoss) {
+      else if (array[i].highPrice >= stopLoss && i > indexOfPostion) {
         profit = (positionDown - stopLoss) * amountOfPosition
         percent = +((profit / depositTemp) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
         depositTemp += profit
@@ -176,6 +190,7 @@ function tradeAlex3(
           takeProfit: +takeProfit.toFixed(8), // для проверки движка
           stopLoss: +stopLoss.toFixed(8), // для проверки движка
           dateChangeTPSL: timestampToDateHuman(dateChangeTPSL), // запоминаем время переноса TP или SL
+          diffSL: +diffSL.toFixed(2),
         }
         numberOfPosition += 1
         positionDown = 0

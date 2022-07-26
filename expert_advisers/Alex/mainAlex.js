@@ -19,7 +19,8 @@ async function startAlex(
   partOfDeposit,
   multiplier,
   diffVolumeUser,
-  takeProfit
+  takeProfit,
+  stopLoss
 ) {
   // const bookOfSymbol = bookTickerFunc()
   const startProgramAt = timestampToDateHuman(new Date().getTime()) // для расчета времени работы приложения
@@ -66,7 +67,8 @@ async function startAlex(
       deposit,
       partOfDeposit,
       multiplier,
-      takeProfit
+      takeProfit,
+      stopLoss
     )
 
     console.log(`программа завершена (ОК)`)

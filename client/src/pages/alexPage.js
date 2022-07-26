@@ -120,6 +120,11 @@ export const AlexPage = () => {
           <label>Введите размер ручного Take Profit (%). Например: 3</label>
         </div>
 
+        <div class="input-field">
+          <input type="text" name="stopLoss" onChange={changeHandler} />
+          <label>Введите размер ручного Stop Loss(%). Например: 3</label>
+        </div>
+
         <h6>
           Внимание! Отсутствует защита от дурака! Поэтому проверь корректность
           данных
@@ -250,6 +255,7 @@ export const AlexPage = () => {
             <td>Take Profit</td>
             <td>Stop Loss</td>
             <td>Время изменения TP/SL</td>
+            <td>diffSL</td>
           </tr>
           {data &&
             data.deals3 &&
@@ -269,6 +275,7 @@ export const AlexPage = () => {
                 <td>{deal.takeProfit}</td>
                 <td>{deal.stopLoss}</td>
                 <td>{deal.dateChangeTPSL}</td>
+                <td>{deal.diffSL}</td>
               </tr>
             ))}
         </table>

@@ -75,7 +75,8 @@ app.post('/alexPage', async function (req, res) {
     req.body.partOfDeposit,
     req.body.multiplier,
     req.body.diffVolume,
-    req.body.takeProfit
+    req.body.takeProfit,
+    req.body.stopLoss
   )
   res.json(result)
 })
