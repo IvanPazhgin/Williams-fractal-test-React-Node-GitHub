@@ -5,7 +5,8 @@ const getCandles = require('../Williams_fractal/getCandles')
 const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
 const tradeAlex1 = require('./tradeAlex1.3')
 const tradeAlex2 = require('./tradeAlex2')
-const tradeAlex3 = require('./tradeAlex3.3')
+const tradeAlex33 = require('./tradeAlex3.3')
+const tradeAlex34 = require('./tradeAlex3.4')
 // const bookTickerFunc = require('./bookOfSymbol')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
@@ -61,8 +62,18 @@ async function startAlex(
       takeProfit
     )
 
-    // name: без теневая
-    const deals3 = tradeAlex3(
+    // name: без теневая 3.3
+    const deals33 = tradeAlex33(
+      objectSenior,
+      deposit,
+      partOfDeposit,
+      multiplier,
+      takeProfit,
+      stopLoss
+    )
+
+    // name: без теневая 3.4
+    const deals34 = tradeAlex34(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -73,7 +84,7 @@ async function startAlex(
 
     console.log(`программа завершена (ОК)`)
 
-    return { deals1, deals2, deals3, startProgramAt }
+    return { deals1, deals2, deals33, deals34, startProgramAt }
   } catch (err) {
     console.error('get Account Trade List error: ', err)
   }
