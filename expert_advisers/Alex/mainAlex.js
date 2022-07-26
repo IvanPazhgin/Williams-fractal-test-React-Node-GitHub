@@ -7,6 +7,7 @@ const tradeAlex1 = require('./tradeAlex1.3')
 const tradeAlex2 = require('./tradeAlex2')
 const tradeAlex33 = require('./tradeAlex3.3')
 const tradeAlex34 = require('./tradeAlex3.4')
+const tradeAlex4 = require('./tradeAlex4')
 // const bookTickerFunc = require('./bookOfSymbol')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
@@ -63,7 +64,7 @@ async function startAlex(
     )
 
     // name: без теневая 3.3
-    const deals33 = tradeAlex33(
+    const [deals33, statistics33] = tradeAlex33(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -73,7 +74,17 @@ async function startAlex(
     )
 
     // name: без теневая 3.4
-    const deals34 = tradeAlex34(
+    const [deals34, statistics34] = tradeAlex34(
+      objectSenior,
+      deposit,
+      partOfDeposit,
+      multiplier,
+      takeProfit,
+      stopLoss
+    )
+
+    // name: часовик 4.0
+    const [deals4, statistics4] = tradeAlex4(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -84,7 +95,17 @@ async function startAlex(
 
     console.log(`программа завершена (ОК)`)
 
-    return { deals1, deals2, deals33, deals34, startProgramAt }
+    return {
+      deals1,
+      deals2,
+      deals33,
+      statistics33,
+      deals34,
+      statistics34,
+      deals4,
+      statistics4,
+      startProgramAt,
+    }
   } catch (err) {
     console.error('get Account Trade List error: ', err)
   }

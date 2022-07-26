@@ -49,7 +49,7 @@ export const AlexPage = () => {
   return (
     <>
       <div>
-        <h2>Тест стратегии Алекса. RC 3.3 и 3.4</h2>
+        <h2>Тест стратегии Алекса: 3.3, 3.4, 4.0</h2>
       </div>
       <hr></hr>
       {/* Запрос пользователя */}
@@ -111,7 +111,8 @@ export const AlexPage = () => {
         <div class="input-field">
           <input type="text" name="diffVolume" onChange={changeHandler} />
           <label>
-            Отсекать сделки при разнице в объемах (считаем в %). Например: 50
+            Отсекать сделки при разнице в объемах <b>для стратегии №1</b>{' '}
+            (считаем в %). Например: 50
           </label>
         </div>
 
@@ -237,7 +238,33 @@ export const AlexPage = () => {
       <hr></hr>
 
       {/*таблица всех сделок № 3.3*/}
-      <h4>Стратегия №3.3: "без теневая". Таблица всех сделок:</h4>
+      <h4>Стратегия №3.3: "без теневая"</h4>
+
+      <h5>Общая статистика:</h5>
+      {data && data.statistics33 && (
+        <div>
+          <div>Депозит в начале: {data.statistics33.depositAtStart} USD</div>
+          <div>Депозит в конце: {data.statistics33.depositAtEnd} USD</div>
+          <div>
+            Итоговая прибыль/убыток: {data.statistics33.globalProfit} USD
+          </div>
+          <div>ROI: {data.statistics4.roi} %</div>
+
+          <p></p>
+          <div>
+            Всего сделок: {data.statistics33.allDealsCount}, из которых:
+          </div>
+          <div>
+            - кол-во положительных сделок: {data.statistics33.countOfPositive}
+          </div>
+          <div>
+            - кол-во отрицательных сделок: {data.statistics33.countOfNegative}
+          </div>
+          <div>- кол-во нулевых сделок: {data.statistics33.countOfZero}</div>
+        </div>
+      )}
+
+      <h5>Таблица всех сделок:</h5>
       <div>
         <table>
           <tr>
@@ -284,7 +311,38 @@ export const AlexPage = () => {
       <hr></hr>
 
       {/*таблица всех сделок № 3.4*/}
-      <h4>Стратегия №3.4: "без теневая". Таблица всех сделок:</h4>
+      <h4>Стратегия №3.4: "без теневая"</h4>
+      <p>
+        <b>
+          PS: Посчитать какой указать коэффициент тени для "безтеневой" свечи
+        </b>
+      </p>
+
+      <h5>Общая статистика:</h5>
+      {data && data.statistics34 && (
+        <div>
+          <div>Депозит в начале: {data.statistics34.depositAtStart} USD</div>
+          <div>Депозит в конце: {data.statistics34.depositAtEnd} USD</div>
+          <div>
+            Итоговая прибыль/убыток: {data.statistics34.globalProfit} USD
+          </div>
+          <div>ROI: {data.statistics34.roi} %</div>
+
+          <p></p>
+          <div>
+            Всего сделок: {data.statistics34.allDealsCount}, из которых:
+          </div>
+          <div>
+            - кол-во положительных сделок: {data.statistics34.countOfPositive}
+          </div>
+          <div>
+            - кол-во отрицательных сделок: {data.statistics34.countOfNegative}
+          </div>
+          <div>- кол-во нулевых сделок: {data.statistics34.countOfZero}</div>
+        </div>
+      )}
+
+      <h5>Таблица всех сделок:</h5>
       <div>
         <table>
           <tr>
@@ -323,6 +381,76 @@ export const AlexPage = () => {
                 <td>{deal.stopLoss}</td>
                 <td>{deal.dateChangeTPSL}</td>
                 <td>{deal.diffSL}</td>
+              </tr>
+            ))}
+        </table>
+      </div>
+
+      <hr></hr>
+
+      {/*таблица всех сделок № 4*/}
+      <h4>Стратегия №4: "1h - часовик"</h4>
+      <h5>Общая статистика:</h5>
+      {data && data.statistics4 && (
+        <div>
+          <div>Депозит в начале: {data.statistics4.depositAtStart} USD</div>
+          <div>Депозит в конце: {data.statistics4.depositAtEnd} USD</div>
+          <div>
+            Итоговая прибыль/убыток: {data.statistics4.globalProfit} USD
+          </div>
+          <div>ROI: {data.statistics4.roi} %</div>
+
+          <p></p>
+          <div>Всего сделок: {data.statistics4.allDealsCount}, из которых:</div>
+          <div>
+            - кол-во положительных сделок: {data.statistics4.countOfPositive}
+          </div>
+          <div>
+            - кол-во отрицательных сделок: {data.statistics4.countOfNegative}
+          </div>
+          <div>- кол-во нулевых сделок: {data.statistics4.countOfZero}</div>
+        </div>
+      )}
+
+      <h5>Таблица всех сделок:</h5>
+      <div>
+        <table>
+          <tr>
+            <td>№</td>
+            <td>Открываем</td>
+            <td>Цена входа</td>
+            <td>Время входа</td>
+            <td>Объем сделки</td>
+            <td>Закрываем</td>
+            <td>Цена выхода</td>
+            <td>Время выхода</td>
+            <td>Прибыль / Убыток</td>
+            <td>в процентах</td>
+            <td>Депозит</td>
+            <td>Take Profit</td>
+            <td>Stop Loss</td>
+            <td>Время изменения TP</td>
+            <td>Время изменения SL</td>
+          </tr>
+          {data &&
+            data.deals4 &&
+            data.deals4.map((deal, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>{deal.openPosition}</td>
+                <td>{deal.openPrice}</td>
+                <td>{deal.openTime}</td>
+                <td>{deal.amountOfPosition}</td>
+                <td>{deal.closePosition}</td>
+                <td>{deal.closePrice}</td>
+                <td>{deal.closeTime}</td>
+                <td>{deal.profit}</td>
+                <td>{deal.percent}</td>
+                <td>{deal.deposit}</td>
+                <td>{deal.takeProfit}</td>
+                <td>{deal.stopLoss}</td>
+                <td>{deal.dateChangeTP}</td>
+                <td>{deal.dateChangeSL}</td>
               </tr>
             ))}
         </table>

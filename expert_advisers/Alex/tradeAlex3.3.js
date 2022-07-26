@@ -205,7 +205,35 @@ function tradeAlex3(
       } // отработка выхода из сделки по SL
     } // if (inShortPosition)
   } // for (let i = 4; i < array.length; i++)
-  return deals
+
+  // сбор статистики:
+  let depositAtEnd = deals[deals.length - 1].deposit
+  let globalProfit = depositAtEnd - deposit
+  let roi = (globalProfit / deposit) * 100
+
+  let countOfPositive = 0
+  let countOfNegative = 0
+  let countOfZero = 0
+  deals.forEach(function (item) {
+    if (item.profit > 0) {
+      countOfPositive++
+    } else if (item.profit < 0) {
+      countOfNegative++
+    } else countOfZero++
+  })
+
+  const statistics = {
+    depositAtStart: Number(deposit),
+    depositAtEnd: depositAtEnd,
+    globalProfit: +globalProfit.toFixed(2),
+    roi: +roi.toFixed(2),
+    allDealsCount: deals.length,
+    countOfPositive: countOfPositive,
+    countOfNegative: countOfNegative,
+    countOfZero: countOfZero,
+  }
+
+  return [deals, statistics]
 }
 
 module.exports = tradeAlex3

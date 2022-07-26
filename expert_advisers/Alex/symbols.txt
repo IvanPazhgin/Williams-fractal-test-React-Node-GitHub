@@ -3,3 +3,4 @@ xemusdt
 crvusdt
 imxusdt
 manausdt
+YFIUSDT
