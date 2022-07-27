@@ -1,5 +1,7 @@
 /node_modules
 /backup
+/expert_advisers/Logs
+
 /expert_advisers/tests.js
 /expert_advisers/Alex/tradeAlex1.4.js
 React Node.code-workspace

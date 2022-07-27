@@ -47,6 +47,7 @@ async function startAlex(
 
     const objectSenior = candlesToObject(candlesSeniorFull)
 
+    /*
     // name: три красных
     const deals1 = tradeAlex1(
       objectSenior,
@@ -85,6 +86,7 @@ async function startAlex(
       takeProfit,
       stopLoss
     )
+    */
 
     // name: без теневая 3.5
     const [deals35, statistics35] = tradeAlex35(
@@ -98,6 +100,7 @@ async function startAlex(
       diffShadow35small
     )
 
+    /*
     // name: часовик 4.0
     const [deals4, statistics4] = tradeAlex4(
       objectSenior,
@@ -107,20 +110,23 @@ async function startAlex(
       takeProfit,
       stopLoss
     )
+    */
 
     console.log(`программа завершена (ОК)`)
 
     return {
+      /*
       deals1,
       deals2,
       deals33,
       statistics33,
       deals34,
       statistics34,
+      */
       deals35,
       statistics35,
-      deals4,
-      statistics4,
+      // deals4,
+      // statistics4,
       startProgramAt,
     }
   } catch (err) {
