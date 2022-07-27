@@ -50,8 +50,9 @@ function tradeAlex4(
         array[i - 1].closePrice < array[i - 1].openPrice && // 3я свеча - красная
         middle2Green < array[i - 1].closePrice // цена закрытия 3й красной свечи > половины тела 2й зеленой свечи
       ) {
-        // если vol 3 > vol 2, то вход на середине тела 3й красной свечи
+        // если vol 3 красной > vol зеленой 2, то вход на середине тела 3й красной свечи
         if (array[i - 3].volume > array[i - 2].volume) {
+          console.log(`diffShadow in terms 1 = ${diffShadow}`)
           middle3Red = (array[i - 1].closePrice + array[i - 1].openPrice) / 2 // середина тела 3й красной свечи
           positionDown = middle3Red
           takeProfit = positionDown * (1 - takeProfitConst / 100)
@@ -69,6 +70,7 @@ function tradeAlex4(
         } // если vol 3 > vol 2, то вход на середине тела 3й красной свечи
         // иначе цена входа = close 3й свечи
         else {
+          console.log(`diffShadow in terms 2 = ${diffShadow}`)
           positionDown = array[i - 1].closePrice
           takeProfit = positionDown * (1 - takeProfitConst / 100)
           stopLoss = positionDown * (1 + stopLossConst / 100)
@@ -233,6 +235,6 @@ module.exports = tradeAlex4
 
 изменение TP и SL:
 на 5й свече (в момент ее открытия):
-если мы сидим в плюсе, то переносим SL
-если мы сидим в минусе, то переносим TP
+если мы сидим в плюсе, то переносим SL на точку входа
+если мы сидим в минусе, то переносим TP на точку входа
 */

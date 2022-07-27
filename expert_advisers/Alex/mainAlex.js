@@ -7,6 +7,7 @@ const tradeAlex1 = require('./tradeAlex1.3')
 const tradeAlex2 = require('./tradeAlex2')
 const tradeAlex33 = require('./tradeAlex3.3')
 const tradeAlex34 = require('./tradeAlex3.4')
+const tradeAlex35 = require('./tradeAlex3.5')
 const tradeAlex4 = require('./tradeAlex4')
 // const bookTickerFunc = require('./bookOfSymbol')
 
@@ -22,7 +23,9 @@ async function startAlex(
   multiplier,
   diffVolumeUser,
   takeProfit,
-  stopLoss
+  stopLoss,
+  diffShadow35big, // стратегия 3.5
+  diffShadow35small // стратегия 3.5
 ) {
   // const bookOfSymbol = bookTickerFunc()
   const startProgramAt = timestampToDateHuman(new Date().getTime()) // для расчета времени работы приложения
@@ -83,6 +86,18 @@ async function startAlex(
       stopLoss
     )
 
+    // name: без теневая 3.5
+    const [deals35, statistics35] = tradeAlex35(
+      objectSenior,
+      deposit,
+      partOfDeposit,
+      multiplier,
+      takeProfit,
+      stopLoss,
+      diffShadow35big,
+      diffShadow35small
+    )
+
     // name: часовик 4.0
     const [deals4, statistics4] = tradeAlex4(
       objectSenior,
@@ -102,6 +117,8 @@ async function startAlex(
       statistics33,
       deals34,
       statistics34,
+      deals35,
+      statistics35,
       deals4,
       statistics4,
       startProgramAt,

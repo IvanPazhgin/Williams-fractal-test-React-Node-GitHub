@@ -76,7 +76,9 @@ app.post('/alexPage', async function (req, res) {
     req.body.multiplier,
     req.body.diffVolume,
     req.body.takeProfit,
-    req.body.stopLoss
+    req.body.stopLoss,
+    req.body.diffShadow35big, // стратегия 3.5
+    req.body.diffShadow35small // стратегия 3.5
   )
   res.json(result)
 })

@@ -4,3 +4,4 @@ crvusdt
 imxusdt
 manausdt
 YFIUSDT
+atomusdt
