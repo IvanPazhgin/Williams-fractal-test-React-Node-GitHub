@@ -51,7 +51,7 @@ async function alex35tradeBotWSrjxs() {
     profit: 0,
     percent: 0,
   }
-  const timeFrame = '1m'
+  const timeFrame = '2h'
 
   let candles = [] // Массив с загруженными свечами
   let candlesObject = [] // свечи типа ОБЪЕКТ
