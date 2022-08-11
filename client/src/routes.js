@@ -4,6 +4,7 @@ import { MainPage } from './pages/MainPage'
 import { TestResult } from './pages/TestResult'
 import { HistoryPage } from './pages/HistoryPage'
 import { AlexPage } from './pages/alexPage'
+import { TestPage } from './pages/testPage'
 
 export const useRoutes = (isData) => {
   return (
@@ -12,6 +13,7 @@ export const useRoutes = (isData) => {
       <Route path="/result" element={<TestResult />} />
       <Route path="/history" element={<HistoryPage />} />
       <Route path="/alex" element={<AlexPage />} />
+      <Route path="/test" element={<TestPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

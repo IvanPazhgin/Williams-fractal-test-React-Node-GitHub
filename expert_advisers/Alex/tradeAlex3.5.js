@@ -41,8 +41,8 @@ function tradeAlex3(
   let diffShadow = 0 // отношение верхней тени к нижней тени на красной свечи
 
   // для сигнала №2
-  let lengthOfRed = 0
-  let lengthOfGreen = 0
+  let lengthOfRed = 0 // Длина тела красной свечи
+  let lengthOfGreen = 0 // Длина тела зеленойсвечи
   let diffLength = 0
 
   for (let i = 4; i < array.length; i++) {
