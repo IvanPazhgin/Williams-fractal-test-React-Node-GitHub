@@ -2,7 +2,7 @@ function testOfNewFuctiouns() {
   //const tradeAlex3bot = require('./expert_advisers/Alex/trade35trade(fail)/alex35.botMain')
   const alex35tradeBotWSrjxs = require('./expert_advisers/Alex/trade35WS_RxJS/alex35tradeMain')
   //const alex35tradeBotWSrjxs = require('./expert_advisers/Alex/trade35WS_RxJS/alex351TradeMain')
-  const testWSPublic = require('./binance_Engine/webSocket/examples/ws-public.ts')
+  // const testWSPublic = require('./binance_Engine/webSocket/examples/ws-public.ts')
   // const testWSClose = require('./binance_Engine/binance_WebSocket/examples/ws-close.ts')
   // const testWSUserData = require('./binance_Engine/binance_WebSocket/examples/ws-userdata.ts')
   // const tgBotExpress = require('./expert_advisers/Alex/trade35WS_RxJS/tg.Bot.Express')
