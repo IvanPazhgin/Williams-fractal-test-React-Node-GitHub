@@ -70,6 +70,7 @@ async function alex35tradeBotWSrjxs() {
   // const symbol = 'BTCUSDT' // тестируй на монете UNFI пусть она первая будет
   let symbolObj = {
     symbol: 'UNFIUSDT',
+    canShort: false,
     inPosition: false,
     deposit: 1000,
     whitchSignal: '',
@@ -83,7 +84,7 @@ async function alex35tradeBotWSrjxs() {
     profit: 0,
     percent: 0,
   }
-  const timeFrame = '2h'
+  const timeFrame = '1m'
 
   let candles = [] // Массив с загруженными свечами
   let candlesObject = [] // свечи типа ОБЪЕКТ
@@ -111,7 +112,7 @@ async function alex35tradeBotWSrjxs() {
       new Date().getTime()
     )}\nИнструмент: ${
       symbolObj.symbol
-    }\nТайм Фрэйм: ${timeFrame}\nСтратегия №3: Без теневая. RC 5\nЖдем завершенную свечку ${timeFrame}...`
+    }\nТайм Фрэйм: ${timeFrame}\nСтратегия №3: Без теневая RC 5\nЖдем завершенную свечку ${timeFrame}...`
   )
 
   // получаем новые свечки; если !inPosidion -> ищем вход, иначе меняем TP и SL, проверяем условие выхода

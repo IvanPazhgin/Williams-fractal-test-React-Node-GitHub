@@ -32,57 +32,58 @@ function findSygnal(array, symbolObj) {
 
   // проверка условий на вход
   // если входим, то inPosition = true
-  for (let i = 4; i < array.length; i++) {
+  for (let i = 3; i < array.length; i++) {
     if (!symbolObj.inPosition) {
       // сигнал №1
-      lengthUpShadow = array[i - 1].highPrice - array[i - 1].openPrice
-      lengthDownShadow = array[i - 1].closePrice - array[i - 1].lowPrice
+      lengthUpShadow = array[i].highPrice - array[i].openPrice
+      lengthDownShadow = array[i].closePrice - array[i].lowPrice
       diffShadow = lengthUpShadow / lengthDownShadow
       if (
-        array[i - 4].closePrice > array[i - 4].openPrice && // 1 свеча зеленая
-        array[i - 3].closePrice > array[i - 3].openPrice && // 2 свеча зелёная
-        array[i - 2].closePrice > array[i - 2].openPrice && // 3 свеча зелёная
-        array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
+        array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зеленая
+        array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
+        array[i - 1].closePrice > array[i - 1].openPrice && // 3 свеча зелёная
+        array[i].openPrice > array[i].closePrice && // 4 свеча красная
         diffShadow < Number(diffShadowBigUser) // расчетный diff < пользовательского значения
       ) {
-        canShort = true
-        whitchSignal = 'сигнал №1'
+        symbolObj.canShort = true
+        symbolObj.whitchSignal = 'сигнал №1'
       }
 
       // сигнал №2
-      lengthOfGreen = array[i - 2].closePrice - array[i - 2].openPrice
-      lengthOfRed = array[i - 1].openPrice - array[i - 1].closePrice
+      lengthOfGreen = array[i - 1].closePrice - array[i - 1].openPrice
+      lengthOfRed = array[i].openPrice - array[i].closePrice
       if (
-        array[i - 2].closePrice > array[i - 2].openPrice && // 3 свеча зелёная
-        array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
+        array[i - 1].closePrice > array[i - 1].openPrice && // 3 свеча зелёная
+        array[i].openPrice > array[i].closePrice && // 4 свеча красная
         diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения
         lengthOfRed < lengthOfGreen // тело красной меньше тела зеленой
       ) {
-        canShort = true
-        whitchSignal = 'сигнал №2'
+        symbolObj.canShort = true
+        symbolObj.whitchSignal = 'сигнал №2'
       }
 
       // сигнал №3
       // на красной верхняя тень сильно меньше нижней тени. Низкий коэффициент. Задает пользователь
       if (
-        array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
+        array[i].openPrice > array[i].closePrice && // 4 свеча красная
         diffShadow < Number(diffShadowSmallUser) // расчетный diff < пользовательского значения
       ) {
-        canShort = true
-        whitchSignal = 'сигнал №3'
+        symbolObj.canShort = true
+        symbolObj.whitchSignal = 'сигнал №3'
       }
 
-      // входим в шорт
-      if (canShort) {
-        canShort = false
-        // symbolObj.symbol = symbolObjFirstState.symbol
-        symbolObj.inPosition = true
-        symbolObj.whitchSignal = whitchSignal
-        symbolObj.openShort = array[i - 1].closePrice // вход по цене закрытия красной [i-1]
-        symbolObj.positionTime = array[i].openTime
-
+      // входим в шорт - убрать в главную функцию
+      if (symbolObj.canShort) {
+        symbolObj.openShort = array[i].closePrice // запоминаем точку входа по цене закрытия красной [i] свечи
+        // остальное -> в главном модуле: вставить после входа в сделку
+        symbolObj.canShort = false // !!!!
+        symbolObj.inPosition = true // !!!!
+        symbolObj.positionTime = array[i].openTime // !!!!
         symbolObj.takeProfit = symbolObj.openShort * (1 - takeProfitConst)
         symbolObj.stopLoss = symbolObj.openShort * (1 + stopLossConst)
+        // symbolObj.symbol = symbolObjFirstState.symbol
+
+        // symbolObj.whitchSignal = whitchSignal
 
         // считаем объем сделки
         symbolObj.amountOfPosition = +(
@@ -92,21 +93,23 @@ function findSygnal(array, symbolObj) {
           multiplier
         ).toFixed(8)
 
-        console.log(`Open SHORT по сигналу: ${whitchSignal}`)
+        //console.log(`Open SHORT по сигналу: ${symbolObj.whitchSignal}`)
         sendInfoToUser(
-          `Стратегия №3: Без теневая. RC 5.\nнашли сигнал: ${
+          `--== НОВЫЙ СИГНАЛ ==--\nСтратегия №3: Без теневая RC 5\nСработал: ${
             symbolObj.whitchSignal
-          }.\n\nМонета: ${symbolObj.symbol}.\nOpen SHORT: ${
+          }\n\nМонета: ${symbolObj.symbol}\nOpen SHORT: ${
             symbolObj.openShort
-          }.\nВремя входа: ${timestampToDateHuman(
+          }\nВремя сигнала: ${timestampToDateHuman(
             symbolObj.positionTime
-          )}.\nКол-во монет: ${symbolObj.positionTime}.\n\nTake Profit: ${
+          )}\nКол-во монет: ${symbolObj.amountOfPosition}\nВзяли ${
+            partOfDeposit * 100
+          }% c плечом ${multiplier}x от депозита = ${
+            symbolObj.deposit
+          } USDT\n\nПоставь:\nTake Profit: ${
             symbolObj.takeProfit
-          }.\nStop Loss: ${
-            symbolObj.stopLos
-          }.\n\n Кол-во = 25% от депозита, плечо 10х.`
+          }\nStop Loss: ${symbolObj.stopLoss}`
         )
-        sendInfoToUser(JSON.stringify(symbolObj))
+        //sendInfoToUser(JSON.stringify(symbolObj))
       } else {
         console.log(`Сигнала на вход не было. Ждем следующую свечу`)
         sendInfoToUser(`Сигнала на вход не было. \nЖдем следующую свечу`)

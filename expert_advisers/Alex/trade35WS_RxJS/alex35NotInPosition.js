@@ -7,7 +7,7 @@ async function notInPosition(lastCandle, symbolObj, timeFrame) {
   // console.log('новая свечка из WS (передана в notInPosition)')
   // console.table(lastCandle)
 
-  const limitOfCandle = 5 // кол-во свечей для поиска сигнала
+  const limitOfCandle = 4 // кол-во свечей для поиска сигнала
   let candles = await getCandles(symbolObj.symbol, timeFrame, limitOfCandle) // получаем первые 5 свечей
 
   // let qq = new Date().getTime()

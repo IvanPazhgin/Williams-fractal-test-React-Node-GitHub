@@ -1,5 +1,7 @@
 // name: без теневая
 // VERSION 3.7
+// рекомендуемая монета BLZUSDT
+// отмена сигнала: если на текущей не входим, значит на следующей финальной свечке отменяем сигнал
 const timestampToDateHuman = require('../trade35WS_RxJS/timestampToDateHuman')
 
 function alex37testMain(
@@ -69,6 +71,7 @@ function alex37testMain(
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
         array[i - 1].openPrice == array[i - 1].highPrice // и у красной свечи нет тени
+        //diffShadow < 0.4 // отношение теней составляет 0.05%
       ) {
         canShort = true
         whitchSignal = 'сигнал №3'
@@ -89,19 +92,28 @@ function alex37testMain(
       if (canShort) {
         switch (whitchSignal) {
           case 'сигнал №1':
-            console.log('сигнал №1')
+            //console.log('вход по сигналу №1')
             positionDown = array[i - 1].openPrice // вход по цене открытия красной [i-1]
             openShortCommon() // функция openShortCommon для входа в сделку с общими полями
             break
           case 'сигнал №3':
-            console.log('сигнал №3')
+            //console.log('вход по сигналу №3')
             positionDown = array[i - 1].closePrice // вход по цене закрытия красной [i-1]
             openShortCommon() // функция openShortCommon для входа в сделку с общими полями
             break
           case 'сигнал №4':
-            console.log('сигнал №4')
-            positionDown = array[i - 1].openPrice // вход по цене открытия красной [i-1]
-            openShortCommon() // функция openShortCommon для входа в сделку с общими полями
+            // проверка: если на текущей свече цена была выше array[i-1].closePrice (продумать отмену сигнала на след. свече для оповещений)
+            if (array[i].highPrice > array[i - 1].openPrice) {
+              //console.log('вход по сигналу №4')
+              //console.log(`array[i].highPrice = ${array[i].highPrice}, время: ${timestampToDateHuman(array[i].openTime)}`)
+              //console.log(`array[i - 1].closePrice = ${array[i - 1].closePrice}, время: ${timestampToDateHuman(array[i - 1].openTime)}`)
+              positionDown = array[i - 1].openPrice // вход по цене открытия красной [i-1]
+              openShortCommon() // функция openShortCommon для входа в сделку с общими полями
+            } else {
+              // отменяем сигнал
+              canShort = false
+              whitchSignal = ''
+            }
             break
 
           default:
@@ -157,15 +169,15 @@ function alex37testMain(
       // Провека условий для изменения SL и TP
       switch (whitchSignal) {
         case 'сигнал №1':
-          console.log('сигнал №1: меняем TP и SL')
+          //console.log('сигнал №1: меняем TP и SL')
           changeTPSLCommon()
           break
         case 'сигнал №3':
-          console.log('сигнал №3: меняем TP и SL')
+          //console.log('сигнал №3: меняем TP и SL')
           changeTPSLCommon()
           break
         case 'сигнал №4':
-          console.log('сигнал №4: меняем TP и SL')
+          //console.log('сигнал №4: меняем TP и SL')
           //changeTPSLCommon()
           // первая проверка TP: если свеча зеленая, на которой зашли, т.е. closePrice[i] > OpenShort, тогда меняем TP в БУ
           if (i == indexOfPostion + 1) {

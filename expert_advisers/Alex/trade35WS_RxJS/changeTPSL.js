@@ -7,17 +7,17 @@ function changeTPSL(lastCandle, symbolObj) {
     if (symbolObj.openShort < lastCandle.closePrice) {
       symbolObj.takeProfit = symbolObj.openShort
       // dateChangeTP = array[i].openTime
-      console.log(`изменили take profit: ${symbolObj.takeProfit}`)
+      // console.log(`изменили take profit: ${symbolObj.takeProfit}`)
       sendInfoToUser(
-        `Мы в просадке.\nМеняем take profit на точку входа: ${symbolObj.takeProfit}`
+        `${symbolObj.symbol}: Мы в просадке.\nМеняем take profit на точку входа: ${symbolObj.takeProfit}`
       )
     } else {
       // изменение SL: если мы в прибыли
       symbolObj.stopLoss = symbolObj.openShort
       // dateChangeSL = array[i].openTime
-      console.log(`изменили stop loss: ${symbolObj.stopLoss}`)
+      // console.log(`изменили stop loss: ${symbolObj.stopLoss}`)
       sendInfoToUser(
-        `Мы в прибыли.\nМеняем stop loss на точку входа: ${symbolObj.stopLoss}`
+        `${symbolObj.symbol}: Мы в прибыли.\nМеняем stop loss на точку входа: ${symbolObj.stopLoss}`
       )
     }
   }

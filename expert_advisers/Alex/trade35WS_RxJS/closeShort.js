@@ -21,9 +21,11 @@ function closeShort(lastCandle, symbolObj) {
       // dateChangeTP = dateChangeTP == 0 ? (dateChangeTP = '') : timestampToDateHuman(dateChangeTP)
       symbolObj.inPosition = false
 
-      console.log(`Close SHORT with takeProfit: ${symbolObj.closeShort}`)
-      sendInfoToUser(`Close SHORT with takeProfit: ${symbolObj.closeShort}`)
-      sendInfoToUser(JSON.stringify(symbolObj))
+      // console.log(`Close SHORT with takeProfit: ${symbolObj.closeShort}`)
+      sendInfoToUser(
+        `${symbolObj.symbol}:\nClose SHORT with takeProfit: ${symbolObj.closeShort}\nПрибыль = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
+      )
+      // sendInfoToUser(JSON.stringify(symbolObj))
 
       /*
       deals[numberOfPosition] = {
@@ -74,9 +76,11 @@ function closeShort(lastCandle, symbolObj) {
 
       symbolObj.inPosition = false
 
-      console.log(`Close SHORT with stopLoss: ${symbolObj.closeShort}`)
-      sendInfoToUser(`Close SHORT with stopLoss: ${symbolObj.closeShort}`)
-      sendInfoToUser(JSON.stringify(symbolObj))
+      //console.log(`Close SHORT with stopLoss: ${symbolObj.closeShort}`)
+      sendInfoToUser(
+        `${symbolObj.symbol}:\nClose SHORT with stopLoss: ${symbolObj.closeShort}\nУбыток = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
+      )
+      //sendInfoToUser(JSON.stringify(symbolObj))
 
       /*
       depositTemp += profit
