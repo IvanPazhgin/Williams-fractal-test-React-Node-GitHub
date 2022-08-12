@@ -21,7 +21,7 @@ const changeTPSL = require('./changeTPSL')
 
 async function alex35tradeBotWSrjxs() {
   // получаем от пользователя список инструментов
-  const symbols = [
+  const symbols1 = [
     'UNFIUSDT',
     'CRVUSDT',
     'UNIUSDT',
@@ -33,6 +33,38 @@ async function alex35tradeBotWSrjxs() {
     'LITUSDT',
     'BELUSDT',
   ]
+  const symbols2 = [
+    'UNFIUSDT',
+    'TRBUSDT',
+    'bnbusdt',
+    'ethusdt',
+    'blzusdt',
+    'bandusdt',
+  ]
+  let symbolObj2 = []
+
+  symbols2.forEach(function (item, i, arg) {
+    // создаем массив сделок
+    symbolObj2[i] = {
+      symbol: item,
+      inPosition: false,
+      deposit: 1000,
+      whitchSignal: '',
+      openShort: 0,
+      positionTime: 0,
+      amountOfPosition: 0,
+      takeProfit: 0,
+      stopLoss: 0,
+      closeShort: 0,
+      closeTime: 0,
+      profit: 0,
+      percent: 0,
+    }
+  })
+
+  // console.log('монеты для старта')
+  // console.table(symbolObj2)
+
   // создать родительскую функцию, которая будет вызывать весь скрипт ниже по отдельности
 
   // const symbol = 'BTCUSDT' // тестируй на монете UNFI пусть она первая будет

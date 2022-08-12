@@ -3,6 +3,7 @@ const candlesToObject = require('../Alex/candlesToObject')
 const diffCandle = require('../Williams_fractal/diffCandle')
 const getCandles = require('../Williams_fractal/getCandles')
 const timestampToDateHuman = require('../Williams_fractal/timestampToDateHuman')
+const alex37testMain = require('./alex37test/alex37testMain')
 const tradeAlex1 = require('./tradeAlex1.3')
 const tradeAlex2 = require('./tradeAlex2')
 const tradeAlex33 = require('./tradeAlex3.3')
@@ -100,6 +101,18 @@ async function startAlex(
       diffShadow35small
     )
 
+    // name: без теневая 3.7
+    const [deals37, statistics37] = alex37testMain(
+      objectSenior,
+      deposit,
+      partOfDeposit,
+      multiplier,
+      takeProfit,
+      stopLoss,
+      diffShadow35big,
+      diffShadow35small
+    )
+
     /*
     // name: часовик 4.0
     const [deals4, statistics4] = tradeAlex4(
@@ -125,6 +138,8 @@ async function startAlex(
       */
       deals35,
       statistics35,
+      deals37,
+      statistics37,
       // deals4,
       // statistics4,
       startProgramAt,

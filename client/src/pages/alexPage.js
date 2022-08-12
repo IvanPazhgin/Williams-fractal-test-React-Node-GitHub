@@ -257,6 +257,81 @@ export const AlexPage = () => {
             ))}
         </table>
       </div>
+
+      <hr></hr>
+
+      {/*таблица всех сделок № 3.7*/}
+      <h4>Стратегия №3.7: "без теневая"</h4>
+
+      <h5>Общая статистика:</h5>
+      {data && data.statistics37 && (
+        <div>
+          <div>Депозит в начале: {data.statistics37.depositAtStart} USD</div>
+          <div>Депозит в конце: {data.statistics37.depositAtEnd} USD</div>
+          <div>
+            Итоговая прибыль/убыток: {data.statistics37.globalProfit} USD
+          </div>
+          <div>ROI: {data.statistics37.roi} %</div>
+
+          <p></p>
+          <div>
+            Всего сделок: {data.statistics37.allDealsCount}, из которых:
+          </div>
+          <div>
+            - кол-во положительных сделок: {data.statistics37.countOfPositive}
+          </div>
+          <div>
+            - кол-во отрицательных сделок: {data.statistics37.countOfNegative}
+          </div>
+          <div>- кол-во нулевых сделок: {data.statistics35.countOfZero}</div>
+        </div>
+      )}
+
+      <h5>Таблица всех сделок:</h5>
+      <div>
+        <table>
+          <tr>
+            <td>№</td>
+            <td>Открываем</td>
+            <td>Цена входа</td>
+            <td>Время входа</td>
+            <td>Объем сделки</td>
+            <td>Закрываем</td>
+            <td>Цена выхода</td>
+            <td>Время выхода</td>
+            <td>Прибыль / Убыток</td>
+            <td>в процентах</td>
+            <td>Депозит2</td>
+            <td>Take Profit</td>
+            <td>Stop Loss</td>
+            <td>Время изменения TP</td>
+            <td>Время изменения SL</td>
+            <td>Сигнал</td>
+          </tr>
+          {data &&
+            data.deals37 &&
+            data.deals37.map((deal, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>{deal.openPosition}</td>
+                <td>{deal.openPrice}</td>
+                <td>{deal.openTime}</td>
+                <td>{deal.amountOfPosition}</td>
+                <td>{deal.closePosition}</td>
+                <td>{deal.closePrice}</td>
+                <td>{deal.closeTime}</td>
+                <td>{deal.profit}</td>
+                <td>{deal.percent}</td>
+                <td>{deal.deposit2}</td>
+                <td>{deal.takeProfit}</td>
+                <td>{deal.stopLoss}</td>
+                <td>{deal.dateChangeTP}</td>
+                <td>{deal.dateChangeSL}</td>
+                <td>{deal.whitchSignal}</td>
+              </tr>
+            ))}
+        </table>
+      </div>
     </>
   )
 }

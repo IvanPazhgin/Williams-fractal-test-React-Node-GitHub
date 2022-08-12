@@ -53,33 +53,18 @@ function tgBotExample() {
 function sendInfoToUser(text) {
   const tgid = [
     { name: 'Ivan', id: 591611622 },
-    { name: 'Alex', id: 1589257165 },
-    { name: 'Maks', id: 237283171 },
+    //{ name: 'Alex', id: 1589257165 },
+    //{ name: 'Maks', id: 237283171 },
   ]
-  tgid.forEach(function (item) {
-    //bot.sendMessage(item.id, 'локальный запуск')
+  /*
+  tgid.forEach(function (item) {    
     bot.sendMessage(item.id, text)
   })
-
-  // const tgidIvan = 591611622
-  // const tgidAlex = 1589257165
-  // bot.sendMessage(tgidIvan, text)
-  // bot.sendMessage(tgid, text)
-
-  // test #1
-  //tgBotExample.call(this)
-  //this.bot.sendMessage(tgid, text)
-  // test #2
-  // const bot2 = tgBotExample
-  // bot2.sendMessage(tgid, text)
+  */
+  bot.sendMessage(item.id, 'локальный запуск')
+  bot.sendMessage(tgid[0].id, text)
 }
 
-function sendSymbolObjToUser(symbolObj) {
-  const tgidIvan = 591611622
-  const tgidAlex = 1589257165
-  bot.sendMessage(tgidIvan, symbolObj)
-}
-
-module.exports = { tgBotExample, sendInfoToUser, sendSymbolObjToUser }
+module.exports = { tgBotExample, sendInfoToUser }
 
 // module.exports = tgBotExample
