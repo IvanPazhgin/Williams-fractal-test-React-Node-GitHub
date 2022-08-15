@@ -26,7 +26,8 @@ async function startAlex(
   takeProfit,
   stopLoss,
   diffShadow35big, // стратегия 3.5
-  diffShadow35small // стратегия 3.5
+  diffShadow35small, // стратегия 3.5
+  delta // стратегия 3.7
 ) {
   // const bookOfSymbol = bookTickerFunc()
   const startProgramAt = timestampToDateHuman(new Date().getTime()) // для расчета времени работы приложения
@@ -110,7 +111,8 @@ async function startAlex(
       takeProfit,
       stopLoss,
       diffShadow35big,
-      diffShadow35small
+      diffShadow35small,
+      delta
     )
 
     /*

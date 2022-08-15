@@ -112,7 +112,7 @@ function findSygnal(array, symbolObj) {
         //sendInfoToUser(JSON.stringify(symbolObj))
       } else {
         console.log(`Сигнала на вход не было. Ждем следующую свечу`)
-        sendInfoToUser(`Сигнала на вход не было. \nЖдем следующую свечу`)
+        // sendInfoToUser(`Сигнала на вход не было. \nЖдем следующую свечу`)
       } // if (canShort)
     } // if (!inShortPosition)
   } // for (let i = 4; i < array.length; i++)

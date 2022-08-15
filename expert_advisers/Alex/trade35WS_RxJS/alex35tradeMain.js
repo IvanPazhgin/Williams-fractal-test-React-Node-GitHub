@@ -203,7 +203,7 @@ async function alex35tradeBotWSrjxs() {
           console.table(symbolObj)
 
           // ищем сигнал для входа
-          sendInfoToUser(`Прилетела новая свеча.\nЗапускаем поиск сигнала...`)
+          // sendInfoToUser(`Прилетела новая свеча.\nЗапускаем поиск сигнала...`)
           //const temp = await notInPosition(lastCandle, symbolObj, timeFrame)
           symbolObj = await notInPosition(lastCandle, symbolObj, timeFrame)
 

@@ -12,7 +12,8 @@ function alex37testMain(
   takeProfitUser, // = 0.04
   stopLossUser, // = 0.02
   diffShadowBigUser,
-  diffShadowSmallUser
+  diffShadowSmallUser,
+  delta
 ) {
   // для сигналов
   let canShort = false // есть ли сигнал для входа в шорт или нет
@@ -104,10 +105,11 @@ function alex37testMain(
           case 'сигнал №4':
             // проверка: если на текущей свече цена была выше array[i-1].closePrice (продумать отмену сигнала на след. свече для оповещений)
             if (array[i].highPrice > array[i - 1].openPrice) {
+              // !!!  в реальном роботе проверить if (close price now < open price сигнальной свечи), то добавляем условие ниже. Главное, чтобы это условие и условие выше не мешали друг другу
               //console.log('вход по сигналу №4')
               //console.log(`array[i].highPrice = ${array[i].highPrice}, время: ${timestampToDateHuman(array[i].openTime)}`)
               //console.log(`array[i - 1].closePrice = ${array[i - 1].closePrice}, время: ${timestampToDateHuman(array[i - 1].openTime)}`)
-              positionDown = array[i - 1].openPrice // вход по цене открытия красной [i-1]
+              positionDown = array[i - 1].openPrice * (1 + delta / 100) // вход по цене открытия красной [i-1]
               openShortCommon() // функция openShortCommon для входа в сделку с общими полями
             } else {
               // отменяем сигнал

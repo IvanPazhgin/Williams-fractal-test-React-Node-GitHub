@@ -81,7 +81,8 @@ app.post('/alexPage', async function (req, res) {
     req.body.takeProfit,
     req.body.stopLoss,
     req.body.diffShadow35big, // стратегия 3.5
-    req.body.diffShadow35small // стратегия 3.5
+    req.body.diffShadow35small, // стратегия 3.5
+    req.body.delta // стратегия 3.7
   )
   res.json(result)
 })
