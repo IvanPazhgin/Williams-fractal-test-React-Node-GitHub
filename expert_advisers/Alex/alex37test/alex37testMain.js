@@ -24,6 +24,9 @@ function alex37testMain(
   let lengthDownShadow = 0 // длина нижней тени на красной свечи
   let diffShadow = 0 // отношение верхней тени к нижней тени на красной свечи
 
+  // для сигнала №4
+  // let coefficient = 0 // коэффициент корректировки точки входа относительно уровня сигнальной свечи
+
   // для сделки
   let inShortPosition = false
   let deals = [] // сделка
@@ -104,7 +107,12 @@ function alex37testMain(
             break
           case 'сигнал №4':
             // проверка: если на текущей свече цена была выше array[i-1].closePrice (продумать отмену сигнала на след. свече для оповещений)
-            if (array[i].highPrice > array[i - 1].openPrice) {
+
+            // входим ниже array[i - 1].openPrice на дельту: coefficient = array[i].highPrice * (1 - delta / 100)
+            if (
+              array[i].highPrice >
+              array[i - 1].openPrice * (1 - delta / 100)
+            ) {
               // !!!  в реальном роботе проверить if (close price now < open price сигнальной свечи), то добавляем условие ниже. Главное, чтобы это условие и условие выше не мешали друг другу
               //console.log('вход по сигналу №4')
               //console.log(`array[i].highPrice = ${array[i].highPrice}, время: ${timestampToDateHuman(array[i].openTime)}`)
