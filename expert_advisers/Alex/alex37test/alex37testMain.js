@@ -96,9 +96,15 @@ function alex37testMain(
       if (canShort) {
         switch (whitchSignal) {
           case 'сигнал №1':
-            //console.log('вход по сигналу №1')
-            positionDown = array[i - 1].openPrice // вход по цене открытия красной [i-1]
-            openShortCommon() // функция openShortCommon для входа в сделку с общими полями
+            // входим ниже array[i - 1].openPrice на дельту: coefficient = array[i].openPrice * (1 - delta / 100)
+            if (
+              array[i].highPrice >
+              array[i - 1].openPrice * (1 - delta / 100)
+            ) {
+              //console.log('вход по сигналу №1')
+              positionDown = array[i - 1].openPrice * (1 - delta / 100) // вход по цене открытия красной [i-1]
+              openShortCommon() // функция openShortCommon для входа в сделку с общими полями
+            }
             break
           case 'сигнал №3':
             //console.log('вход по сигналу №3')
@@ -108,7 +114,7 @@ function alex37testMain(
           case 'сигнал №4':
             // проверка: если на текущей свече цена была выше array[i-1].closePrice (продумать отмену сигнала на след. свече для оповещений)
 
-            // входим ниже array[i - 1].openPrice на дельту: coefficient = array[i].highPrice * (1 - delta / 100)
+            // входим ниже array[i - 1].openPrice на дельту: coefficient = array[i].openPrice * (1 - delta / 100)
             if (
               array[i].highPrice >
               array[i - 1].openPrice * (1 - delta / 100)
