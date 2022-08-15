@@ -109,7 +109,7 @@ function alex37testMain(
               //console.log('вход по сигналу №4')
               //console.log(`array[i].highPrice = ${array[i].highPrice}, время: ${timestampToDateHuman(array[i].openTime)}`)
               //console.log(`array[i - 1].closePrice = ${array[i - 1].closePrice}, время: ${timestampToDateHuman(array[i - 1].openTime)}`)
-              positionDown = array[i - 1].openPrice * (1 + delta / 100) // вход по цене открытия красной [i-1]
+              positionDown = array[i - 1].openPrice * (1 - delta / 100) // вход по цене открытия красной [i-1]
               openShortCommon() // функция openShortCommon для входа в сделку с общими полями
             } else {
               // отменяем сигнал
