@@ -121,9 +121,11 @@ function findSygnal(array, symbolObj) {
           // можно отправить сообщение в telegram bot для тестов на первое время
         } // switch (whitchSignal)
 
-        //console.log(`Open SHORT по сигналу: ${symbolObj.whitchSignal}`)
+        console.log(`Open SHORT по сигналу: ${symbolObj.whitchSignal}`)
+        console.log('получили изменения в состоянии сделки внутри findSignal()')
+        console.table(symbolObj)
         sendInfoToUser(
-          `--== НОВЫЙ СИГНАЛ ==--\nСтратегия №3: Без теневая RC 7\nСработал: ${
+          `---=== НОВЫЙ СИГНАЛ ===---\nСтратегия №3: Без теневая RC 7\nСработал: ${
             symbolObj.whitchSignal
           }\n\nМонета: ${symbolObj.symbol}\nOpen SHORT: ${
             symbolObj.openShort
@@ -148,11 +150,11 @@ function findSygnal(array, symbolObj) {
   } // for (let i = 4; i < array.length; i++)
 
   // функция openShortCommon для входа в сделку с общими полями
-  function openShortCommon(openTime) {
+  function openShortCommon(OpenTime) {
     // правильнее будет -> в главном модуле: вставить после входа в сделку
     symbolObj.canShort = false
     symbolObj.inPosition = true
-    symbolObj.positionTime = openTime
+    symbolObj.positionTime = OpenTime
     //console.log(`входим time: ${timestampToDateHuman(array[i].openTime)}`) // !! проверка
     //symbolObj.indexOfPostion = i
 
