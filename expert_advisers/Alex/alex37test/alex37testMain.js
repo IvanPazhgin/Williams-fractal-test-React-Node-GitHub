@@ -63,6 +63,18 @@ function alex37testMain(
         //diffShadow < 0.3
         diffShadow < Number(diffShadowBigUser) // расчетный diff < пользовательского значения (оставил для автотестов)
       ) {
+        // проверить 1 зеленую свечку (см. скрин в телеге)
+        // 1 green candle
+        // console.log(`\narray[i - 3].closePrice= ${array[i - 3].closePrice}, time: ${timestampToDateHuman(array[i - 3].openTime)}`)
+        // console.log(`array[i - 3].openPrice = ${array[i - 3].openPrice}, time: ${timestampToDateHuman(array[i - 3].openTime)}`)
+        // 2 green candle
+        // console.log(`array[i - 2].closePrice= ${array[i - 2].closePrice}, time: ${timestampToDateHuman(array[i - 2].openTime)}`)
+        // console.log(`array[i - 2].openPrice = ${array[i - 2].openPrice}, time: ${timestampToDateHuman(array[i - 2].openTime)}`)
+        // 3 red candle
+        // console.log(`array[i - 1].closePrice= ${array[i - 1].closePrice}, time: ${timestampToDateHuman(array[i - 1].openTime)}`)
+        // console.log(`array[i - 1].openPrice = ${array[i - 1].openPrice}, time: ${timestampToDateHuman(array[i - 1].openTime)}`)
+        // проверка: конец
+
         canShort = true
         whitchSignal = 'сигнал №1'
       }
@@ -102,8 +114,13 @@ function alex37testMain(
               array[i - 1].openPrice * (1 - delta / 100)
             ) {
               //console.log('вход по сигналу №1')
+              //console.log(`точка входа по цене сигнальной свечи, ее time: ${timestampToDateHuman(array[i - 1].openTime)}`) // !! проверка
               positionDown = array[i - 1].openPrice * (1 - delta / 100) // вход по цене открытия красной [i-1]
               openShortCommon() // функция openShortCommon для входа в сделку с общими полями
+            } else {
+              // отменяем сигнал
+              canShort = false
+              whitchSignal = ''
             }
             break
           case 'сигнал №3':
@@ -143,6 +160,7 @@ function alex37testMain(
         canShort = false
         inShortPosition = true
         positionTime = array[i].openTime
+        //console.log(`входим time: ${timestampToDateHuman(array[i].openTime)}`) // !! проверка
         indexOfPostion = i
 
         takeProfit = positionDown * (1 - takeProfitUser / 100)
