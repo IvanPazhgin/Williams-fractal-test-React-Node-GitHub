@@ -1,4 +1,4 @@
-const timestampToDateHuman = require('./timestampToDateHuman') // временно для проверки свечей
+// const timestampToDateHuman = require('./timestampToDateHuman') // временно для проверки свечей
 
 function candlesToObject(arg) {
   let target = []

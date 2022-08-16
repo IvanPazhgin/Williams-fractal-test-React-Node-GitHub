@@ -1,6 +1,7 @@
 function testOfNewFuctiouns() {
+  const alex37tradeMain = require('./expert_advisers/Alex/trade37WS(1symbol)/alex37tradeMain')
   //const tradeAlex3bot = require('./expert_advisers/Alex/trade35trade(fail)/alex35.botMain')
-  const alex35tradeBotWSrjxs = require('./expert_advisers/Alex/trade35WS_RxJS/alex35tradeMain')
+  // !!!! const alex35tradeBotWSrjxs = require('./expert_advisers/Alex/trade35WS_RxJS/alex35tradeMain')
   //const alex35tradeBotWSrjxs = require('./expert_advisers/Alex/trade35WS_RxJS/alex351TradeMain')
   // const testWSPublic = require('./binance_Engine/webSocket/examples/ws-public.ts')
   // const testWSClose = require('./binance_Engine/binance_WebSocket/examples/ws-close.ts')
@@ -14,7 +15,8 @@ function testOfNewFuctiouns() {
 
   // тесты с получением сигналов на основе стратегии Alex 3.5
   // tradeAlex3bot() // первая попытка разработки слишком сложного торгового робота
-  alex35tradeBotWSrjxs() // вторая попытка (пока без стрима)
+  // !!!! alex35tradeBotWSrjxs() // вторая попытка (пока без стрима)
+  alex37tradeMain()
   // rxjsexample2() // примеры rxjs
   //rxjsExampleObservable()
 
