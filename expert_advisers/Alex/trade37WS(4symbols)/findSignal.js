@@ -22,7 +22,7 @@ function findSygnal(array, symbolObj) {
 
   // для сделки
   const stopLossConst = 0.01
-  const takeProfitConst = 0.04
+  const takeProfitConst = 0.03
   // let amountOfPosition = 0 // для расчета объема входа в сделку
   // let deposit = 0
   // let inShortPosition = false
@@ -137,9 +137,9 @@ function findSygnal(array, symbolObj) {
             partOfDeposit * 100
           }% c плечом ${multiplier}x от депозита = ${
             symbolObj.deposit
-          } USDT\n\nПоставь:\nTake Profit: ${
-            symbolObj.takeProfit
-          }\nStop Loss: ${symbolObj.stopLoss}`
+          } USDT\n\nПоставь:\nTake Profit: ${symbolObj.takeProfit} (${
+            takeProfitConst * 100
+          }%)\nStop Loss: ${symbolObj.stopLoss} (${-stopLossConst * 100})%`
         )
         //sendInfoToUser(JSON.stringify(symbolObj))
       } else {
