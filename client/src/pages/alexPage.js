@@ -68,7 +68,10 @@ export const AlexPage = () => {
 
         <div class="input-field">
           <input type="text" name="TimeFrame" onChange={changeHandler} />
-          <label>Тайм фрейм: 2h</label>
+          <label>
+            Тайм фрейм: 2h (не более 12h включительно, т.к. требуются доработки
+            в candlesInside)
+          </label>
         </div>
 
         <p>
@@ -158,8 +161,8 @@ export const AlexPage = () => {
           <b>Стратегия 3.7, сигнал №4</b>: коэффициент для входа в сделку
           относительно <b>Open Price</b> сигнальной красной свечки
           <br />
-          На двух примерах было вычислено: от 0.13 до 0.17. Ноль - коэффициент
-          будет равень нулью.
+          На двух примерах было вычислено: от 0.13 до 0.17.
+          <br /> <b>Ноль - коэффициент будет равень нулю.</b>
         </p>
         <div class="input-field">
           <input type="text" name="delta" onChange={changeHandler} />
@@ -305,7 +308,7 @@ export const AlexPage = () => {
           <div>
             - кол-во отрицательных сделок: {data.statistics37.countOfNegative}
           </div>
-          <div>- кол-во нулевых сделок: {data.statistics35.countOfZero}</div>
+          <div>- кол-во нулевых сделок: {data.statistics37.countOfZero}</div>
         </div>
       )}
 
@@ -323,7 +326,7 @@ export const AlexPage = () => {
             <td>Время выхода</td>
             <td>Прибыль / Убыток</td>
             <td>в процентах</td>
-            <td>Депозит2</td>
+            {/*<td>Депозит2</td>*/}
             <td>Take Profit</td>
             <td>Stop Loss</td>
             <td>Время изменения TP</td>
@@ -344,7 +347,7 @@ export const AlexPage = () => {
                 <td>{deal.closeTime}</td>
                 <td>{deal.profit}</td>
                 <td>{deal.percent}</td>
-                <td>{deal.deposit2}</td>
+                {/*<td>{deal.deposit2}</td>*/}
                 <td>{deal.takeProfit}</td>
                 <td>{deal.stopLoss}</td>
                 <td>{deal.dateChangeTP}</td>

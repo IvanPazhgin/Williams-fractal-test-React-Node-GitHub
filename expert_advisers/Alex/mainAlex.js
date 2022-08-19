@@ -1,14 +1,16 @@
 const config = require('config')
 const candlesToObject = require('../common.func/candlesToObject')
-const diffCandle = require('../Williams_fractal/diffCandle')
-const getCandles = require('../Williams_fractal/getCandles')
+const diffCandle = require('../common.func/diffCandle')
+const getCandles = require('../../API/binance.engine/usdm/getCandles.5param')
 const timestampToDateHuman = require('../common.func/timestampToDateHuman')
-const alex37testMain = require('./alex37test/alex37testMain')
+// const alex37testMain = require('./alex37test/alex37testMain')
 // const tradeAlex1 = require('./tradeAlex1.3')
 // const tradeAlex2 = require('./tradeAlex2')
 // const tradeAlex33 = require('./tradeAlex3.3')
 // const tradeAlex34 = require('./tradeAlex3.4')
-const tradeAlex35 = require('./tradeAlex3.5')
+const tradeAlex35 = require('./tradeAlex3.5') // тестер стратегии 3.5
+// const alex37testMainMod = require('./alex37testMod/alex37testMainMod')
+const alex37testMain2 = require('./alex37test/alex37testMain2')
 // const tradeAlex4 = require('./tradeAlex4')
 // const bookTickerFunc = require('./bookOfSymbol')
 
@@ -16,7 +18,7 @@ const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
 
 async function startAlex(
   symbol,
-  TimeFrame,
+  timeFrame,
   dateStart,
   dateFinish,
   deposit,
@@ -32,14 +34,14 @@ async function startAlex(
   // const bookOfSymbol = bookTickerFunc()
   const startProgramAt = timestampToDateHuman(new Date().getTime()) // для расчета времени работы приложения
 
-  const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, TimeFrame)
+  const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, timeFrame)
   let candlesSeniorFull = []
 
   try {
     for (let i = 0; i < arrayOf1kPeriod.length; i++) {
       const candlesSenior = await getCandles(
         symbol,
-        TimeFrame,
+        timeFrame,
         arrayOf1kPeriod[i].dateFirst,
         arrayOf1kPeriod[i].dateSecond,
         limitSeniorTrend
@@ -103,6 +105,7 @@ async function startAlex(
     )
 
     // name: без теневая 3.7
+    /*
     const [deals37, statistics37] = alex37testMain(
       objectSenior,
       deposit,
@@ -113,6 +116,22 @@ async function startAlex(
       diffShadow35big,
       diffShadow35small,
       delta
+    )
+    */
+
+    // name: без теневая 3.7 mod
+    //const [deals37, statistics37] = await alex37testMainMod(
+    const [deals37, statistics37] = await alex37testMain2(
+      objectSenior,
+      deposit,
+      partOfDeposit,
+      multiplier,
+      takeProfit,
+      stopLoss,
+      diffShadow35big,
+      diffShadow35small,
+      delta,
+      symbol
     )
 
     /*

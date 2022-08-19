@@ -11,6 +11,7 @@ function candlesToObject(arg) {
       lowPrice: Number(item[3]),
       closePrice: Number(item[4]),
       volume: Number(item[5]),
+      closeTime: Number(item[6]),
     }
   })
   return target

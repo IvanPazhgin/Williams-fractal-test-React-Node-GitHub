@@ -1,6 +1,6 @@
 const candlesToObject = require('../../common.func/candlesToObject')
 const findSygnal = require('./findSignal')
-const getCandles = require('../../../API/binance.engine/alex/getCandles')
+const getCandles = require('../../../API/binance.engine/usdm/getCandles.3param')
 // const timestampToDateHuman = require('../../common.func/timestampToDateHuman') // временно для проверки свечей
 
 async function notInPosition(lastCandle, symbolObj, timeFrame) {
