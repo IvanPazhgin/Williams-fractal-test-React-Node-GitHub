@@ -261,6 +261,29 @@ async function alex37tradeMain4s() {
               console.log(`начальное состояние сделки:`)
               console.table(symbolObj3[i])
 
+              // если не вошли в сделку, то очищаем все параметры
+              if (symbolObj3[i].canShort) {
+                symbolObj3[i] = {
+                  symbol: symbolObj3[i].symbol,
+                  canShort: false,
+                  inPosition: false,
+                  deposit: 1000,
+                  whitchSignal: '',
+                  openShort: 0,
+                  positionTime: 0,
+                  amountOfPosition: 0,
+                  takeProfit: 0,
+                  stopLoss: 0,
+                  changedTP: false,
+                  changedSL: false,
+                  closeShort: 0,
+                  closeTime: 0,
+                  profit: 0,
+                  percent: 0,
+                }
+              } // обнуляем состояние сигнала
+              // можно вывести consol.log
+
               // ищем сигнал для входа
               // !! вызвать функцию (передать ей новый массив), где будет приниматься решение входить или нет
               // sendInfoToUser(`Прилетела новая свеча.\nЗапускаем поиск сигнала...`)
