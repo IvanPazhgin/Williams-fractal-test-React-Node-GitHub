@@ -15,6 +15,7 @@ const { sendInfoToUser } = require('../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 const closeShort = require('./closeShort')
 const changeTPSL = require('./changeTPSL')
+const canShort = require('./canShort')
 
 async function alex37tradeMain4s() {
   // получаем от пользователя список инструментов
@@ -192,7 +193,10 @@ async function alex37tradeMain4s() {
           //console.log(`symbolObj3[i].symbol = ${symbolObj3[i].symbol}, тип = ${typeof symbolObj3[i].symbol}`)
           if (symbolObj3[i].inPosition) {
             // проверяем условия выхода из сделки:
-            // новая свеча выходит из сделки или проверяет условия TP и SL, меняет их если надо
+            // новая свеча:
+            // 1. выходит из сделки по TP и SL
+            // или
+            // 2. проверяет условия изменения TP и SL
             if (!final) {
               // 1. для начала проверяем условие выхода из сделки по SL и TP
               console.log(
@@ -230,7 +234,8 @@ async function alex37tradeMain4s() {
                 }
               } // обнуляем состояние сделки до первоначального состояния
             } else {
-              // if(final) - 2. затем проверяем условие изменения SL и TP
+              // if(final)
+              // 2. затем проверяем условие изменения SL и TP
               console.log(`проверяем условие изменения SL и TP`)
               symbolObj3[i] = changeTPSL(lastCandle, symbolObj3[i])
 
@@ -246,9 +251,13 @@ async function alex37tradeMain4s() {
             // end of: if (symbolObj.inPosition)
           } else {
             // if (!symbolObj.inPosition)
-            // ждем финальную свечку
-            if (final) {
-              console.log('------===== пришла новая свечка ===== ------')
+            // 1. ждем цену на рынке для входа по сигналу
+            if (!final) {
+              symbolObj3[i] = canShort(lastCandle, symbolObj3[i])
+            } else {
+              // 2. ждем финальную свечку для поиска точки входа
+              //if (final) {
+              // console.log('------===== пришла новая свечка ===== ------')
               console.log(`начальное состояние сделки:`)
               console.table(symbolObj3[i])
 

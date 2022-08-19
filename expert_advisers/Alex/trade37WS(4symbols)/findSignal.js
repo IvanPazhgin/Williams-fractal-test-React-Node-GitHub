@@ -46,6 +46,8 @@ function findSygnal(array, symbolObj) {
       ) {
         symbolObj.canShort = true
         symbolObj.whitchSignal = 'сигнал №1'
+        symbolObj.openShort = array[i].openPrice
+        openShortCommon()
       }
 
       // сигнал №2 - пока убираем (не прописан в тестере)
@@ -74,6 +76,8 @@ function findSygnal(array, symbolObj) {
       ) {
         symbolObj.canShort = true
         symbolObj.whitchSignal = 'сигнал №3'
+        symbolObj.openShort = array[i].closePrice
+        openShortCommon()
       }
 
       // сигнал №4 (аналог №3 по страте 3.5)
@@ -85,10 +89,13 @@ function findSygnal(array, symbolObj) {
       ) {
         symbolObj.canShort = true
         symbolObj.whitchSignal = 'сигнал №4'
+        symbolObj.openShort = array[i].openPrice
+        openShortCommon()
       }
 
       // входим в шорт - убрать в главную функцию
       if (symbolObj.canShort) {
+        /*
         switch (symbolObj.whitchSignal) {
           case 'сигнал №1':
             // входим ниже array[i - 1].openPrice на дельту: coefficient = array[i].openPrice * (1 - delta / 100)
@@ -113,33 +120,36 @@ function findSygnal(array, symbolObj) {
             //console.log(`array[i - 1].closePrice = ${array[i - 1].closePrice}, время: ${timestampToDateHuman(array[i - 1].openTime)}`)
             symbolObj.openShort = array[i].openPrice // вход по цене открытия красной [i-1]
             openShortCommon(array[i].openTime) // функция openShortCommon для входа в сделку с общими полями
-
             break
 
           default:
           // console.log('сигнала не было')
           // можно отправить сообщение в telegram bot для тестов на первое время
         } // switch (whitchSignal)
+        */
 
         console.log(`Open SHORT по сигналу: ${symbolObj.whitchSignal}`)
         console.log('получили изменения в состоянии сделки внутри findSignal()')
         console.table(symbolObj)
+
         sendInfoToUser(
           `---=== НОВЫЙ СИГНАЛ ===---\nСтратегия №3: Без теневая RC 7\nСработал: ${
             symbolObj.whitchSignal
-          }\n\nМонета: ${symbolObj.symbol}\nOpen SHORT: ${
+          }\n\nМонета: ${symbolObj.symbol}\nЦена для входа в SHORT: ${
             symbolObj.openShort
-          }\nВремя сигнальной свечи: ${timestampToDateHuman(
-            symbolObj.positionTime
+          }\n\nВремя сигнальной свечи: ${timestampToDateHuman(
+            array[i].openTime
           )}\nВремя сигнала: ${timestampToDateHuman(
             new Date().getTime()
-          )}\nКол-во монет: ${symbolObj.amountOfPosition}\nВзяли ${
+          )}\n\nКол-во монет: ${symbolObj.amountOfPosition}\nВзяли ${
             partOfDeposit * 100
           }% c плечом ${multiplier}x от депозита = ${
             symbolObj.deposit
           } USDT\n\nПоставь:\nTake Profit: ${symbolObj.takeProfit} (${
             takeProfitConst * 100
-          }%)\nStop Loss: ${symbolObj.stopLoss} (${-stopLossConst * 100})%`
+          }%)\nStop Loss: ${symbolObj.stopLoss} (${
+            -stopLossConst * 100
+          })%\n\nЖдем цену на рынке для входа в SHORT...`
         )
         //sendInfoToUser(JSON.stringify(symbolObj))
       } else {
@@ -150,6 +160,26 @@ function findSygnal(array, symbolObj) {
   } // for (let i = 4; i < array.length; i++)
 
   // функция openShortCommon для входа в сделку с общими полями
+  function openShortCommon() {
+    // вычисляем уровень take profit
+    symbolObj.takeProfit = +(
+      symbolObj.openShort *
+      (1 - takeProfitConst)
+    ).toFixed(5)
+
+    // вычисляем уровень Stop Loss
+    symbolObj.stopLoss = +(symbolObj.openShort * (1 + stopLossConst)).toFixed(5)
+
+    // считаем объем сделки
+    symbolObj.amountOfPosition = +(
+      (symbolObj.deposit / symbolObj.openShort) *
+      partOfDeposit *
+      multiplier
+    ).toFixed(8)
+  }
+
+  /*
+  // для вызова внутри Switch
   function openShortCommon(OpenTime) {
     // правильнее будет -> в главном модуле: вставить после входа в сделку
     symbolObj.canShort = false
@@ -171,6 +201,7 @@ function findSygnal(array, symbolObj) {
       multiplier
     ).toFixed(8)
   }
+  */
 
   return symbolObj
 }

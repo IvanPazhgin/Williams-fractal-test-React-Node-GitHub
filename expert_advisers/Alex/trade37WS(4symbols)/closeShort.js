@@ -24,7 +24,7 @@ function closeShort(lastCandle, symbolObj) {
 
       // console.log(`Close SHORT with takeProfit: ${symbolObj.closeShort}`)
       sendInfoToUser(
-        `${symbolObj.symbol}:\nClose SHORT with takeProfit: ${symbolObj.closeShort}\nПрибыль = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
+        `${symbolObj.symbol}:\n${symbolObj.whitchSignal}\n\n--== Close SHORT ==--\nwith takeProfit: ${symbolObj.closeShort}\nПрибыль = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
       )
       // sendInfoToUser(JSON.stringify(symbolObj))
 
@@ -80,7 +80,7 @@ function closeShort(lastCandle, symbolObj) {
 
       //console.log(`Close SHORT with stopLoss: ${symbolObj.closeShort}`)
       sendInfoToUser(
-        `${symbolObj.symbol}:\nClose SHORT with stopLoss: ${symbolObj.closeShort}\nУбыток = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
+        `${symbolObj.symbol}:\n${symbolObj.whitchSignal}\n\n--== Close SHORT ==--\nwith stopLoss: ${symbolObj.closeShort}\nУбыток = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
       )
       //sendInfoToUser(JSON.stringify(symbolObj))
 
