@@ -81,7 +81,16 @@ async function alex37tradeMain4s() {
     }
   })
 */
-  const symbols3 = ['UNFIUSDT', 'PEOPLEUSDT', 'BELUSDT', 'BLZUSDT']
+  const symbols3 = [
+    'UNFIUSDT',
+    'PEOPLEUSDT',
+    'BELUSDT',
+    'BLZUSDT',
+    'ROSEUSDT',
+    'GMTUSDT',
+    'SANDUSDT',
+    'BANDUSDT',
+  ]
 
   let symbolObj3 = []
 
