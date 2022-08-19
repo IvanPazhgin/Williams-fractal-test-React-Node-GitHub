@@ -140,7 +140,7 @@ function findSygnal(array, symbolObj) {
           }\n\nВремя сигнальной свечи: ${timestampToDateHuman(
             array[i].openTime
           )}\nВремя сигнала: ${timestampToDateHuman(
-            new Date().getTime()
+            symbolObj.sygnalTime
           )}\n\nКол-во монет: ${symbolObj.amountOfPosition}\nВзяли ${
             partOfDeposit * 100
           }% c плечом ${multiplier}x от депозита = ${
@@ -161,6 +161,8 @@ function findSygnal(array, symbolObj) {
 
   // функция openShortCommon для входа в сделку с общими полями
   function openShortCommon() {
+    symbolObj.sygnalTime = new Date().getTime()
+
     // вычисляем уровень take profit
     symbolObj.takeProfit = +(
       symbolObj.openShort *

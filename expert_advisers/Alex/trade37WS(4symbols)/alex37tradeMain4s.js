@@ -105,6 +105,7 @@ async function alex37tradeMain4s() {
       whitchSignal: '',
       openShort: 0,
       positionTime: 0,
+      sygnalTime: 0,
       amountOfPosition: 0,
       takeProfit: 0,
       stopLoss: 0,
@@ -222,6 +223,7 @@ async function alex37tradeMain4s() {
                   whitchSignal: '',
                   openShort: 0,
                   positionTime: 0,
+                  sygnalTime: 0,
                   amountOfPosition: 0,
                   takeProfit: 0,
                   stopLoss: 0,
@@ -258,8 +260,6 @@ async function alex37tradeMain4s() {
               // 2. ждем финальную свечку для поиска точки входа
               //if (final) {
               // console.log('------===== пришла новая свечка ===== ------')
-              console.log(`начальное состояние сделки:`)
-              console.table(symbolObj3[i])
 
               // если не вошли в сделку, то очищаем все параметры
               if (symbolObj3[i].canShort) {
@@ -271,6 +271,7 @@ async function alex37tradeMain4s() {
                   whitchSignal: '',
                   openShort: 0,
                   positionTime: 0,
+                  sygnalTime: 0,
                   amountOfPosition: 0,
                   takeProfit: 0,
                   stopLoss: 0,
@@ -281,9 +282,15 @@ async function alex37tradeMain4s() {
                   profit: 0,
                   percent: 0,
                 }
+
+                sendInfoToUser(
+                  `Стратегия №3: Без теневая RC 7\n${symbolObj3[i].whitchSignal}\n\nМонета: ${symbolObj3[i].symbol}\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${symbolObj3[i].sygnalTime}\nУДАЛИ ордер на бирже\n\nЖдем следющего сигнала...`
+                )
               } // обнуляем состояние сигнала
               // можно вывести consol.log
 
+              console.log(`начальное состояние сделки:`)
+              console.table(symbolObj3[i])
               // ищем сигнал для входа
               // !! вызвать функцию (передать ей новый массив), где будет приниматься решение входить или нет
               // sendInfoToUser(`Прилетела новая свеча.\nЗапускаем поиск сигнала...`)
@@ -297,7 +304,7 @@ async function alex37tradeMain4s() {
               //console.log('получили изменения в состоянии сделки после notInPosition()')
               // console.table(temp)
               //console.table(symbolObj3[i]) // убрал из-за вывода undefined в consol.log()
-            }
+            } // //if (final)
           } // end of: if (symbolObj.inPosition)
         } else {
           //console.log(`${item.symbol}: не пришла свечка из web socket`)

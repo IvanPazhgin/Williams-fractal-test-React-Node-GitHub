@@ -14,7 +14,7 @@ function canShort(lastCandle, symbolObj) {
         }\n\n--== Вошли в SHORT ==--\nпо цене: ${
           symbolObj.openShort
         } USDT \n\nВремя входа: ${timestampToDateHuman(
-          lastCandle.openTime
+          symbolObj.positionTime
         )}\n\nЖдем цену на рынке для выхода из сделки...`
       )
     }
