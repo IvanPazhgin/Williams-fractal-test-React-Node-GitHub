@@ -2,7 +2,7 @@
 // VERSION 3.7
 // рекомендуемая монета BLZUSDT
 // отмена сигнала: если на текущей не входим, значит на следующей финальной свечке отменяем сигнал
-const timestampToDateHuman = require('../trade35WS_RxJS/timestampToDateHuman')
+const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 
 function alex37testMain(
   array,

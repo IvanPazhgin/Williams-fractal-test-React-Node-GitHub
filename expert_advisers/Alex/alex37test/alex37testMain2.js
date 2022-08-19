@@ -3,7 +3,7 @@
 // рекомендуемая монета BLZUSDT
 // отмена сигнала: если на текущей не входим, значит на следующей финальной свечке отменяем сигнал
 const candlesInside = require('../../common.func/candlesInside')
-const timestampToDateHuman = require('../trade35WS_RxJS/timestampToDateHuman')
+const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 
 async function alex37testMain2(
   array,
