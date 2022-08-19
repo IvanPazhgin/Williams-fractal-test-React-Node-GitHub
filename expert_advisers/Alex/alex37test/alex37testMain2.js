@@ -50,6 +50,7 @@ async function alex37testMain2(
   let changedSL = false // TP и SL могут быть изменены только 1 раз
 
   let arrayInside
+  let pricePrecision = 5 // цена: количество знаков после запятой
 
   for (let i = 3; i < array.length; i++) {
     if (!inShortPosition) {
@@ -255,17 +256,17 @@ async function alex37testMain2(
 
           deals[numberOfPosition] = {
             openPosition: 'Sell',
-            openPrice: +positionDown.toFixed(8),
+            openPrice: +positionDown.toFixed(pricePrecision),
             openTime: timestampToDateHuman(positionTime),
             amountOfPosition: amountOfPosition,
             closePosition: 'Buy',
-            closePrice: +takeProfit.toFixed(8),
+            closePrice: +takeProfit.toFixed(pricePrecision),
             closeTime: timestampToDateHuman(arrayInside[j].openTime),
             profit: +profit.toFixed(2),
             percent: percent,
             deposit2: deposit2,
-            takeProfit: +takeProfit.toFixed(8), // для проверки движка
-            stopLoss: +stopLoss.toFixed(8), // для проверки движка
+            takeProfit: +takeProfit.toFixed(pricePrecision), // для проверки движка
+            stopLoss: +stopLoss.toFixed(pricePrecision), // для проверки движка
             dateChangeTP: dateChangeTP, // запоминаем время переноса TP
             //dateChangeSL: timestampToDateHuman(dateChangeSL), // запоминаем время переноса SL
             //diffShadow: diffShadow,
@@ -287,17 +288,17 @@ async function alex37testMain2(
 
           deals[numberOfPosition] = {
             openPosition: 'Sell',
-            openPrice: +positionDown.toFixed(8),
+            openPrice: +positionDown.toFixed(pricePrecision),
             openTime: timestampToDateHuman(positionTime),
             amountOfPosition: amountOfPosition,
             closePosition: 'Buy',
-            closePrice: +stopLoss.toFixed(8),
+            closePrice: +stopLoss.toFixed(pricePrecision),
             closeTime: timestampToDateHuman(arrayInside[j].openTime),
             profit: +profit.toFixed(2),
             percent: percent,
             deposit2: deposit2,
-            takeProfit: +takeProfit.toFixed(8), // для проверки движка
-            stopLoss: +stopLoss.toFixed(8), // для проверки движка
+            takeProfit: +takeProfit.toFixed(pricePrecision), // для проверки движка
+            stopLoss: +stopLoss.toFixed(pricePrecision), // для проверки движка
             //dateChangeTP: timestampToDateHuman(dateChangeTP), // запоминаем время переноса TP
             dateChangeSL: dateChangeSL, // запоминаем время переноса SL
             // diffShadow: diffShadow,

@@ -158,8 +158,11 @@ function findSygnal(array, symbolObj) {
     //console.log(`входим time: ${timestampToDateHuman(array[i].openTime)}`) // !! проверка
     //symbolObj.indexOfPostion = i
 
-    symbolObj.takeProfit = symbolObj.openShort * (1 - takeProfitConst)
-    symbolObj.stopLoss = symbolObj.openShort * (1 + stopLossConst)
+    symbolObj.takeProfit = +(
+      symbolObj.openShort *
+      (1 - takeProfitConst)
+    ).toFixed(5)
+    symbolObj.stopLoss = +(symbolObj.openShort * (1 + stopLossConst)).toFixed(5)
 
     // считаем объем сделки
     symbolObj.amountOfPosition = +(
