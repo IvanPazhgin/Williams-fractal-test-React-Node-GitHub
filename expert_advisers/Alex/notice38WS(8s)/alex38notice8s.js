@@ -17,7 +17,7 @@ const closeShort = require('./closeShort')
 const changeTPSL = require('./changeTPSL')
 const canShort = require('./canShort')
 
-async function alex38notification8s() {
+async function alex38notice8s() {
   // получаем от пользователя список инструментов
   /*
   // const symbol = 'BTCUSDT' // тестируй на монете UNFI пусть она первая будет
@@ -346,4 +346,4 @@ async function alex38notification8s() {
   */
 }
 
-module.exports = alex38notification8s
+module.exports = alex38notice8s

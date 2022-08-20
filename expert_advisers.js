@@ -5,11 +5,11 @@ function testOfNewFuctiouns() {
 function workingFunctions() {
   // const alex37tradeMain = require('./expert_advisers/Alex/trade37WS(1symbol)/alex37tradeMain')
   //const alex37tradeMain4s = require('./expert_advisers/Alex/trade37WS(4symbols)/alex37tradeMain4s')
-  const alex38notification8s = require('./expert_advisers/Alex/notification38WS(8s)/alex38Notification8s')
+  const alex38notice8s = require('./expert_advisers/Alex/notice38WS(8s)/alex38notice8s')
   const { tgBotExample } = require('./API/telegram/telegram.bot')
   // alex37tradeMain() // стратегия 3.7 оповещения на одной монете
   //alex37tradeMain4s() // стратегия 3.7 оповещения на четырех монетах
-  alex38notification8s() // стратегия 3.8 оповещения на восьми монетах
+  alex38notice8s() // стратегия 3.8 оповещения на восьми монетах
   tgBotExample()
 }
 
