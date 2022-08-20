@@ -12,4 +12,4 @@ UNFIUSDT, CRVUSDT, UNIUSDT, QTUMUSDT, FLMUSDT, GALUSDT, TRBUSDT, LPTUSDT, LITUSD
 коэффициенты для стратегии 3.5: 0.3 и 0.3
 
 монеты для тестов на момент 11.08.2022:
-1)unfiusdt 2)trbusdt 3)bnbusdt 4)ethusdt 5)blzusdt 6)bandusdt
+1)unfiusdt 2)trbusdt 3)bnbusdt 4)ethusdt 5)blzusdt 6)bandusdt 
