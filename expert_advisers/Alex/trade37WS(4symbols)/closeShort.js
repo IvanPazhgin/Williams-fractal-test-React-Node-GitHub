@@ -24,7 +24,7 @@ function closeShort(lastCandle, symbolObj) {
 
       // console.log(`Close SHORT with takeProfit: ${symbolObj.closeShort}`)
       sendInfoToUser(
-        `${symbolObj.symbol}:\n${symbolObj.whitchSignal}\n\n--== Close SHORT ==--\nwith takeProfit: ${symbolObj.closeShort}\nПрибыль = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
+        `Стратегия №3: Без теневая RC 7\n${symbolObj.whitchSignal}\n\nМонета: ${symbolObj.symbol}\n\n--== Close SHORT ==--\nwith takeProfit: ${symbolObj.closeShort}\nПрибыль = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
       )
       // sendInfoToUser(JSON.stringify(symbolObj))
 

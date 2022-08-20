@@ -148,7 +148,7 @@ function findSygnal(array, symbolObj) {
           } USDT\n\nПоставь:\nTake Profit: ${symbolObj.takeProfit} (${
             takeProfitConst * 100
           }%)\nStop Loss: ${symbolObj.stopLoss} (${
-            -stopLossConst * 100
+            stopLossConst * 100
           })%\n\nЖдем цену на рынке для входа в SHORT...`
         )
         //sendInfoToUser(JSON.stringify(symbolObj))

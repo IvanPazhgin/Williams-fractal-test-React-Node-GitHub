@@ -263,6 +263,10 @@ async function alex37tradeMain4s() {
 
               // если не вошли в сделку, то очищаем все параметры
               if (symbolObj3[i].canShort) {
+                sendInfoToUser(
+                  `Стратегия №3: Без теневая RC 7\n${symbolObj3[i].whitchSignal}\n\nМонета: ${symbolObj3[i].symbol}\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${symbolObj3[i].sygnalTime}\nУДАЛИ ордер на бирже\n\nЖдем следющего сигнала...`
+                )
+
                 symbolObj3[i] = {
                   symbol: symbolObj3[i].symbol,
                   canShort: false,
@@ -282,10 +286,6 @@ async function alex37tradeMain4s() {
                   profit: 0,
                   percent: 0,
                 }
-
-                sendInfoToUser(
-                  `Стратегия №3: Без теневая RC 7\n${symbolObj3[i].whitchSignal}\n\nМонета: ${symbolObj3[i].symbol}\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${symbolObj3[i].sygnalTime}\nУДАЛИ ордер на бирже\n\nЖдем следющего сигнала...`
-                )
               } // обнуляем состояние сигнала
               // можно вывести consol.log
 
