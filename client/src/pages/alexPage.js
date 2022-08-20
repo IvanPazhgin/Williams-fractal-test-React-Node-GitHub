@@ -54,7 +54,7 @@ export const AlexPage = () => {
     <>
       <div>
         <h3>
-          Тест стратегий Алекса: <b>3.7</b>
+          Тест стратегий Алекса: <b>3.7</b> и <b>3.8</b>
         </h3>
       </div>
       <hr></hr>
@@ -124,11 +124,11 @@ export const AlexPage = () => {
         <p>
           {/*<b>Стратегия 3.5: Сигнал № 1 (3 зеленых, 1 красная):</b>
           <br />*/}
-          <b>Стратегии 3.7: Сигнал № 1 (2 зеленых, 1 красная):</b>
-          <br /> процент отношения верхней тени к нижней тени (на красной
-          свечке).
+          <b>Стратегии 3.7: Сигнал № 1 (в таблице: 2g 1r k~0.62):</b>
+          <br /> УСЛОВИЕ входа: 2 зеленых, 1 красная, процент отношения верхней
+          тени к нижней тени (на красной свечке)
           <br />
-          Условие проверки: отношение меньше значения пользователя.
+          Условие проверки коэффициента: отношение меньше значения пользователя.
           <br /> Допустимо: 0.139 - 0.625
           <br /> Не допустимо: 0.853
         </p>
@@ -140,11 +140,17 @@ export const AlexPage = () => {
         </div>
 
         <p>
+          <b>Стратегии 3.7: сигнал №3 (в таблице: 2g 1r h=o)</b>
+          <br />
+          УСЛОВИЕ входа: 2 зеленых; 1 красная, у которой нет верхней тени
+        </p>
+
+        <p>
           {/*<b>Стратегии 3.5: сигнал №3</b>. Вход по <b>Close Price</b>
           <br />*/}{' '}
-          <b>Стратегии 3.7: сигнал №4</b>
-          <br /> на красной свече верхняя тень сильно меньше нижней тени.{' '}
-          <b>Низкий коэффициент. Задает пользователь</b>.
+          <b>Стратегии 3.7: сигнал №4 (в таблице: 1r k~0.3)</b>
+          <br /> УСЛОВИЕ входа: на красной свече верхняя тень сильно меньше
+          нижней тени. <b>Низкий коэффициент. Задает пользователь</b>.
           <br /> Условие проверки: отношение меньше значения пользователя.
           <br /> на примере atomusdt 24.07 at 09:00 коэффициент = 0.102
         </p>
@@ -353,6 +359,82 @@ export const AlexPage = () => {
                 <td>{deal.dateChangeTP}</td>
                 <td>{deal.dateChangeSL}</td>
                 <td>{deal.whitchSignal}</td>
+              </tr>
+            ))}
+        </table>
+      </div>
+
+      <hr></hr>
+      {/*таблица всех сделок № 3.8*/}
+      <h4>Стратегия №3.8: "без теневая"</h4>
+
+      <h5>Общая статистика:</h5>
+      {data && data.statistics38 && (
+        <div>
+          <div>Депозит в начале: {data.statistics38.depositAtStart} USD</div>
+          <div>Депозит в конце: {data.statistics38.depositAtEnd} USD</div>
+          <div>
+            Итоговая прибыль/убыток: {data.statistics38.globalProfit} USD
+          </div>
+          <div>ROI: {data.statistics38.roi} %</div>
+
+          <p></p>
+          <div>
+            Всего сделок: {data.statistics38.allDealsCount}, из которых:
+          </div>
+          <div>
+            - кол-во положительных сделок: {data.statistics38.countOfPositive}
+          </div>
+          <div>
+            - кол-во отрицательных сделок: {data.statistics38.countOfNegative}
+          </div>
+          <div>- кол-во нулевых сделок: {data.statistics38.countOfZero}</div>
+        </div>
+      )}
+
+      <h5>Таблица всех сделок:</h5>
+      <div>
+        <table>
+          <tr>
+            <td>№</td>
+            <td>Открываем</td>
+            <td>Цена входа</td>
+            <td>Время входа</td>
+            <td>Объем сделки</td>
+            <td>Закрываем</td>
+            <td>Цена выхода</td>
+            <td>Время выхода</td>
+            <td>Прибыль / Убыток</td>
+            <td>в процентах</td>
+            {/*<td>Депозит2</td>*/}
+            <td>Take Profit</td>
+            <td>Stop Loss</td>
+            <td>Время изменения TP</td>
+            <td>Время изменения SL</td>
+            <td>Сигнал</td>
+            <td>Условие</td>
+          </tr>
+          {data &&
+            data.deals38 &&
+            data.deals38.map((deal, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>{deal.openPosition}</td>
+                <td>{deal.openPrice}</td>
+                <td>{deal.openTime}</td>
+                <td>{deal.amountOfPosition}</td>
+                <td>{deal.closePosition}</td>
+                <td>{deal.closePrice}</td>
+                <td>{deal.closeTime}</td>
+                <td>{deal.profit}</td>
+                <td>{deal.percent}</td>
+                {/*<td>{deal.deposit2}</td>*/}
+                <td>{deal.takeProfit}</td>
+                <td>{deal.stopLoss}</td>
+                <td>{deal.dateChangeTP}</td>
+                <td>{deal.dateChangeSL}</td>
+                <td>{deal.whitchSignal}</td>
+                <td>{deal.condition}</td>
               </tr>
             ))}
         </table>

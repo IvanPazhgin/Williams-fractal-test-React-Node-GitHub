@@ -11,6 +11,7 @@ const timestampToDateHuman = require('../common.func/timestampToDateHuman')
 const tradeAlex35 = require('./tradeAlex3.5') // тестер стратегии 3.5
 // const alex37testMainMod = require('./alex37testMod/alex37testMainMod')
 const alex37testMain2 = require('./alex37test/alex37testMain2')
+const alex38test = require('./alex38test/alex38test')
 // const tradeAlex4 = require('./tradeAlex4')
 // const bookTickerFunc = require('./bookOfSymbol')
 
@@ -134,6 +135,19 @@ async function startAlex(
       symbol
     )
 
+    const [deals38, statistics38] = await alex38test(
+      objectSenior,
+      deposit,
+      partOfDeposit,
+      multiplier,
+      takeProfit,
+      stopLoss,
+      diffShadow35big,
+      diffShadow35small,
+      delta,
+      symbol
+    )
+
     /*
     // name: часовик 4.0
     const [deals4, statistics4] = tradeAlex4(
@@ -161,6 +175,8 @@ async function startAlex(
       statistics35,
       deals37,
       statistics37,
+      deals38,
+      statistics38,
       // deals4,
       // statistics4,
       startProgramAt,
