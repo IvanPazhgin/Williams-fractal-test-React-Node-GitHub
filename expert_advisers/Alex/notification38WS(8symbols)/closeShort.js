@@ -24,7 +24,7 @@ function closeShort(lastCandle, symbolObj) {
 
       // console.log(`Close SHORT with takeProfit: ${symbolObj.closeShort}`)
       sendInfoToUser(
-        `Стратегия №3: Без теневая RC 7\n${symbolObj.whitchSignal}\n\nМонета: ${symbolObj.symbol}\n\n--== Close SHORT ==--\nwith takeProfit: ${symbolObj.closeShort}\nПрибыль = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
+        `${symbolObj.nameStrategy}\n${symbolObj.whitchSignal}\n${symbolObj.closeTime}\n\nМонета: ${symbolObj.symbol}\n\n--== Close SHORT ==--\nwith Take Profit: ${symbolObj.closeShort}\nПрибыль = ${symbolObj.profit} USDT (${symbolObj.percent}% от депозита)`
       )
       // sendInfoToUser(JSON.stringify(symbolObj))
 
@@ -80,8 +80,9 @@ function closeShort(lastCandle, symbolObj) {
 
       //console.log(`Close SHORT with stopLoss: ${symbolObj.closeShort}`)
       sendInfoToUser(
-        `${symbolObj.symbol}:\n${symbolObj.whitchSignal}\n\n--== Close SHORT ==--\nwith stopLoss: ${symbolObj.closeShort}\nУбыток = ${symbolObj.profit} USDT (${symbolObj.percent}%)`
+        `${symbolObj.nameStrategy}\n${symbolObj.whitchSignal}\n${symbolObj.closeTime}\n\nМонета: ${symbolObj.symbol}\n\n--== Close SHORT ==--\nwith Stop Loss: ${symbolObj.closeShort}\nУбыток = ${symbolObj.profit} USDT (${symbolObj.percent}% от депозита)`
       )
+
       //sendInfoToUser(JSON.stringify(symbolObj))
 
       /*

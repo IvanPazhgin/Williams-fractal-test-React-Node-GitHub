@@ -6,7 +6,7 @@ function closeShort(lastCandle, symbolObj) {
     // условия выхода из сделки по TP
     if (lastCandle.lowPrice <= symbolObj.takeProfit) {
       symbolObj.closeShort = lastCandle.lowPrice
-      symbolObj.closeTime = lastCandle.startTime
+      symbolObj.closeTime = lastCandle.openTime
 
       symbolObj.profit = +(
         (symbolObj.openShort - lastCandle.lowPrice) *
@@ -64,7 +64,7 @@ function closeShort(lastCandle, symbolObj) {
     // условия выхода из сделки по SL
     else if (lastCandle.highPrice >= symbolObj.stopLoss) {
       symbolObj.closeShort = lastCandle.highPrice
-      symbolObj.closeTime = lastCandle.startTime
+      symbolObj.closeTime = lastCandle.openTime
 
       symbolObj.profit = +(
         (symbolObj.openShort - lastCandle.highPrice) *
