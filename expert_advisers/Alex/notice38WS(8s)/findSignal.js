@@ -19,7 +19,7 @@ function findSygnal(array, symbolObj) {
   let diffShadowSmallUser = 0.3 // Из примеров Алекса получилось: 0.11. ПРОТЕСТИРОВАТЬ на всём диапозоне
 
   // для сделки
-  const stopLossConst = 0.01
+  const stopLossConst = 0.02
   const takeProfitConst = 0.02
   // let amountOfPosition = 0 // для расчета объема входа в сделку
   // let deposit = 0
@@ -27,6 +27,7 @@ function findSygnal(array, symbolObj) {
   //let symbolObj = {}
   const partOfDeposit = 0.25 // доля депозита на одну сделку
   const multiplier = 10 // плечо
+  const highPriceLowPrice = 0.04 // отношение хая к лою менее 5%
 
   // проверка условий на вход
   // если входим, то inPosition = true
@@ -45,7 +46,7 @@ function findSygnal(array, symbolObj) {
         array[i - 1].closePrice > array[i - 1].openPrice && // 2 свеча зелёная
         array[i].openPrice > array[i].closePrice && // 3 свеча красная
         diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения
-        array[i].highPrice / array[i].lowPrice - 1 < 0.05 && // отношение хая к лою менее 5%
+        array[i].highPrice / array[i].lowPrice - 1 < highPriceLowPrice && // отношение хая к лою менее 5%
         candleBodyLength > 0.8 // взято из таблицы
       ) {
         symbolObj.canShort = true
@@ -59,7 +60,7 @@ function findSygnal(array, symbolObj) {
         array[i - 1].openPrice > array[i - 1].closePrice && // 1 свеча красная
         array[i].openPrice > array[i].closePrice && // 2 свеча красная
         diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения
-        array[i].highPrice / array[i].lowPrice - 1 < 0.05 && // отношение хая к лою менее 5%
+        array[i].highPrice / array[i].lowPrice - 1 < highPriceLowPrice && // отношение хая к лою менее 5%
         candleBodyLength > 0.8 // взято из таблицы
       ) {
         symbolObj.canShort = true

@@ -1,4 +1,5 @@
 const { sendInfoToUser } = require('../../../API/telegram/telegram.bot')
+const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 
 function closeShort(lastCandle, symbolObj) {
   // for (let i = 4; i < array.length; i++) {
@@ -24,7 +25,15 @@ function closeShort(lastCandle, symbolObj) {
 
       // console.log(`Close SHORT with takeProfit: ${symbolObj.closeShort}`)
       sendInfoToUser(
-        `${symbolObj.nameStrategy}\n${symbolObj.whitchSignal}\n${symbolObj.closeTime}\n\nМонета: ${symbolObj.symbol}\n\n--== Close SHORT ==--\nwith Take Profit: ${symbolObj.closeShort}\nПрибыль = ${symbolObj.profit} USDT (${symbolObj.percent}% от депозита)`
+        `${symbolObj.nameStrategy}\n${
+          symbolObj.whitchSignal
+        }\n${timestampToDateHuman(symbolObj.closeTime)}\n\nМонета: ${
+          symbolObj.symbol
+        }\n\n--== Close SHORT ==--\nwith Take Profit: ${
+          symbolObj.closeShort
+        }\nПрибыль = ${symbolObj.profit} USDT (${
+          symbolObj.percent
+        }% от депозита)`
       )
       // sendInfoToUser(JSON.stringify(symbolObj))
 
@@ -80,7 +89,15 @@ function closeShort(lastCandle, symbolObj) {
 
       //console.log(`Close SHORT with stopLoss: ${symbolObj.closeShort}`)
       sendInfoToUser(
-        `${symbolObj.nameStrategy}\n${symbolObj.whitchSignal}\n${symbolObj.closeTime}\n\nМонета: ${symbolObj.symbol}\n\n--== Close SHORT ==--\nwith Stop Loss: ${symbolObj.closeShort}\nУбыток = ${symbolObj.profit} USDT (${symbolObj.percent}% от депозита)`
+        `${symbolObj.nameStrategy}\n${
+          symbolObj.whitchSignal
+        }\n${timestampToDateHuman(symbolObj.closeTime)}\n\nМонета: ${
+          symbolObj.symbol
+        }\n\n--== Close SHORT ==--\nwith Stop Loss: ${
+          symbolObj.closeShort
+        }\nУбыток = ${symbolObj.profit} USDT (${
+          symbolObj.percent
+        }% от депозита)`
       )
 
       //sendInfoToUser(JSON.stringify(symbolObj))
