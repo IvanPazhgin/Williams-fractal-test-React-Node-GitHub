@@ -139,13 +139,13 @@ async function alex37testMain2(
             // входим ниже array[i - 1].openPrice на дельту: coefficient = array[i].openPrice * (1 - delta / 100)
             if (
               array[i].highPrice >
-              array[i - 1].openPrice * (1 - delta / 100)
+              array[i - 1].closePrice * (1 - delta / 100) // в первой версии был вход по цене ОТКРЫТИЯ
             ) {
               // !!!  в реальном роботе проверить if (close price now < open price сигнальной свечи), то добавляем условие ниже. Главное, чтобы это условие и условие выше не мешали друг другу
               //console.log('вход по сигналу №4')
               //console.log(`array[i].highPrice = ${array[i].highPrice}, время: ${timestampToDateHuman(array[i].openTime)}`)
               //console.log(`array[i - 1].closePrice = ${array[i - 1].closePrice}, время: ${timestampToDateHuman(array[i - 1].openTime)}`)
-              positionDown = array[i - 1].openPrice * (1 - delta / 100) // вход по цене открытия красной [i-1]
+              positionDown = array[i - 1].closePrice * (1 - delta / 100) // вход по цене открытия красной [i-1]. // в первой версии был вход по цене ОТКРЫТИЯ
               openShortCommon() // функция openShortCommon для входа в сделку с общими полями
             } else {
               // отменяем сигнал
