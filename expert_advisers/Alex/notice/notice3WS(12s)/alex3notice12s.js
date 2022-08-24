@@ -86,9 +86,9 @@ async function alex3notice12s() {
 */
 
   sendInfoToUser(
-    `Приложение запущено в ${timestampToDateHuman(
-      new Date().getTime()
-    )}\nИнструменты: ${JSON.stringify(
+    `Приложение запущено в ${timestampToDateHuman(new Date().getTime())}\nНа ${
+      symbols3.length
+    } инструментах: ${JSON.stringify(
       symbols3
     )}\nТайм Фрэйм: ${timeFrame}\n${nameStrategy}\nЖдем завершенную свечку ${timeFrame}...`
   )
