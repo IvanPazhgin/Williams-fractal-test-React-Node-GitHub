@@ -66,6 +66,8 @@ async function alex37test3(
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
+        array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объема 2й зеленой
+        array[i - 2].openPrice > array[i - 1].closePrice && // цена открытия 2й зеленой выше цены закрытий 3й красной
         //diffShadow < 0.3
         diffShadow < Number(diffShadowBigUser) // расчетный diff < пользовательского значения (оставил для автотестов)
       ) {
