@@ -12,6 +12,7 @@ const tradeAlex35 = require('./tradeAlex3.5') // тестер стратегии
 // const alex37testMainMod = require('./alex37testMod/alex37testMainMod')
 const alex37testMain2 = require('./alex37test/alex37testMain2')
 const alex38test = require('./alex38test/alex38test')
+const alex39test = require('./test/alex39test/alex39test')
 // const tradeAlex4 = require('./tradeAlex4')
 // const bookTickerFunc = require('./bookOfSymbol')
 
@@ -94,6 +95,7 @@ async function startAlex(
     */
 
     // name: без теневая 3.5
+    /*
     const [deals35, statistics35] = tradeAlex35(
       objectSenior,
       deposit,
@@ -104,6 +106,7 @@ async function startAlex(
       diffShadow35big,
       diffShadow35small
     )
+    */
 
     // name: без теневая 3.7
     /*
@@ -122,6 +125,7 @@ async function startAlex(
 
     // name: без теневая 3.7 mod
     //const [deals37, statistics37] = await alex37testMainMod(
+    /*
     const [deals37, statistics37] = await alex37testMain2(
       objectSenior,
       deposit,
@@ -145,6 +149,17 @@ async function startAlex(
       diffShadow35big,
       diffShadow35small,
       delta,
+      symbol
+    )
+    */
+
+    const [deals39, statistics39] = await alex39test(
+      objectSenior,
+      deposit,
+      partOfDeposit,
+      multiplier,
+      takeProfit,
+      stopLoss,
       symbol
     )
 
@@ -171,12 +186,16 @@ async function startAlex(
       deals34,
       statistics34,
       */
+      /*
       deals35,
       statistics35,
       deals37,
       statistics37,
       deals38,
       statistics38,
+      */
+      deals39,
+      statistics39,
       // deals4,
       // statistics4,
       startProgramAt,
