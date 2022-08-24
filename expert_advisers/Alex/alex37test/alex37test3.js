@@ -1,15 +1,21 @@
 // name: без теневая
-// VERSION 3.9
-// входим по цене highPrice
-const timestampToDateHuman = require('../../../common.func/timestampToDateHuman')
+// VERSION 3.7
+// рекомендуемая монета BLZUSDT
+// отмена сигнала: если на текущей не входим, значит на следующей финальной свечке отменяем сигнал
+// отменил выход по минуткам
+// const candlesInside = require('../../common.func/candlesInside')
+const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 
-async function alex39test(
+async function alex37test3(
   array,
   depositTemp,
   partOfDeposit,
   multiplier,
   takeProfitUser, // = 0.04
   stopLossUser, // = 0.02
+  diffShadowBigUser,
+  diffShadowSmallUser,
+  delta,
   symbol
 ) {
   // для сигналов
@@ -17,8 +23,12 @@ async function alex39test(
   let whitchSignal = '' // вносим в таблицу  номер сигнала
 
   // для сигнала №1
-  let middleOfUpperShadow = 0 // середина верхней тени
-  let candleBodyLength = 0 // вычисление длины тела свечи
+  let lengthUpShadow = 0 // длина верхней тени на красной свечи
+  let lengthDownShadow = 0 // длина нижней тени на красной свечи
+  let diffShadow = 0 // отношение верхней тени к нижней тени на красной свечи
+
+  // для сигнала №4
+  // let coefficient = 0 // коэффициент корректировки точки входа относительно уровня сигнальной свечи
 
   // для сделки
   let inShortPosition = false
@@ -30,7 +40,7 @@ async function alex39test(
   let indexOfPostion = 0 // индекс точки входа для сдвига SL и TP
   let profit = 0
   let percent = 0
-  //let deposit2 = 0
+  let deposit2 = 0
   let deposit = Number(depositTemp)
 
   let takeProfit = 0
@@ -48,37 +58,102 @@ async function alex39test(
       // if (!inShortPosition)
       // findSygnal() // перенести сюда для бота с сигналами в телеграм
 
-      // расчет тела свечи, 1000 - это просто коэффициент для удобства
-      candleBodyLength =
-        (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
-      // сигнал № 1
+      // сигнал №1
+      lengthUpShadow = array[i - 1].highPrice - array[i - 1].openPrice
+      lengthDownShadow = array[i - 1].closePrice - array[i - 1].lowPrice
+      diffShadow = lengthUpShadow / lengthDownShadow
       if (
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
-        array[i - 1].volume > array[i - 2].volume && // объем красной больше объема 2й зеленой
-        candleBodyLength > 0.8 // взято из таблицы
+        //diffShadow < 0.3
+        diffShadow < Number(diffShadowBigUser) // расчетный diff < пользовательского значения (оставил для автотестов)
       ) {
+        // проверить 1 зеленую свечку (см. скрин в телеге)
+        // 1 green candle
+        // console.log(`\narray[i - 3].closePrice= ${array[i - 3].closePrice}, time: ${timestampToDateHuman(array[i - 3].openTime)}`)
+        // console.log(`array[i - 3].openPrice = ${array[i - 3].openPrice}, time: ${timestampToDateHuman(array[i - 3].openTime)}`)
+        // 2 green candle
+        // console.log(`array[i - 2].closePrice= ${array[i - 2].closePrice}, time: ${timestampToDateHuman(array[i - 2].openTime)}`)
+        // console.log(`array[i - 2].openPrice = ${array[i - 2].openPrice}, time: ${timestampToDateHuman(array[i - 2].openTime)}`)
+        // 3 red candle
+        // console.log(`array[i - 1].closePrice= ${array[i - 1].closePrice}, time: ${timestampToDateHuman(array[i - 1].openTime)}`)
+        // console.log(`array[i - 1].openPrice = ${array[i - 1].openPrice}, time: ${timestampToDateHuman(array[i - 1].openTime)}`)
+        // проверка: конец
+
         canShort = true
         whitchSignal = 'сигнал №1'
-        middleOfUpperShadow =
-          (array[i - 1].openPrice + array[i - 1].highPrice) / 2
-        // console.log(`есть сигнал, ${timestampToDateHuman(array[i - 1].openTime)}, middleOfUpperShadow = ${middleOfUpperShadow}`)
       }
+
+      // сигнал №2 пока убираем
+
+      // сигнал №3
+      if (
+        array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
+        array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
+        array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
+        array[i - 1].openPrice == array[i - 1].highPrice // и у красной свечи нет тени
+        //diffShadow < 0.4 // отношение теней составляет 0.05%
+      ) {
+        canShort = true
+        whitchSignal = 'сигнал №3'
+      }
+
+      // сигнал №4
+      // на красной верхняя тень сильно меньше нижней тени. Низкий коэффициент. Задает пользователь
+      /*
+      if (
+        array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
+        //diffShadow < 0.3
+        diffShadow < Number(diffShadowSmallUser) // расчетный diff < пользовательского значения
+      ) {
+        canShort = true
+        whitchSignal = 'сигнал №4'
+      }
+      */
 
       // входим в шорт
       if (canShort) {
         switch (whitchSignal) {
           case 'сигнал №1':
-            if (array[i].highPrice >= middleOfUpperShadow) {
-              positionDown = middleOfUpperShadow
-              // console.log(`вошли в шорт, ${timestampToDateHuman(array[i].openTime)}, цена = ${positionDown}`)
+            // входим ниже array[i - 1].openPrice на дельту: coefficient = array[i].openPrice * (1 - delta / 100)
+            if (
+              array[i].highPrice >
+              array[i - 1].closePrice * (1 - delta / 100)
+            ) {
+              //console.log('вход по сигналу №1')
+              //console.log(`точка входа по цене сигнальной свечи, ее time: ${timestampToDateHuman(array[i - 1].openTime)}`) // !! проверка
+              positionDown = array[i - 1].closePrice * (1 - delta / 100) // вход по цене открытия красной [i-1]
               openShortCommon() // функция openShortCommon для входа в сделку с общими полями
             } else {
               // отменяем сигнал
               canShort = false
               whitchSignal = ''
-              middleOfUpperShadow = 0
+            }
+            break
+          case 'сигнал №3':
+            //console.log('вход по сигналу №3')
+            positionDown = array[i - 1].closePrice // вход по цене закрытия красной [i-1]
+            openShortCommon() // функция openShortCommon для входа в сделку с общими полями
+            break
+          case 'сигнал №4':
+            // проверка: если на текущей свече цена была выше array[i-1].closePrice (продумать отмену сигнала на след. свече для оповещений)
+
+            // входим ниже array[i - 1].openPrice на дельту: coefficient = array[i].openPrice * (1 - delta / 100)
+            if (
+              array[i].highPrice >
+              array[i - 1].closePrice * (1 - delta / 100) // в первой версии был вход по цене ОТКРЫТИЯ
+            ) {
+              // !!!  в реальном роботе проверить if (close price now < open price сигнальной свечи), то добавляем условие ниже. Главное, чтобы это условие и условие выше не мешали друг другу
+              //console.log('вход по сигналу №4')
+              //console.log(`array[i].highPrice = ${array[i].highPrice}, время: ${timestampToDateHuman(array[i].openTime)}`)
+              //console.log(`array[i - 1].closePrice = ${array[i - 1].closePrice}, время: ${timestampToDateHuman(array[i - 1].openTime)}`)
+              positionDown = array[i - 1].closePrice * (1 - delta / 100) // вход по цене открытия красной [i-1]. // в первой версии был вход по цене ОТКРЫТИЯ
+              openShortCommon() // функция openShortCommon для входа в сделку с общими полями
+            } else {
+              // отменяем сигнал
+              canShort = false
+              whitchSignal = ''
             }
             break
 
@@ -133,15 +208,50 @@ async function alex39test(
         } // if (i >= (indexOfPostion + 2))
       }
 
-      changeTPSLCommon() // проверка общих условий по переносу TP и SL
+      // Провека условий для изменения SL и TP
+      switch (whitchSignal) {
+        case 'сигнал №1':
+          //console.log('сигнал №1: меняем TP и SL')
+          changeTPSLCommon()
+          break
+        case 'сигнал №3':
+          //console.log('сигнал №3: меняем TP и SL')
+          changeTPSLCommon()
+          break
+        case 'сигнал №4':
+          //console.log('сигнал №4: меняем TP и SL')
+          //changeTPSLCommon()
+          // первая проверка TP: если свеча зеленая, на которой зашли, т.е. closePrice[i] > OpenShort, тогда меняем TP в БУ
+          if (i == indexOfPostion + 1) {
+            if (
+              array[indexOfPostion].closePrice >
+                array[indexOfPostion].openPrice && // если свеча зеленая, на которой зашли
+              array[indexOfPostion].closePrice > positionDown // closePrice[i] > OpenShort
+            ) {
+              if (!changedTP) {
+                takeProfit = positionDown
+                dateChangeTP = array[i].openTime
+                changedTP = true
+              } // if (!changedTP)
+            } // если свеча зеленая, на которой зашли, т.е. closePrice[i] > OpenShort
+          } // if (i == indexOfPostion + 1)
+          changeTPSLCommon() // вторая проверка
+          break
 
-      // выход из сделки
+        default:
+        // console.log('TP и SL не изменялись')
+        // можно отправить сообщение в telegram bot для тестов на первое время
+      } // end of: switch (whitchSignal): Провека условий для изменения SL и TP
+
+      //arrayInside = await candlesInside(array[i], symbol, '1m')
+      // console.log(`i = ${i} из ${array.length}, время = ${timestampToDateHuman(array[i].openTime)}`)
+      //for (let j = 0; j < arrayInside.length; j++) {
       // условия выхода из сделки по TP
       if (array[i].lowPrice <= takeProfit) {
         profit = (positionDown - takeProfit) * amountOfPosition
         percent = +((profit / deposit) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
         // depositTemp += profit
-        //deposit2 = +(deposit + profit).toFixed(2)
+        deposit2 = +(deposit + profit).toFixed(2)
         dateChangeTP =
           dateChangeTP == 0
             ? (dateChangeTP = '')
@@ -157,7 +267,7 @@ async function alex39test(
           closeTime: timestampToDateHuman(array[i].openTime),
           profit: +profit.toFixed(2),
           percent: percent,
-          //deposit2: deposit2,
+          deposit2: deposit2,
           takeProfit: +takeProfit.toFixed(pricePrecision), // для проверки движка
           stopLoss: +stopLoss.toFixed(pricePrecision), // для проверки движка
           dateChangeTP: dateChangeTP, // запоминаем время переноса TP
@@ -172,7 +282,7 @@ async function alex39test(
         profit = (positionDown - stopLoss) * amountOfPosition
         percent = +((profit / deposit) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
         // depositTemp += profit
-        //deposit2 = +(deposit + profit).toFixed(2)
+        deposit2 = +(deposit + profit).toFixed(2)
         dateChangeSL =
           dateChangeSL == 0
             ? (dateChangeSL = '')
@@ -188,7 +298,7 @@ async function alex39test(
           closeTime: timestampToDateHuman(array[i].openTime),
           profit: +profit.toFixed(2),
           percent: percent,
-          //deposit2: deposit2,
+          deposit2: deposit2,
           takeProfit: +takeProfit.toFixed(pricePrecision), // для проверки движка
           stopLoss: +stopLoss.toFixed(pricePrecision), // для проверки движка
           //dateChangeTP: timestampToDateHuman(dateChangeTP), // запоминаем время переноса TP
@@ -198,6 +308,7 @@ async function alex39test(
         }
         clearPostion()
       } // отработка выхода из сделки по SL
+      //}
 
       function clearPostion() {
         numberOfPosition += 1
@@ -248,6 +359,6 @@ async function alex39test(
   }
 
   return [deals, statistics]
-} // function alex39test
+} // function alex37test3
 
-module.exports = alex39test
+module.exports = alex37test3

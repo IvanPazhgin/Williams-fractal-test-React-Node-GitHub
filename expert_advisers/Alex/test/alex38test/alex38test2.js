@@ -1,7 +1,7 @@
 // name: без теневая
 // VERSION 3.8 на основе 3.7:
 // входим по цене highPrice
-const candlesInside = require('../../../common.func/candlesInside')
+// const candlesInside = require('../../../common.func/candlesInside')
 const timestampToDateHuman = require('../../../common.func/timestampToDateHuman')
 
 function alex38test2(
@@ -25,7 +25,7 @@ function alex38test2(
   let lengthUpShadow = 0 // длина верхней тени на красной свечи
   let lengthDownShadow = 0 // длина нижней тени на красной свечи
   let diffShadow = 0 // отношение верхней тени к нижней тени на красной свечи
-  // let candleBodyLength = 0 // вычисление длины тела свечи
+  let candleBodyLength = 0 // вычисление длины тела свечи
 
   // для сделки
   let inShortPosition = false
@@ -47,10 +47,10 @@ function alex38test2(
   let changedTP = false // TP и SL могут быть изменены только 1 раз
   let changedSL = false // TP и SL могут быть изменены только 1 раз
 
-  let arrayInside
+  // let arrayInside
   let pricePrecision = 5 // цена: количество знаков после запятой
 
-  for (let i = 5; i < array.length; i++) {
+  for (let i = 4; i < array.length; i++) {
     if (!inShortPosition) {
       // if (!inShortPosition)
       // findSygnal() // перенести сюда для бота с сигналами в телеграм
@@ -61,16 +61,17 @@ function alex38test2(
       diffShadow = lengthUpShadow / lengthDownShadow
 
       // расчет тела свечи, 1000 - это просто коэффициент для удобства
-      // candleBodyLength = (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
+      candleBodyLength =
+        (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
       if (
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
         array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объема 2й зеленой
         //diffShadow < 0.3
-        diffShadow < Number(diffShadowBigUser) // расчетный diff < пользовательского значения (оставил для автотестов)
+        diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения (оставил для автотестов)
         // array[i - 1].highPrice / array[i - 1].lowPrice - 1 < 0.04 // отношение хая к лою менее 5%
-        // candleBodyLength > 0.8 // взято из таблицы
+        candleBodyLength > 0.8 // взято из таблицы
       ) {
         canShort = true
         whitchSignal = 'сигнал №1'
@@ -85,13 +86,15 @@ function alex38test2(
         array[i - 2].openPrice > array[i - 2].closePrice && // 3 свеча красная
         array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
         // array[i - 1].highPrice / array[i - 1].lowPrice - 1 < 0.04 &&
-        diffShadow < Number(diffShadowBigUser)
+        diffShadow < Number(diffShadowBigUser) &&
+        candleBodyLength > 0.8 // взято из таблицы
       ) {
         canShort = true
         whitchSignal = 'сигнал №2'
       }
 
       // сигнал № 3
+      /*
       if (
         array[i - 5].closePrice > array[i - 5].openPrice && // 1 свеча зелёная
         array[i - 4].closePrice > array[i - 4].openPrice && // 2 свеча зелёная
@@ -105,6 +108,7 @@ function alex38test2(
         canShort = true
         whitchSignal = 'сигнал №3'
       }
+      */
 
       // входим в шорт
       if (canShort) {
