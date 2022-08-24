@@ -13,6 +13,7 @@ const tradeAlex35 = require('./tradeAlex3.5') // тестер стратегии
 const alex37testMain2 = require('./alex37test/alex37testMain2')
 const alex38test = require('./alex38test/alex38test')
 const alex39test = require('./test/alex39test/alex39test')
+const alex38test2 = require('./test/alex38test/alex38test2')
 // const tradeAlex4 = require('./tradeAlex4')
 // const bookTickerFunc = require('./bookOfSymbol')
 
@@ -138,8 +139,9 @@ async function startAlex(
       delta,
       symbol
     )
+    */
 
-    const [deals38, statistics38] = await alex38test(
+    const [deals38, statistics38] = alex38test2(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -151,7 +153,6 @@ async function startAlex(
       delta,
       symbol
     )
-    */
 
     const [deals39, statistics39] = await alex39test(
       objectSenior,
@@ -191,9 +192,9 @@ async function startAlex(
       statistics35,
       deals37,
       statistics37,
+      */
       deals38,
       statistics38,
-      */
       deals39,
       statistics39,
       // deals4,
