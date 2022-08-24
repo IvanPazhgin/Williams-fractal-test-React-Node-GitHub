@@ -2,10 +2,11 @@
 // VERSION 3.7
 // рекомендуемая монета BLZUSDT
 // отмена сигнала: если на текущей не входим, значит на следующей финальной свечке отменяем сигнал
-const candlesInside = require('../../common.func/candlesInside')
-const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
+// отменил выход по минуткам
+// const candlesInside = require('../../common.func/candlesInside')
+const timestampToDateHuman = require('../../../common.func/timestampToDateHuman')
 
-async function alex37testMain2(
+async function alex37test3(
   array,
   depositTemp,
   partOfDeposit,
@@ -49,7 +50,7 @@ async function alex37testMain2(
   let changedTP = false // TP и SL могут быть изменены только 1 раз
   let changedSL = false // TP и SL могут быть изменены только 1 раз
 
-  let arrayInside
+  //let arrayInside
   let pricePrecision = 5 // цена: количество знаков после запятой
 
   for (let i = 3; i < array.length; i++) {
@@ -65,6 +66,8 @@ async function alex37testMain2(
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
+        array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объема 2й зеленой
+        array[i - 2].openPrice > array[i - 1].closePrice && // цена открытия 2й зеленой выше цены закрытий 3й красной
         //diffShadow < 0.3
         diffShadow < Number(diffShadowBigUser) // расчетный diff < пользовательского значения (оставил для автотестов)
       ) {
@@ -87,6 +90,7 @@ async function alex37testMain2(
       // сигнал №2 пока убираем
 
       // сигнал №3
+      /*
       if (
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
@@ -97,9 +101,11 @@ async function alex37testMain2(
         canShort = true
         whitchSignal = 'сигнал №3'
       }
+      */
 
       // сигнал №4
       // на красной верхняя тень сильно меньше нижней тени. Низкий коэффициент. Задает пользователь
+      /*
       if (
         array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
         //diffShadow < 0.3
@@ -108,6 +114,7 @@ async function alex37testMain2(
         canShort = true
         whitchSignal = 'сигнал №4'
       }
+      */
 
       // входим в шорт
       if (canShort) {
@@ -116,11 +123,11 @@ async function alex37testMain2(
             // входим ниже array[i - 1].openPrice на дельту: coefficient = array[i].openPrice * (1 - delta / 100)
             if (
               array[i].highPrice >
-              array[i - 1].openPrice * (1 - delta / 100)
+              array[i - 1].closePrice * (1 - delta / 100)
             ) {
               //console.log('вход по сигналу №1')
               //console.log(`точка входа по цене сигнальной свечи, ее time: ${timestampToDateHuman(array[i - 1].openTime)}`) // !! проверка
-              positionDown = array[i - 1].openPrice * (1 - delta / 100) // вход по цене открытия красной [i-1]
+              positionDown = array[i - 1].closePrice * (1 - delta / 100) // вход по цене открытия красной [i-1]
               openShortCommon() // функция openShortCommon для входа в сделку с общими полями
             } else {
               // отменяем сигнал
@@ -240,74 +247,72 @@ async function alex37testMain2(
         // можно отправить сообщение в telegram bot для тестов на первое время
       } // end of: switch (whitchSignal): Провека условий для изменения SL и TP
 
-      arrayInside = await candlesInside(array[i], symbol, '1m')
+      //arrayInside = await candlesInside(array[i], symbol, '1m')
       // console.log(`i = ${i} из ${array.length}, время = ${timestampToDateHuman(array[i].openTime)}`)
-      for (let j = 0; j < arrayInside.length; j++) {
-        // условия выхода из сделки по TP
-        if (arrayInside[j].lowPrice <= takeProfit) {
-          profit = (positionDown - takeProfit) * amountOfPosition
-          percent = +((profit / deposit) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
-          // depositTemp += profit
-          deposit2 = +(deposit + profit).toFixed(2)
-          dateChangeTP =
-            dateChangeTP == 0
-              ? (dateChangeTP = '')
-              : timestampToDateHuman(dateChangeTP)
+      //for (let j = 0; j < arrayInside.length; j++) {
+      // условия выхода из сделки по TP
+      if (array[i].lowPrice <= takeProfit) {
+        profit = (positionDown - takeProfit) * amountOfPosition
+        percent = +((profit / deposit) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
+        // depositTemp += profit
+        deposit2 = +(deposit + profit).toFixed(2)
+        dateChangeTP =
+          dateChangeTP == 0
+            ? (dateChangeTP = '')
+            : timestampToDateHuman(dateChangeTP)
 
-          deals[numberOfPosition] = {
-            openPosition: 'Sell',
-            openPrice: +positionDown.toFixed(pricePrecision),
-            openTime: timestampToDateHuman(positionTime),
-            amountOfPosition: amountOfPosition,
-            closePosition: 'Buy',
-            closePrice: +takeProfit.toFixed(pricePrecision),
-            closeTime: timestampToDateHuman(arrayInside[j].openTime),
-            profit: +profit.toFixed(2),
-            percent: percent,
-            deposit2: deposit2,
-            takeProfit: +takeProfit.toFixed(pricePrecision), // для проверки движка
-            stopLoss: +stopLoss.toFixed(pricePrecision), // для проверки движка
-            dateChangeTP: dateChangeTP, // запоминаем время переноса TP
-            //dateChangeSL: timestampToDateHuman(dateChangeSL), // запоминаем время переноса SL
-            //diffShadow: diffShadow,
-            whitchSignal: whitchSignal,
-          }
-          clearPostion()
-          break
-        } // условия выхода из сделки по TP
-        // условия выхода из сделки по SL
-        else if (arrayInside[j].highPrice >= stopLoss) {
-          profit = (positionDown - stopLoss) * amountOfPosition
-          percent = +((profit / deposit) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
-          // depositTemp += profit
-          deposit2 = +(deposit + profit).toFixed(2)
-          dateChangeSL =
-            dateChangeSL == 0
-              ? (dateChangeSL = '')
-              : timestampToDateHuman(dateChangeSL)
+        deals[numberOfPosition] = {
+          openPosition: 'Sell',
+          openPrice: +positionDown.toFixed(pricePrecision),
+          openTime: timestampToDateHuman(positionTime),
+          amountOfPosition: amountOfPosition,
+          closePosition: 'Buy',
+          closePrice: +takeProfit.toFixed(pricePrecision),
+          closeTime: timestampToDateHuman(array[i].openTime),
+          profit: +profit.toFixed(2),
+          percent: percent,
+          deposit2: deposit2,
+          takeProfit: +takeProfit.toFixed(pricePrecision), // для проверки движка
+          stopLoss: +stopLoss.toFixed(pricePrecision), // для проверки движка
+          dateChangeTP: dateChangeTP, // запоминаем время переноса TP
+          //dateChangeSL: timestampToDateHuman(dateChangeSL), // запоминаем время переноса SL
+          //diffShadow: diffShadow,
+          whitchSignal: whitchSignal,
+        }
+        clearPostion()
+      } // условия выхода из сделки по TP
+      // условия выхода из сделки по SL
+      else if (array[i].highPrice >= stopLoss) {
+        profit = (positionDown - stopLoss) * amountOfPosition
+        percent = +((profit / deposit) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
+        // depositTemp += profit
+        deposit2 = +(deposit + profit).toFixed(2)
+        dateChangeSL =
+          dateChangeSL == 0
+            ? (dateChangeSL = '')
+            : timestampToDateHuman(dateChangeSL)
 
-          deals[numberOfPosition] = {
-            openPosition: 'Sell',
-            openPrice: +positionDown.toFixed(pricePrecision),
-            openTime: timestampToDateHuman(positionTime),
-            amountOfPosition: amountOfPosition,
-            closePosition: 'Buy',
-            closePrice: +stopLoss.toFixed(pricePrecision),
-            closeTime: timestampToDateHuman(arrayInside[j].openTime),
-            profit: +profit.toFixed(2),
-            percent: percent,
-            deposit2: deposit2,
-            takeProfit: +takeProfit.toFixed(pricePrecision), // для проверки движка
-            stopLoss: +stopLoss.toFixed(pricePrecision), // для проверки движка
-            //dateChangeTP: timestampToDateHuman(dateChangeTP), // запоминаем время переноса TP
-            dateChangeSL: dateChangeSL, // запоминаем время переноса SL
-            // diffShadow: diffShadow,
-            whitchSignal: whitchSignal,
-          }
-          clearPostion()
-          break
-        } // отработка выхода из сделки по SL
-      }
+        deals[numberOfPosition] = {
+          openPosition: 'Sell',
+          openPrice: +positionDown.toFixed(pricePrecision),
+          openTime: timestampToDateHuman(positionTime),
+          amountOfPosition: amountOfPosition,
+          closePosition: 'Buy',
+          closePrice: +stopLoss.toFixed(pricePrecision),
+          closeTime: timestampToDateHuman(array[i].openTime),
+          profit: +profit.toFixed(2),
+          percent: percent,
+          deposit2: deposit2,
+          takeProfit: +takeProfit.toFixed(pricePrecision), // для проверки движка
+          stopLoss: +stopLoss.toFixed(pricePrecision), // для проверки движка
+          //dateChangeTP: timestampToDateHuman(dateChangeTP), // запоминаем время переноса TP
+          dateChangeSL: dateChangeSL, // запоминаем время переноса SL
+          // diffShadow: diffShadow,
+          whitchSignal: whitchSignal,
+        }
+        clearPostion()
+      } // отработка выхода из сделки по SL
+      //}
 
       function clearPostion() {
         numberOfPosition += 1
@@ -358,6 +363,6 @@ async function alex37testMain2(
   }
 
   return [deals, statistics]
-} // function alex37testMain
+} // function alex37test3
 
-module.exports = alex37testMain2
+module.exports = alex37test3
