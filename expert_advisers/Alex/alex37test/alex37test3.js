@@ -90,6 +90,7 @@ async function alex37test3(
       // сигнал №2 пока убираем
 
       // сигнал №3
+      /*
       if (
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
@@ -100,6 +101,7 @@ async function alex37test3(
         canShort = true
         whitchSignal = 'сигнал №3'
       }
+      */
 
       // сигнал №4
       // на красной верхняя тень сильно меньше нижней тени. Низкий коэффициент. Задает пользователь
