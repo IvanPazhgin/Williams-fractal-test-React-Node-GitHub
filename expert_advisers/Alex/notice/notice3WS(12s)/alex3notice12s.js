@@ -30,15 +30,18 @@ async function alex3notice12s() {
     'PEOPLEUSDT',
     'BELUSDT',
     'BLZUSDT',
-    'ROSEUSDT',
+    //'ROSEUSDT',
     'GMTUSDT',
     'SANDUSDT',
     'BANDUSDT',
-    'NKNUSDT',
+    //'NKNUSDT',
     'DYDXUSDT',
     'STORJUSDT',
     'STMXUSDT',
     'ANKRUSDT',
+    'AUDIOUSDT',
+    'OGNUSDT',
+    'ETCUSDT',
   ]
 
   let symbolObj3 = []
