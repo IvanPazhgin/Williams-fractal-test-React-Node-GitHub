@@ -38,7 +38,7 @@ async function alex3notice12s() {
     'DYDXUSDT',
     'STORJUSDT',
     'STMXUSDT',
-    'ANKRUSDT',
+    //'ANKRUSDT',
     'AUDIOUSDT',
     'OGNUSDT',
     'ETCUSDT',
