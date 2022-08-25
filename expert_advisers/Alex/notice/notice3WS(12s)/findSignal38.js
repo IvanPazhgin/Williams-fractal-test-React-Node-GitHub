@@ -10,7 +10,7 @@ function findSygnal38(array, symbolObj) {
 
   const diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
   const takeProfitConst = 0.02
-  const stopLossConst = 0.01
+  const stopLossConst = 0.02
 
   const partOfDeposit = 0.25 // доля депозита на одну сделку
   const multiplier = 10 // плечо
