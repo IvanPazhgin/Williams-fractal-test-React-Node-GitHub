@@ -43,7 +43,8 @@ async function alex39test(
   //let arrayInside
   let pricePrecision = 5 // цена: количество знаков после запятой
 
-  for (let i = 3; i < array.length; i++) {
+  //for (let i = 3; i < array.length; i++) {
+  for (let i = 4; i < array.length; i++) {
     if (!inShortPosition) {
       // if (!inShortPosition)
       // findSygnal() // перенести сюда для бота с сигналами в телеграм
@@ -51,12 +52,31 @@ async function alex39test(
       // расчет тела свечи, 1000 - это просто коэффициент для удобства
       candleBodyLength =
         (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
-      // сигнал № 1
+      // сигнал № 1: начальная версия
+      /*
       if (
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
         array[i - 1].volume > array[i - 2].volume && // объем красной больше объема 2й зеленой
+        candleBodyLength > 0.8 // взято из таблицы
+      ) {
+        canShort = true
+        whitchSignal = 'сигнал №1'
+        middleOfUpperShadow =
+          (array[i - 1].openPrice + array[i - 1].highPrice) / 2
+        // console.log(`есть сигнал, ${timestampToDateHuman(array[i - 1].openTime)}, middleOfUpperShadow = ${middleOfUpperShadow}`)
+      }
+      */
+
+      // сигнал № 1: изменения 26.08.2022 в 20:00
+      if (
+        array[i - 4].closePrice > array[i - 4].openPrice && // 1 свеча зелёная
+        array[i - 3].closePrice > array[i - 3].openPrice && // 2 свеча зелёная
+        array[i - 2].closePrice > array[i - 2].openPrice && // 3 свеча зелёная
+        array[i - 2].volume > array[i - 3].volume && // объем 3й зеленой больше объема 2й зеленой
+        array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
+        array[i - 1].volume > array[i - 2].volume && // объем красной больше объема 3й зеленой
         candleBodyLength > 0.8 // взято из таблицы
       ) {
         canShort = true

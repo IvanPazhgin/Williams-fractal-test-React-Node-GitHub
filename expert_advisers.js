@@ -1,5 +1,7 @@
 function testOfNewFuctiouns() {
   workingFunctions()
+  //testWilliams() // тест одновременного запуска оповещений на разных стратегиях
+  //testBinanceTrade() // тест торговых функций
 }
 
 function workingFunctions() {
@@ -13,6 +15,55 @@ function workingFunctions() {
   // alex38notice8s() // стратегия 3.8 оповещения на восьми монетах
   alex3notice12s() // оповещения 3.7-3.9 на 12 монетах
   tgBotExample()
+}
+
+function testBinanceTrade() {
+  // эксперименты с торговыми функциями binance
+  // SyntaxError: Cannot use import statement outside a module
+  // Толя предложил: ищи видос вебпак+тайпскрипт
+  const spotTrade = require(`./binance_Engine/tests_Ivan/spot-trade.ts`)
+  spotTrade()
+}
+
+async function testWilliams() {
+  // проверка - возможно ли одновременный запуск web socket для Alex и для Williams fractal
+  const getLastCandle4s = require('./API/binance.engine/alex/getLastCandle4s')
+  const symbols = ['ETHUSDT', 'BTCUSDT']
+  const timeFrame = '1m'
+  let lastCandle
+
+  await getLastCandle4s(
+    symbols,
+    timeFrame,
+    async ({
+      symbol: symbol,
+      startTime: openTime,
+      open: openPrice,
+      close: closePrice,
+      low: lowPrice,
+      high: highPrice,
+      volume: volume,
+      final: final,
+    }) => {
+      // сохраняем новую свечку
+      lastCandle = {
+        symbol: symbol,
+        openTime: openTime,
+        openPrice: openPrice,
+        closePrice: closePrice,
+        lowPrice: lowPrice,
+        highPrice: highPrice,
+        volume: volume,
+        final: final,
+      }
+      if (lastCandle.final) {
+        console.table(lastCandle)
+        console.log(`test of Williams noteice is END`)
+        //process.exit(0) // изучить https://runebook.dev/ru/docs/node/process
+      }
+      console.log(`test of Williams noteice is processing...`)
+    }
+  )
 }
 
 function alexTestStrategy() {
