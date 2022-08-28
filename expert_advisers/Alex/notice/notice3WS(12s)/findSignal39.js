@@ -22,11 +22,15 @@ function findSygnal39(array, symbolObj) {
       candleBodyLength = (array[i].openPrice / array[i].closePrice - 1) * 1000
 
       if (
-        array[i - 2].closePrice > array[i - 2].openPrice && // 1 свеча зелёная
-        array[i - 1].closePrice > array[i - 1].openPrice && // 2 свеча зелёная
-        array[i].openPrice > array[i].closePrice && // 3 свеча красная
-        array[i].volume > array[i - 1].volume && // объем 3й красной больше объема 2й зеленой
-        candleBodyLength > 0.8 // взято из таблицы
+        array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёна
+        array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
+        array[i - 1].closePrice > array[i - 1].openPrice && // 3 свеча зелёная
+        array[i].openPrice > array[i].closePrice && // 4 свеча красная
+        array[i - 1].volume > array[i - 2].volume && // объем 3й зеленой больше объема 2й зеленой
+        array[i].volume > array[i - 1].volume && // объем 4й красной больше объема 3й зеленой
+        candleBodyLength > 0.8 && // взято из таблицы
+        // дополнительные условия от 28.08.2022
+        array[i].lowPrice > array[i - 2].openPrice // лой 4й красной больше цены открытия 2й зеленой
       ) {
         symbolObj.canShort = true
         symbolObj.whitchSignal = 'Стратегия 3.9: сигнал №1'

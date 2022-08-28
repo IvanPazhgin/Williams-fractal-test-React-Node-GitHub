@@ -2,7 +2,7 @@ const candlesToObject = require('../../../common.func/candlesToObject')
 const getCandles = require('../../../../API/binance.engine/usdm/getCandles.3param')
 const findSygnal37 = require('./findSignal37')
 const findSygnal38 = require('./findSignal38')
-// const findSygnal39 = require('./findSignal39')
+const findSygnal39 = require('./findSignal39')
 // const timestampToDateHuman = require('../../common.func/timestampToDateHuman') // временно для проверки свечей
 
 async function notInPosition(lastCandle, symbolObj, timeFrame) {
@@ -28,18 +28,20 @@ async function notInPosition(lastCandle, symbolObj, timeFrame) {
 
   // запускаем функции по поиску сигналов, в которых проверяем условиям на вход. Если входим, то inPosition = true
   // поиск сигнала исходя по приоритету стратегий
+  /*
   if (!symbolObj.inPosition || !symbolObj.canShort) {
     symbolObj = findSygnal37(candlesObject, symbolObj)
   }
+  */
 
   if (!symbolObj.inPosition || !symbolObj.canShort) {
     symbolObj = findSygnal38(candlesObject, symbolObj)
   }
-  /*
+
   if (!symbolObj.inPosition || !symbolObj.canShort) {
     symbolObj = findSygnal39(candlesObject, symbolObj)
   }
-  */
+
   return symbolObj // возвращаем состояние сделки и параметры входа
 }
 

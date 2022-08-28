@@ -62,10 +62,6 @@ function alex38test2(
       lengthDownShadow = array[i - 1].closePrice - array[i - 1].lowPrice
       diffShadow = lengthUpShadow / lengthDownShadow
 
-      // дополнительные условия от 28.08.2022
-      shadow1g = array[i - 3].highPrice / array[i - 3].closePrice - 1 // процент роста верхней тени 1й зеленой свечи
-      shadow2g = array[i - 2].highPrice / array[i - 2].closePrice - 1 // процент роста верхней тени 2й зеленой свечи
-
       // расчет тела свечи, 1000 - это просто коэффициент для удобства
       candleBodyLength =
         (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
@@ -77,14 +73,20 @@ function alex38test2(
         //diffShadow < 0.3
         diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения (оставил для автотестов)
         // array[i - 1].highPrice / array[i - 1].lowPrice - 1 < 0.04 // отношение хая к лою менее 5%
-        candleBodyLength > 0.8 && // взято из таблицы
-        // дополнительные условия от 28.08.2022
-        array[i - 1].lowPrice > array[i - 3].openPrice &&
-        shadow1g > shadow2g // % тени 1й зеленой больше % тени второй зеленой
+        candleBodyLength > 0.8 // взято из таблицы
       ) {
-        canShort = true
-        whitchSignal = 'сигнал №1'
-        // condition = '2g 1r k~0.3'
+        // дополнительные условия от 28.08.2022
+        shadow1g = array[i - 3].highPrice / array[i - 3].closePrice - 1 // процент роста верхней тени 1й зеленой свечи
+        shadow2g = array[i - 2].highPrice / array[i - 2].closePrice - 1 // процент роста верхней тени 2й зеленой свечи
+        if (
+          // дополнительные условия от 28.08.2022
+          array[i - 1].lowPrice > array[i - 3].openPrice && // лой 3й красной большое цены открытия 1й зеленой
+          shadow1g > shadow2g // % тени 1й зеленой больше % тени второй зеленой
+        ) {
+          canShort = true
+          whitchSignal = 'сигнал №1'
+          // condition = '2g 1r k~0.3'
+        }
       }
 
       // сигнал № 2

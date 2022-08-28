@@ -7,6 +7,8 @@ function findSygnal38(array, symbolObj) {
   let lengthDownShadow = 0 // длина нижней тени на красной свечи
   let diffShadow = 0 // отношение верхней тени к нижней тени на красной свечи
   let candleBodyLength = 0 // вычисление длины тела свечи
+  let shadow1g = 0 // процент изменения верхней тени 1й зеленой свечи
+  let shadow2g = 0 // процент изменения верхней тени 2й зеленой свечи
 
   const diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
   const takeProfitConst = 0.02
@@ -35,10 +37,19 @@ function findSygnal38(array, symbolObj) {
         diffShadow < diffShadowBigUser && // расчетный diff < пользовательского значения
         candleBodyLength > 0.8 // взято из таблицы
       ) {
-        symbolObj.canShort = true
-        symbolObj.whitchSignal = 'Стратегия 3.8: сигнал №1'
-        symbolObj.openShort = array[i].highPrice
-        openShortCommon()
+        // дополнительные условия от 28.08.2022
+        shadow1g = array[i - 2].highPrice / array[i - 2].closePrice - 1 // процент роста верхней тени 1й зеленой свечи
+        shadow2g = array[i - 1].highPrice / array[i - 1].closePrice - 1 // процент роста верхней тени 2й зеленой свечи
+        if (
+          // дополнительные условия от 28.08.2022
+          array[i].lowPrice > array[i - 2].openPrice && // лой 3й красной большое цены открытия 1й зеленой
+          shadow1g > shadow2g // % тени 1й зеленой больше % тени второй зеленой
+        ) {
+          symbolObj.canShort = true
+          symbolObj.whitchSignal = 'Стратегия 3.8: сигнал №1'
+          symbolObj.openShort = array[i].highPrice
+          openShortCommon()
+        }
       }
 
       // сигнал №2
@@ -49,7 +60,9 @@ function findSygnal38(array, symbolObj) {
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
         array[i].openPrice > array[i].closePrice && // 4 свеча красная
         diffShadow < diffShadowBigUser && // расчетный diff < пользовательского значения
-        candleBodyLength > 0.8 // взято из таблицы
+        candleBodyLength > 0.8 && // взято из таблицы
+        // дополнительные условия от 28.08.2022
+        array[i].lowPrice > array[i - 3].lowPrice // лой последней красной выше лоя первой зеленой
       ) {
         symbolObj.canShort = true
         symbolObj.whitchSignal = 'Стратегия 3.8: сигнал №2'

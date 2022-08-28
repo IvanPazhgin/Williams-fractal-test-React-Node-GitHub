@@ -74,12 +74,12 @@ async function alex39test(
         array[i - 4].closePrice > array[i - 4].openPrice && // 1 свеча зелёная
         array[i - 3].closePrice > array[i - 3].openPrice && // 2 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 3 свеча зелёная
-        array[i - 2].volume > array[i - 3].volume && // объем 3й зеленой больше объема 2й зеленой
         array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
-        array[i - 1].volume > array[i - 2].volume && // объем красной больше объема 3й зеленой
+        array[i - 2].volume > array[i - 3].volume && // объем 3й зеленой больше объема 2й зеленой
+        array[i - 1].volume > array[i - 2].volume && // объем 4й красной больше объема 3й зеленой
         candleBodyLength > 0.8 && // взято из таблицы
         // дополнительные условия от 28.08.2022
-        array[i - 1].lowPrice > array[i - 3].openPrice
+        array[i - 1].lowPrice > array[i - 3].openPrice // лой 4й красной больше цены открытия 2й зеленой
       ) {
         canShort = true
         whitchSignal = 'сигнал №1'
