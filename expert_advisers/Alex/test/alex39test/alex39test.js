@@ -79,7 +79,7 @@ async function alex39test(
         array[i - 1].volume > array[i - 2].volume && // объем красной больше объема 3й зеленой
         candleBodyLength > 0.8 && // взято из таблицы
         // дополнительные условия от 28.08.2022
-        array[i - 1].lowPrice > array[i - 4].openPrice
+        array[i - 1].lowPrice > array[i - 3].openPrice
       ) {
         canShort = true
         whitchSignal = 'сигнал №1'
@@ -91,7 +91,8 @@ async function alex39test(
       if (canShort) {
         switch (whitchSignal) {
           case 'сигнал №1':
-            if (array[i].highPrice >= middleOfUpperShadow) {
+            //if (array[i].highPrice >= middleOfUpperShadow) {
+            if (array[i].highPrice >= array[i - 1].highPrice) {
               //positionDown = middleOfUpperShadow
               positionDown = array[i - 1].highPrice
               // console.log(`вошли в шорт, ${timestampToDateHuman(array[i].openTime)}, цена = ${positionDown}`)
@@ -136,23 +137,23 @@ async function alex39test(
       // changeTPSL() // 2. по финальной свече меняем SL и TP
 
       function changeTPSLCommon() {
-        if (i >= indexOfPostion + 2) {
-          // изменение TP: если мы в просадке
-          if (positionDown < array[i].closePrice) {
-            if (!changedTP) {
-              takeProfit = positionDown
-              dateChangeTP = array[i].openTime
-              changedTP = true
-            }
-          } else {
-            if (!changedSL) {
-              // изменение SL: если мы в прибыли
-              stopLoss = positionDown
-              dateChangeSL = array[i].openTime
-              changedSL = true
-            }
+        //if (i >= indexOfPostion + 2) {
+        // изменение TP: если мы в просадке
+        if (positionDown < array[i].closePrice) {
+          if (!changedTP) {
+            takeProfit = positionDown
+            dateChangeTP = array[i].openTime
+            changedTP = true
           }
-        } // if (i >= (indexOfPostion + 2))
+        } else {
+          if (!changedSL) {
+            // изменение SL: если мы в прибыли
+            stopLoss = positionDown
+            dateChangeSL = array[i].openTime
+            changedSL = true
+          }
+        }
+        //} // if (i >= (indexOfPostion + 2))
       }
 
       changeTPSLCommon() // проверка общих условий по переносу TP и SL
