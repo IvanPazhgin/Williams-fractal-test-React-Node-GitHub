@@ -77,12 +77,13 @@ async function alex39test(
         array[i - 2].volume > array[i - 3].volume && // объем 3й зеленой больше объема 2й зеленой
         array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
         array[i - 1].volume > array[i - 2].volume && // объем красной больше объема 3й зеленой
-        candleBodyLength > 0.8 // взято из таблицы
+        candleBodyLength > 0.8 && // взято из таблицы
+        // дополнительные условия от 28.08.2022
+        array[i - 1].lowPrice > array[i - 4].openPrice
       ) {
         canShort = true
         whitchSignal = 'сигнал №1'
-        middleOfUpperShadow =
-          (array[i - 1].openPrice + array[i - 1].highPrice) / 2
+        //middleOfUpperShadow = (array[i - 1].openPrice + array[i - 1].highPrice) / 2
         // console.log(`есть сигнал, ${timestampToDateHuman(array[i - 1].openTime)}, middleOfUpperShadow = ${middleOfUpperShadow}`)
       }
 
@@ -91,7 +92,8 @@ async function alex39test(
         switch (whitchSignal) {
           case 'сигнал №1':
             if (array[i].highPrice >= middleOfUpperShadow) {
-              positionDown = middleOfUpperShadow
+              //positionDown = middleOfUpperShadow
+              positionDown = array[i - 1].highPrice
               // console.log(`вошли в шорт, ${timestampToDateHuman(array[i].openTime)}, цена = ${positionDown}`)
               openShortCommon() // функция openShortCommon для входа в сделку с общими полями
             } else {

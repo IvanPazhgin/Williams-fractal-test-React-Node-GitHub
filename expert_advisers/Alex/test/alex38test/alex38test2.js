@@ -26,6 +26,8 @@ function alex38test2(
   let lengthDownShadow = 0 // длина нижней тени на красной свечи
   let diffShadow = 0 // отношение верхней тени к нижней тени на красной свечи
   let candleBodyLength = 0 // вычисление длины тела свечи
+  let shadow1g = 0 // процент изменения верхней тени 1й зеленой свечи
+  let shadow2g = 0 // процент изменения верхней тени 2й зеленой свечи
 
   // для сделки
   let inShortPosition = false
@@ -60,6 +62,10 @@ function alex38test2(
       lengthDownShadow = array[i - 1].closePrice - array[i - 1].lowPrice
       diffShadow = lengthUpShadow / lengthDownShadow
 
+      // дополнительные условия от 28.08.2022
+      shadow1g = array[i - 3].highPrice / array[i - 3].closePrice - 1 // процент роста верхней тени 1й зеленой свечи
+      shadow2g = array[i - 2].highPrice / array[i - 2].closePrice - 1 // процент роста верхней тени 2й зеленой свечи
+
       // расчет тела свечи, 1000 - это просто коэффициент для удобства
       candleBodyLength =
         (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
@@ -71,7 +77,10 @@ function alex38test2(
         //diffShadow < 0.3
         diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения (оставил для автотестов)
         // array[i - 1].highPrice / array[i - 1].lowPrice - 1 < 0.04 // отношение хая к лою менее 5%
-        candleBodyLength > 0.8 // взято из таблицы
+        candleBodyLength > 0.8 && // взято из таблицы
+        // дополнительные условия от 28.08.2022
+        array[i - 1].lowPrice > array[i - 3].openPrice &&
+        shadow1g > shadow2g // % тени 1й зеленой больше % тени второй зеленой
       ) {
         canShort = true
         whitchSignal = 'сигнал №1'
@@ -87,7 +96,9 @@ function alex38test2(
         array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
         // array[i - 1].highPrice / array[i - 1].lowPrice - 1 < 0.04 &&
         diffShadow < Number(diffShadowBigUser) &&
-        candleBodyLength > 0.8 // взято из таблицы
+        candleBodyLength > 0.8 && // взято из таблицы
+        // дополнительные условия от 28.08.2022
+        array[i - 1].lowPrice > array[i - 4].lowPrice // лой последней красной выше лоя первой зеленой
       ) {
         canShort = true
         whitchSignal = 'сигнал №2'
