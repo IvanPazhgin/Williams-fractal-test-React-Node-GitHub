@@ -19,6 +19,8 @@ async function alex39test(
   // для сигнала №1
   let middleOfUpperShadow = 0 // середина верхней тени
   let candleBodyLength = 0 // вычисление длины тела свечи
+  let shadow1g = 0 // процент изменения верхней тени 1й зеленой свечи
+  let shadow2g = 0 // процент изменения верхней тени 2й зеленой свечи
 
   // для сделки
   let inShortPosition = false
@@ -71,7 +73,7 @@ async function alex39test(
 
       // сигнал № 1: изменения 26.08.2022 в 20:00
       if (
-        array[i - 4].closePrice > array[i - 4].openPrice && // 1 свеча зелёная
+        // array[i - 4].closePrice > array[i - 4].openPrice && // 1 свеча зелёная
         array[i - 3].closePrice > array[i - 3].openPrice && // 2 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 3 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
@@ -81,10 +83,17 @@ async function alex39test(
         // дополнительные условия от 28.08.2022
         array[i - 1].lowPrice > array[i - 3].openPrice // лой 4й красной больше цены открытия 2й зеленой
       ) {
-        canShort = true
-        whitchSignal = 'сигнал №1'
-        //middleOfUpperShadow = (array[i - 1].openPrice + array[i - 1].highPrice) / 2
-        // console.log(`есть сигнал, ${timestampToDateHuman(array[i - 1].openTime)}, middleOfUpperShadow = ${middleOfUpperShadow}`)
+        // дополнительные условия от 28.08.2022
+        shadow1g = array[i - 3].highPrice / array[i - 3].closePrice - 1 // процент роста верхней тени 2й зеленой свечи
+        shadow2g = array[i - 2].highPrice / array[i - 2].closePrice - 1 // процент роста верхней тени 3й зеленой свечи
+        if (
+          shadow1g > shadow2g // % тени 1й зеленой больше % тени второй зеленой
+        ) {
+          canShort = true
+          whitchSignal = 'сигнал №1'
+          //middleOfUpperShadow = (array[i - 1].openPrice + array[i - 1].highPrice) / 2
+          // console.log(`есть сигнал, ${timestampToDateHuman(array[i - 1].openTime)}, middleOfUpperShadow = ${middleOfUpperShadow}`)
+        }
       }
 
       // входим в шорт
