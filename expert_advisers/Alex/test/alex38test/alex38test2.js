@@ -57,7 +57,32 @@ function alex38test2(
       // if (!inShortPosition)
       // findSygnal() // перенести сюда для бота с сигналами в телеграм
 
-      // сигнал № 1
+      // сигнал № 1: вариант №1 от 26.08.2022 в 20:00
+      if (
+        array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
+        array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
+        array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
+        array[i - 1].volume > array[i - 2].volume // объем 3й красной больше объема 2й зеленой
+      ) {
+        lengthUpShadow = array[i - 1].highPrice - array[i - 1].openPrice
+        lengthDownShadow = array[i - 1].closePrice - array[i - 1].lowPrice
+        diffShadow = lengthUpShadow / lengthDownShadow
+
+        // расчет тела свечи, 1000 - это просто коэффициент для удобства
+        candleBodyLength =
+          (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
+
+        if (
+          diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения (оставил для автотестов)
+          candleBodyLength > 0.8 // взято из таблицы
+        ) {
+          canShort = true
+          whitchSignal = 'сигнал №1'
+        }
+      }
+
+      // сигнал № 1: вариант №2 от 28.08.2022
+      /*
       lengthUpShadow = array[i - 1].highPrice - array[i - 1].openPrice
       lengthDownShadow = array[i - 1].closePrice - array[i - 1].lowPrice
       diffShadow = lengthUpShadow / lengthDownShadow
@@ -88,22 +113,35 @@ function alex38test2(
           // condition = '2g 1r k~0.3'
         }
       }
+      */
 
-      // сигнал № 2
+      // сигнал № 2: вариант №2 от 28.08.2022
       if (
         array[i - 4].closePrice > array[i - 4].openPrice && // 1 свеча зелёная
         array[i - 3].closePrice > array[i - 3].openPrice && // 2 свеча зелёная
         array[i - 2].volume > array[i - 3].volume && // объем 3й красной больше объёма 2й зеленой
         array[i - 2].openPrice > array[i - 2].closePrice && // 3 свеча красная
-        array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
+        array[i - 1].openPrice > array[i - 1].closePrice // 4 свеча красная
         // array[i - 1].highPrice / array[i - 1].lowPrice - 1 < 0.04 &&
-        diffShadow < Number(diffShadowBigUser) &&
-        candleBodyLength > 0.8 && // взято из таблицы
+
         // дополнительные условия от 28.08.2022
-        array[i - 1].lowPrice > array[i - 4].lowPrice // лой последней красной выше лоя первой зеленой
+        //array[i - 1].lowPrice > array[i - 4].lowPrice // лой последней красной выше лоя первой зеленой
       ) {
-        canShort = true
-        whitchSignal = 'сигнал №2'
+        lengthUpShadow = array[i - 1].highPrice - array[i - 1].openPrice
+        lengthDownShadow = array[i - 1].closePrice - array[i - 1].lowPrice
+        diffShadow = lengthUpShadow / lengthDownShadow
+
+        // расчет тела свечи, 1000 - это просто коэффициент для удобства
+        candleBodyLength =
+          (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
+
+        if (
+          diffShadow < Number(diffShadowBigUser) &&
+          candleBodyLength > 0.8 // взято из таблицы
+        ) {
+          canShort = true
+          whitchSignal = 'сигнал №2'
+        }
       }
 
       // сигнал № 3
