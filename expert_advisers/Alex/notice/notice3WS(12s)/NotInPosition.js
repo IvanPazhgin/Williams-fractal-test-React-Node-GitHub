@@ -34,11 +34,11 @@ async function notInPosition(lastCandle, symbolObj, timeFrame) {
   }
   */
 
-  if (!symbolObj.inPosition || !symbolObj.canShort) {
+  if (!symbolObj.inPosition && !symbolObj.canShort) {
     symbolObj = findSygnal38(candlesObject, symbolObj)
   }
 
-  if (!symbolObj.inPosition || !symbolObj.canShort) {
+  if (!symbolObj.inPosition && !symbolObj.canShort) {
     symbolObj = findSygnal39(candlesObject, symbolObj)
   }
 

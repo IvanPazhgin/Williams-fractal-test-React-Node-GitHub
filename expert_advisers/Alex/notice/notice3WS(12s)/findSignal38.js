@@ -73,7 +73,7 @@ function findSygnal38(array, symbolObj) {
       // входим в шорт - убрать в главную функцию
       if (symbolObj.canShort) {
         console.log(
-          `${symbolObj.symbol}: Open SHORT по сигналу: ${symbolObj.whitchSignal}`
+          `${symbolObj.symbol}: Open SHORT по сигналу: ${symbolObj.whitchSignal} (стратегия 3.8)`
         )
 
         sendInfoToUser(
@@ -93,12 +93,12 @@ function findSygnal38(array, symbolObj) {
             takeProfitConst * 100
           }%)\nStop Loss: ${symbolObj.stopLoss} (${
             stopLossConst * 100
-          })%\n\nЖдем цену на рынке для входа в SHORT...`
+          }%)\n\nЖдем цену на рынке для входа в SHORT...`
         )
         //sendInfoToUser(JSON.stringify(symbolObj))
       } else {
         console.log(
-          `${symbolObj.symbol}: Сигнала на вход не было. Ждем следующую свечу`
+          `${symbolObj.symbol}: Сигнала на вход не было. Ждем следующую свечу (стратегия 3.8)`
         )
         // sendInfoToUser(`Сигнала на вход не было. \nЖдем следующую свечу`)
       } // if (canShort)

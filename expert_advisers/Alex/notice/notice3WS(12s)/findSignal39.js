@@ -22,7 +22,7 @@ function findSygnal39(array, symbolObj) {
       candleBodyLength = (array[i].openPrice / array[i].closePrice - 1) * 1000
 
       if (
-        array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёна
+        array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
         array[i - 1].closePrice > array[i - 1].openPrice && // 3 свеча зелёная
         array[i].openPrice > array[i].closePrice && // 4 свеча красная
@@ -43,7 +43,7 @@ function findSygnal39(array, symbolObj) {
       // входим в шорт - убрать в главную функцию
       if (symbolObj.canShort) {
         console.log(
-          `${symbolObj.symbol}: Open SHORT по сигналу: ${symbolObj.whitchSignal}`
+          `${symbolObj.symbol}: Open SHORT по сигналу: ${symbolObj.whitchSignal} (стратегия 3.9)`
         )
 
         sendInfoToUser(
@@ -63,12 +63,12 @@ function findSygnal39(array, symbolObj) {
             takeProfitConst * 100
           }%)\nStop Loss: ${symbolObj.stopLoss} (${
             stopLossConst * 100
-          })%\n\nЖдем цену на рынке для входа в SHORT...`
+          }%)\n\nЖдем цену на рынке для входа в SHORT...`
         )
         //sendInfoToUser(JSON.stringify(symbolObj))
       } else {
         console.log(
-          `${symbolObj.symbol}: Сигнала на вход не было. Ждем следующую свечу`
+          `${symbolObj.symbol}: Сигнала на вход не было. Ждем следующую свечу (стратегия 3.9).`
         )
         // sendInfoToUser(`Сигнала на вход не было. \nЖдем следующую свечу`)
       } // if (canShort)
