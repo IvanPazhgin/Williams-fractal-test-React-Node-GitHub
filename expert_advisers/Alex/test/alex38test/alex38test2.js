@@ -58,6 +58,7 @@ function alex38test2(
       // findSygnal() // перенести сюда для бота с сигналами в телеграм
 
       // сигнал № 1: вариант №1 от 26.08.2022 в 20:00
+      /*
       if (
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
@@ -80,9 +81,10 @@ function alex38test2(
           whitchSignal = 'сигнал №1'
         }
       }
+      */
 
       // сигнал № 1: вариант №2 от 28.08.2022
-      /*
+
       lengthUpShadow = array[i - 1].highPrice - array[i - 1].openPrice
       lengthDownShadow = array[i - 1].closePrice - array[i - 1].lowPrice
       diffShadow = lengthUpShadow / lengthDownShadow
@@ -105,7 +107,7 @@ function alex38test2(
         shadow2g = array[i - 2].highPrice / array[i - 2].closePrice - 1 // процент роста верхней тени 2й зеленой свечи
         if (
           // дополнительные условия от 28.08.2022
-          array[i - 1].lowPrice > array[i - 3].openPrice && // лой 3й красной большое цены открытия 1й зеленой
+          //array[i - 1].lowPrice > array[i - 3].openPrice && // лой 3й красной большое цены открытия 1й зеленой
           shadow1g > shadow2g // % тени 1й зеленой больше % тени второй зеленой
         ) {
           canShort = true
@@ -113,7 +115,6 @@ function alex38test2(
           // condition = '2g 1r k~0.3'
         }
       }
-      */
 
       // сигнал № 2: вариант №2 от 28.08.2022
       if (

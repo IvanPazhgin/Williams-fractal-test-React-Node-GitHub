@@ -42,7 +42,7 @@ function findSygnal38(array, symbolObj) {
         shadow2g = array[i - 1].highPrice / array[i - 1].closePrice - 1 // процент роста верхней тени 2й зеленой свечи
         if (
           // дополнительные условия от 28.08.2022
-          array[i].lowPrice > array[i - 2].openPrice && // лой 3й красной большое цены открытия 1й зеленой
+          //array[i].lowPrice > array[i - 2].openPrice && // лой 3й красной большое цены открытия 1й зеленой
           shadow1g > shadow2g // % тени 1й зеленой больше % тени второй зеленой
         ) {
           symbolObj.canShort = true
