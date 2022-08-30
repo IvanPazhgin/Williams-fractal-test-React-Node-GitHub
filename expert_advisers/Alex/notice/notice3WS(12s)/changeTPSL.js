@@ -1,11 +1,12 @@
 const { sendInfoToUser } = require('../../../../API/telegram/telegram.bot')
+const timestampToDateHuman = require('../../../common.func/timestampToDateHuman') // для отправки сообщения о контроле расчета времени сдвига TP и SL
 
 function changeTPSL(lastCandle, symbolObj) {
   const shiftTime = 1000 * 60 * 60 * 2 // сдвиг на одну 2h свечу
 
   function changeTPSLCommon() {
     // моделирование условия if (i >= indexOfPostion + 2)
-    if (lastCandle.openTime >= symbolObj.openTime + shiftTime * 2) {
+    if (lastCandle.openTime >= symbolObj.sygnalTime + shiftTime * 2) {
       // изменение TP: если мы в просадке
       if (symbolObj.openShort < lastCandle.closePrice) {
         if (!symbolObj.changedTP) {
@@ -28,6 +29,19 @@ function changeTPSL(lastCandle, symbolObj) {
         }
       }
     } // if (lastCandle.openTime >= symbolObj.openTime + shiftTime)
+
+    // отправка сообщения для контроля расчета времени сдвига
+    sendInfoToUser(
+      `Проверка расчета времени переноса TP и SL\n${
+        symbolObj.symbol
+      }:\n\nВремя текущей свечи:\n${timestampToDateHuman(
+        lastCandle.openTime
+      )}\n\nВремя свечи для изменения TP и SL:\n${timestampToDateHuman(
+        symbolObj.sygnalTime + shiftTime * 2
+      )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
+        symbolObj.positionTime
+      )}`
+    )
   }
 
   /*

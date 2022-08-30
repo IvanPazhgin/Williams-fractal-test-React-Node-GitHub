@@ -17,6 +17,9 @@ function findSygnal38(array, symbolObj) {
   const partOfDeposit = 0.25 // доля депозита на одну сделку
   const multiplier = 10 // плечо
 
+  const shiftTime = 1000 * 60 * 60 * 2 // сдвиг на одну 2h свечу
+  const signalSendingTime = new Date().getTime() // время отправки сигнала
+
   // проверка условий на вход
   // если входим, то inPosition = true
   for (let i = 3; i < array.length; i++) {
@@ -85,6 +88,8 @@ function findSygnal38(array, symbolObj) {
             array[i].openTime
           )}\nВремя сигнала: ${timestampToDateHuman(
             symbolObj.sygnalTime
+          )}\nВремя отправки сообщения: ${timestampToDateHuman(
+            signalSendingTime
           )}\n\nКол-во монет: ${symbolObj.amountOfPosition}\nВзяли ${
             partOfDeposit * 100
           }% c плечом ${multiplier}x от депозита = ${
@@ -107,7 +112,8 @@ function findSygnal38(array, symbolObj) {
 
   // функция openShortCommon для входа в сделку с общими полями
   function openShortCommon() {
-    symbolObj.sygnalTime = new Date().getTime()
+    // symbolObj.sygnalTime = new Date().getTime()
+    symbolObj.sygnalTime = array[i].openTime + shiftTime
 
     // вычисляем уровень take profit
     symbolObj.takeProfit = +(

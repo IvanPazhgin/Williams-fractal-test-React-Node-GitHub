@@ -7,7 +7,8 @@ function closeShort(lastCandle, symbolObj) {
     // условия выхода из сделки по TP
     if (lastCandle.lowPrice <= symbolObj.takeProfit) {
       symbolObj.closeShort = lastCandle.lowPrice
-      symbolObj.closeTime = lastCandle.openTime
+      //symbolObj.closeTime = lastCandle.openTime
+      symbolObj.closeTime = new Date().getTime()
 
       symbolObj.profit = +(
         (symbolObj.openShort - lastCandle.lowPrice) *
