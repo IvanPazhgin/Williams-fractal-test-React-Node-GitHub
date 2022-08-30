@@ -25,6 +25,7 @@ async function alex3notice12s() {
   let i = 0 // для поиска последней свечи по массиву symbols3
 
   // получаем от пользователя список инструментов
+  /*
   const symbols3 = [
     'UNFIUSDT',
     'PEOPLEUSDT',
@@ -77,6 +78,25 @@ async function alex3notice12s() {
     'IOSTUSDT',
     'ZILUSDT',
     'ZENUSDT',
+  ]
+  */
+
+  const symbols3 = [
+    'UNFIUSDT',
+    'PEOPLEUSDT',
+    'BELUSDT',
+    'BLZUSDT',
+    'SANDUSDT',
+    'BANDUSDT',
+    'STORJUSDT',
+    'ETCUSDT',
+    'ATOMUSDT',
+    'LINAUSDT',
+    'APEUSDT',
+    '1INCHUSDT',
+    'ALPHAUSDT',
+    'API3USDT',
+    'DGBUSDT',
   ]
 
   let symbolObj3 = []
