@@ -2,6 +2,7 @@ function testOfNewFuctiouns() {
   workingFunctions()
   //testWilliams() // тест одновременного запуска оповещений на разных стратегиях
   //testBinanceTrade() // тест торговых функций
+  //arbitrationTest() // простейший тест арбитража
 }
 
 function workingFunctions() {
@@ -64,6 +65,11 @@ async function testWilliams() {
       console.log(`test of Williams noteice is processing...`)
     }
   )
+}
+
+function arbitrationTest() {
+  const arbitration = require('./expert_advisers/arbitration/arbitration')
+  arbitration()
 }
 
 function alexTestStrategy() {
