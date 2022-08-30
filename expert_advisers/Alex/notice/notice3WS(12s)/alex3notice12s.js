@@ -9,7 +9,7 @@
 // 2. прописать type: module и игнорировать node_modules в packege.json
 */
 
-const getLastCandle4s = require('../../../../API/binance.engine/alex/getLastCandle4s')
+const getLastCandle4s = require('../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
 const notInPosition = require('./NotInPosition')
 const { sendInfoToUser } = require('../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../common.func/timestampToDateHuman')

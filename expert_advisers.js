@@ -27,7 +27,7 @@ function testBinanceTrade() {
 
 async function testWilliams() {
   // проверка - возможно ли одновременный запуск web socket для Alex и для Williams fractal
-  const getLastCandle4s = require('./API/binance.engine/alex/getLastCandle4s')
+  const getLastCandle4s = require('./API/binance.engine/web.socket.usdm/getLastCandle4s')
   const symbols = ['ETHUSDT', 'BTCUSDT']
   const timeFrame = '1m'
   let lastCandle
