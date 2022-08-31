@@ -3,6 +3,7 @@ function testOfNewFuctiouns() {
   //testWilliams() // тест одновременного запуска оповещений на разных стратегиях
   //testBinanceTrade() // тест торговых функций
   //arbitrationTest() // простейший тест арбитража
+  //elasticTest() // тест elastic search
 }
 
 function workingFunctions() {
@@ -10,11 +11,13 @@ function workingFunctions() {
   //const alex37tradeMain4s = require('./expert_advisers/Alex/trade37WS(4symbols)/alex37tradeMain4s')
   // const alex38notice8s = require('./expert_advisers/Alex/notice38WS(8s)/alex38notice8s')
   const alex3notice12s = require('./expert_advisers/Alex/notice/notice3WS(12s)/alex3notice12s') // оповещения 3.7-3.9 на 12 монетах
+  //const alexNoticeMain = require('./expert_advisers/Alex/notice/noticeWS/alexNoticeMain')
   const { tgBotExample } = require('./API/telegram/telegram.bot')
   // alex37tradeMain() // стратегия 3.7 оповещения на одной монете
   //alex37tradeMain4s() // стратегия 3.7 оповещения на четырех монетах
   // alex38notice8s() // стратегия 3.8 оповещения на восьми монетах
-  alex3notice12s() // оповещения 3.7-3.9 на 12 монетах
+  alex3notice12s() // оповещения 3.7-3.9 на 12 монетах 24.08.2022
+  //alexNoticeMain() // оповещения 3.8 и 3.8 hard 31.08.2022
   tgBotExample()
 }
 
@@ -70,6 +73,14 @@ async function testWilliams() {
 function arbitrationTest() {
   const arbitration = require('./expert_advisers/arbitration/arbitration')
   arbitration()
+}
+
+function elasticTest() {
+  const elasticPut = require('./API/elastic.search/elastic.put')
+  elasticPut().catch((err) => {
+    console.log(err)
+    process.exit(1)
+  })
 }
 
 function alexTestStrategy() {

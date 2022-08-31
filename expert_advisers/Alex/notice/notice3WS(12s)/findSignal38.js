@@ -70,7 +70,7 @@ function findSygnal38(array, symbolObj) {
         symbolObj.canShort = true
         symbolObj.whitchSignal = 'Стратегия 3.8: сигнал №2'
         symbolObj.openShort = array[i].highPrice
-        openShortCommon()
+        openShortCommon(array[i].openTime)
       }
 
       // входим в шорт - убрать в главную функцию
@@ -111,9 +111,9 @@ function findSygnal38(array, symbolObj) {
   } // for (let i = 4; i < array.length; i++)
 
   // функция openShortCommon для входа в сделку с общими полями
-  function openShortCommon() {
+  function openShortCommon(arrayOpenTime) {
     // symbolObj.sygnalTime = new Date().getTime()
-    symbolObj.sygnalTime = array[i].openTime + shiftTime
+    symbolObj.sygnalTime = arrayOpenTime + shiftTime
 
     // вычисляем уровень take profit
     symbolObj.takeProfit = +(

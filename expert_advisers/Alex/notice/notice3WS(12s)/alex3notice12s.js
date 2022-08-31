@@ -97,6 +97,7 @@ async function alex3notice12s() {
     'ALPHAUSDT',
     'API3USDT',
     'DGBUSDT',
+    'XRPUSDT',
   ]
 
   let symbolObj3 = []
