@@ -51,7 +51,7 @@ function findSygnal38(array, symbolObj) {
           symbolObj.canShort = true
           symbolObj.whitchSignal = 'Стратегия 3.8: сигнал №1'
           symbolObj.openShort = array[i].highPrice
-          openShortCommon()
+          openShortCommon(array[i].openTime)
         }
       }
 
