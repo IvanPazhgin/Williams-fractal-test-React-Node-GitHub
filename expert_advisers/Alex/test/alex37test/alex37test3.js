@@ -67,7 +67,7 @@ async function alex37test3(
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
         array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объема 2й зеленой
-        array[i - 2].openPrice > array[i - 1].closePrice && // цена открытия 2й зеленой выше цены закрытий 3й красной
+        array[i - 2].openPrice > array[i - 1].closePrice && // цена открытия 2й зеленой выше цены закрытия 3й красной
         //diffShadow < 0.3
         diffShadow < Number(diffShadowBigUser) // расчетный diff < пользовательского значения (оставил для автотестов)
       ) {
@@ -90,7 +90,7 @@ async function alex37test3(
       // сигнал №2 пока убираем
 
       // сигнал №3
-      /*
+
       if (
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
@@ -101,20 +101,18 @@ async function alex37test3(
         canShort = true
         whitchSignal = 'сигнал №3'
       }
-      */
 
       // сигнал №4
       // на красной верхняя тень сильно меньше нижней тени. Низкий коэффициент. Задает пользователь
-      /*
+
       if (
-        array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
+        array[i - 1].openPrice > array[i - 1].closePrice && // 1 свеча красная
         //diffShadow < 0.3
         diffShadow < Number(diffShadowSmallUser) // расчетный diff < пользовательского значения
       ) {
         canShort = true
         whitchSignal = 'сигнал №4'
       }
-      */
 
       // входим в шорт
       if (canShort) {

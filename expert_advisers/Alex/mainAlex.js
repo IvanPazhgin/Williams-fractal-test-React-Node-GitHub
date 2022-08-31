@@ -158,7 +158,8 @@ async function startAlex(
       symbol
     )
 
-    const [deals39, statistics39] = await alex39test(
+    // !!! const [deals39, statistics39] = await alex39test(
+    const [deals39, statistics39] = await alex37test3(
       objectSenior,
       deposit,
       partOfDeposit,
