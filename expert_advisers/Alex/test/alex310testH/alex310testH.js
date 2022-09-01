@@ -62,14 +62,15 @@ function alex310testH(
         array[i - 1].openPrice > array[i - 1].closePrice && // 4 свеча красная
         array[i - 2].volume > array[i - 3].volume && // объем 3й красной больше объема 2й зеленой
         array[i - 1].highPrice > array[i - 2].highPrice // хай 4й красной больше хая 3й красной
+        //low 4 > low 1
       ) {
-        lengthUpShadow = array[i - 1].highPrice - array[i - 1].openPrice
-        lengthDownShadow = array[i - 1].closePrice - array[i - 1].lowPrice
+        lengthUpShadow = array[i - 2].highPrice - array[i - 2].openPrice
+        lengthDownShadow = array[i - 2].closePrice - array[i - 2].lowPrice
         diffShadow = lengthUpShadow / lengthDownShadow
 
         // расчет тела свечи, 1000 - это просто коэффициент для удобства
         candleBodyLength =
-          (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
+          (array[i - 2].openPrice / array[i - 2].closePrice - 1) * 1000
 
         // дополнительные условия от 28.08.2022
         shadow1g = array[i - 4].highPrice / array[i - 4].closePrice - 1 // процент роста верхней тени 1й зеленой свечи
@@ -89,6 +90,7 @@ function alex310testH(
         }
       }
 
+      /*
       // сигнал № 2: вариант №3 от 01.09.2022
       if (
         array[i - 4].closePrice > array[i - 4].openPrice && // 1 свеча зелёная
@@ -122,6 +124,7 @@ function alex310testH(
           whitchSignal = 'сигнал №2'
         }
       }
+      */
 
       // сигнал № 3
       /*
@@ -147,18 +150,23 @@ function alex310testH(
             if (array[i].highPrice >= array[i - 1].openPrice) {
               positionDown = array[i - 1].openPrice // вход по цене открытия красной [i-1]
               openShortCommon() // функция openShortCommon для входа в сделку с общими полями
+            } else {
+              // отменяем сигнал
+              canShort = false
+              whitchSignal = ''
             }
             break
           case 'сигнал №2':
             if (array[i].highPrice >= array[i - 1].highPrice) {
               positionDown = array[i - 1].highPrice // вход по цене закрытия красной [i-1]
               openShortCommon() // функция openShortCommon для входа в сделку с общими полями
+            } else {
+              // отменяем сигнал
+              canShort = false
+              whitchSignal = ''
             }
             break
           default:
-            // отменяем сигнал
-            canShort = false
-            whitchSignal = ''
         } // switch (whitchSignal)
       } // if (canShort)
 
