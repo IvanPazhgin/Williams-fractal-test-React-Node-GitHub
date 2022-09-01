@@ -77,3 +77,9 @@ async function arbitration() {
 }
 
 module.exports = arbitration
+
+/*
+вариант схемы:
+1. цена цифрового рубля за фиат на p2p
+2. на спотовом рынке продажем ЦР в BTC...
+*/
