@@ -125,7 +125,7 @@ function alex38test2(
         array[i - 1].openPrice > array[i - 1].closePrice // 4 свеча красная
         // array[i - 1].highPrice / array[i - 1].lowPrice - 1 < 0.04 &&
 
-        // дополнительные условия от 28.08.2022
+        // дополнительные условия от 28.08.2022 (в оповещениях это имеется)
         //array[i - 1].lowPrice > array[i - 4].lowPrice // лой последней красной выше лоя первой зеленой
       ) {
         lengthUpShadow = array[i - 1].highPrice - array[i - 1].openPrice

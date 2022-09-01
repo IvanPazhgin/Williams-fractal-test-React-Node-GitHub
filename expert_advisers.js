@@ -7,18 +7,29 @@ function testOfNewFuctiouns() {
 }
 
 function workingFunctions() {
+  // стратегия 3.7 оповещения на одной монете
   // const alex37tradeMain = require('./expert_advisers/Alex/trade37WS(1symbol)/alex37tradeMain')
+  // alex37tradeMain()
+
+  // стратегия 3.7 оповещения на четырех монетах
   //const alex37tradeMain4s = require('./expert_advisers/Alex/trade37WS(4symbols)/alex37tradeMain4s')
+  //alex37tradeMain4s()
+
+  // стратегия 3.8 оповещения на восьми монетах
   // const alex38notice8s = require('./expert_advisers/Alex/notice38WS(8s)/alex38notice8s')
-  const alex3notice12s = require('./expert_advisers/Alex/notice/notice3WS(12s)/alex3notice12s') // оповещения 3.7-3.9 на 12 монетах
-  //const alexNoticeMain = require('./expert_advisers/Alex/notice/noticeWS/alexNoticeMain')
+  // alex38notice8s()
+
+  // сообщения в tg
   const { tgBotExample } = require('./API/telegram/telegram.bot')
-  // alex37tradeMain() // стратегия 3.7 оповещения на одной монете
-  //alex37tradeMain4s() // стратегия 3.7 оповещения на четырех монетах
-  // alex38notice8s() // стратегия 3.8 оповещения на восьми монетах
-  alex3notice12s() // оповещения 3.7-3.9 на 12 монетах 24.08.2022
-  //alexNoticeMain() // оповещения 3.8 и 3.8 hard 31.08.2022
   tgBotExample()
+
+  // оповещения 3.7-3.9 на 12 монетах (24.08.2022)
+  // const alex3notice12s = require('./expert_advisers/Alex/notice/notice3WS(12s)/alex3notice12s')
+  // alex3notice12s()
+
+  // оповещения 3.8 стандарт и хард (01.09.2022)
+  const alexNoticeMain = require('./expert_advisers/Alex/notice/noticeWS/alexNoticeMain')
+  alexNoticeMain() // оповещения 3.8 и 3.8 hard 31.08.2022
 }
 
 function testBinanceTrade() {
