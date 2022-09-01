@@ -32,10 +32,10 @@ function changeTPSL(lastCandle, symbolObj) {
 
     // отправка сообщения для контроля расчета времени сдвига
     sendInfoToUser(
-      `Проверка расчета времени переноса TP и SL\n${
+      `Проверка расчета времени переноса TP и SL:\n${
         symbolObj.symbol
-      }:\n\nВремя текущей свечи:\n${timestampToDateHuman(
-        lastCandle.openTime
+      }\n\nВремя появления сигнала:\n${timestampToDateHuman(
+        symbolObj.sygnalTime
       )}\n\nВремя свечи для изменения TP и SL:\n${timestampToDateHuman(
         symbolObj.sygnalTime + shiftTime * 2
       )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
