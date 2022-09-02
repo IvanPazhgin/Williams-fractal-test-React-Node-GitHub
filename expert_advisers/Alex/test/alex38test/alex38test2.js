@@ -16,6 +16,7 @@ function alex38test2(
   delta,
   symbol
 ) {
+  const nameStrategy = 'Стратегия №3.8.2: Без теневая'
   // для сигналов
   let canShort = false // есть ли сигнал для входа в шорт или нет
   let whitchSignal = '' // вносим в таблицу  номер сигнала
@@ -324,6 +325,7 @@ function alex38test2(
   let roi = (globalProfit / deposit) * 100
 
   const statistics = {
+    nameStrategy: nameStrategy,
     depositAtStart: Number(deposit),
     depositAtEnd: Number(deposit) + globalProfit,
     globalProfit: +globalProfit.toFixed(2),

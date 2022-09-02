@@ -215,7 +215,7 @@ export const AlexPage = () => {
 
       <hr></hr>
 
-      {/*таблица всех сделок № 3.5*/}
+      {/*таблица всех сделок: Слот №1*/}
       {/* 
       <h4>Стратегия №3.5: "без теневая"</h4>
 
@@ -291,8 +291,12 @@ export const AlexPage = () => {
 
       <hr></hr>
 */}
-      {/*таблица всех сделок № 3.7*/}
-      <h4>Стратегия №3.7: "без теневая"</h4>
+      {/*таблица всех сделок: Слот №2*/}
+      <h4>
+        {data && data.statistics37 && (
+          <div>{data.statistics37.nameStrategy}</div>
+        )}
+      </h4>
 
       <h5>Общая статистика:</h5>
       {data && data.statistics37 && (
@@ -365,8 +369,12 @@ export const AlexPage = () => {
       </div>
 
       <hr></hr>
-      {/*таблица всех сделок № 3.8*/}
-      <h4>Стратегия №3.8: "без теневая"</h4>
+      {/*таблица всех сделок: Слот 3*/}
+      <h4>
+        {data && data.statistics38 && (
+          <div>{data.statistics38.nameStrategy}</div>
+        )}
+      </h4>
 
       <h5>Общая статистика:</h5>
       {data && data.statistics38 && (
@@ -441,8 +449,12 @@ export const AlexPage = () => {
       </div>
 
       <hr></hr>
-      {/*таблица всех сделок № 3.9*/}
-      <h4>Стратегия №3.9: "без теневая"</h4>
+      {/*таблица всех сделок: Слот 4*/}
+      <h4>
+        {data && data.statistics39 && (
+          <div>{data.statistics39.nameStrategy}</div>
+        )}
+      </h4>
 
       <h5>Общая статистика:</h5>
       {data && data.statistics39 && (
