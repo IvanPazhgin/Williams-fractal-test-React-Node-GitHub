@@ -1,9 +1,10 @@
 // name: без теневая
 // VERSION 3.12
-// входим на середине верхней тени красной
+// входим на хае красной
+
 const timestampToDateHuman = require('../../../common.func/timestampToDateHuman')
 
-function alex312test(
+function alex312test4h(
   array,
   depositTemp,
   partOfDeposit,
@@ -15,7 +16,7 @@ function alex312test(
   delta,
   symbol
 ) {
-  const nameStrategy = 'Стратегия №3.12: Без теневая 2h'
+  const nameStrategy = 'Стратегия №3.12: Без теневая 4h'
 
   // для сигналов
   let canShort = false // есть ли сигнал для входа в шорт или нет
@@ -117,9 +118,8 @@ function alex312test(
           //console.log(`время последней красной свечи: ${timestampToDateHuman(array[i - 1].openTime)}`)
           canShort = true
           whitchSignal = 'сигнал №1'
-          middleOfShadow =
-            ((array[i - 1].highPrice - array[i - 1].openPrice) / 2) * 0.4 +
-            array[i - 1].openPrice
+          middleOfShadow = array[i - 1].highPrice
+          //middleOfShadow = ((array[i - 1].highPrice - array[i - 1].openPrice) / 2) * 0.4 + array[i - 1].openPrice
           //console.log(`цена для входа = ${middleOfShadow}`)
         } else {
           // а все зеленые свечи мы пропускаем
@@ -330,4 +330,4 @@ function alex312test(
   return [deals, statistics]
 }
 
-module.exports = alex312test
+module.exports = alex312test4h

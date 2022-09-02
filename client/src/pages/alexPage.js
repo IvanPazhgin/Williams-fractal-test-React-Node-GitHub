@@ -53,9 +53,7 @@ export const AlexPage = () => {
   return (
     <>
       <div>
-        <h3>
-          Тест стратегий Алекса: <b>3.7</b> и <b>3.8</b>
-        </h3>
+        <h3>Тест стратегий Алекса</h3>
       </div>
       <hr></hr>
       <form action="/alex" method="POST">
