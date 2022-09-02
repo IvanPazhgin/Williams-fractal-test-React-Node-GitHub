@@ -59,7 +59,7 @@ export const AlexPage = () => {
       {/* Новая форма */}
       <div class="container py-5">
         <h4>параметры</h4>
-        <form class="mb-5" id="form" action="/alex" method="POST">
+        <form class="mb-5" id="form">
           <div class="form-group">
             <label for="symbol">Монета: btcusdt, ETHUSDT</label>
             <input
@@ -71,204 +71,179 @@ export const AlexPage = () => {
               required
             ></input>
           </div>
-
           <div class="form-group">
-            <label for="timeFrame">
+            <label for="TimeFrame">
               Тайм фрейм: 2h (не более 12h включительно, т.к. требуются
               доработки в candlesInside)
             </label>
-            <input
-              type="text"
-              class="form-control"
-              id="timeFrame"
-              name="timeFrame"
-              onChange={changeHandler}
-              required
-            ></input>
+            <input class="form-control" id="TimeFrame" required></input>
           </div>
-
           <div class="form-group">
-            <label for="dateStart">
-              Дата и время первой свечи: 2022-01-01T00:00:00.000
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="dateStart"
-              name="dateStart"
-              onChange={changeHandler}
-              required
-            ></input>
+            <label for="num">какое то число</label>
+            <input type="number" class="form-control" id="num" required></input>
           </div>
-
-          <div class="form-group">
-            <label for="dateFinish">
-              Дата и время последней свечи: 2022-02-30T00:00:00.000
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="dateFinish"
-              name="dateFinish"
-              onChange={changeHandler}
-              required
-            ></input>
-          </div>
-
-          <div class="form-group">
-            <label for="deposit">размер депозита</label>
-            <input
-              type="number"
-              class="form-control"
-              id="deposit"
-              name="deposit"
-              onChange={changeHandler}
-              required
-            ></input>
-          </div>
-
-          <div class="form-group">
-            <label for="partOfDeposit">
-              % от депозита: от 0.01 до 1 (через точку). Например: 0.25
-            </label>
-            <input
-              type="number"
-              class="form-control"
-              id="partOfDeposit"
-              name="partOfDeposit"
-              onChange={changeHandler}
-              required
-            ></input>
-          </div>
-
-          <div class="form-group">
-            <label for="multiplier">плечо: от 1 до 20. Например: 10</label>
-            <input
-              type="number"
-              class="form-control"
-              id="multiplier"
-              name="multiplier"
-              onChange={changeHandler}
-              required
-            ></input>
-          </div>
-
-          <div class="form-group">
-            <label for="takeProfit">
-              размер ручного Take Profit (%). Например: 4
-            </label>
-            <input
-              type="number"
-              class="form-control"
-              id="takeProfit"
-              name="takeProfit"
-              onChange={changeHandler}
-              required
-            ></input>
-          </div>
-
-          <div class="form-group">
-            <label for="stopLoss">
-              размер ручного Stop Loss(%). Например: 2
-            </label>
-            <input
-              type="number"
-              class="form-control"
-              id="stopLoss"
-              name="stopLoss"
-              onChange={changeHandler}
-              required
-            ></input>
-          </div>
-
-          <p>
-            <b>
-              К1 - процент отношения верхней тени к нижней тени (на красной
-              свечке)
-            </b>
-            <br />
-            Условие проверки коэффициента: отношение меньше значения
-            пользователя.
-            <br /> Допустимо: 0.139 - 0.625
-            <br /> Не допустимо: 0.853
-          </p>
-
-          <div class="form-group">
-            <label for="diffShadow35big">
-              процент отношения теней на красной свечке. Например: 0.62
-            </label>
-            <input
-              type="number"
-              class="form-control"
-              id="diffShadow35big"
-              name="diffShadow35big"
-              onChange={changeHandler}
-              required
-            ></input>
-          </div>
-
-          <p>
-            <b>К2 - на красной свече верхняя тень сильно меньше нижней тени.</b>
-            <br /> Низкий коэффициент. Задает пользователь.
-            <br /> Условие проверки: отношение меньше значения пользователя.
-            <br /> на примере atomusdt 24.07.2022 at 09:00 коэффициент = 0.102
-          </p>
-
-          <div class="form-group">
-            <label for="diffShadow35small">
-              микро процент отношения теней. Например: 0.11
-            </label>
-            <input
-              type="number"
-              class="form-control"
-              id="diffShadow35small"
-              name="diffShadow35small"
-              onChange={changeHandler}
-              required
-            ></input>
-          </div>
-
-          <p>
-            <b>К3</b> - коэффициент для входа в сделку относительно{' '}
-            <b>Open Price</b> сигнальной красной свечки
-            <br />
-            На двух примерах было вычислено: от 0.13 до 0.17.
-            <br /> <b>Ноль - коэффициент будет равень нулю.</b>
-          </p>
-
-          <div class="form-group">
-            <label for="delta">коэффициент для входа в сделку</label>
-            <input
-              type="number"
-              class="form-control"
-              id="delta"
-              name="delta"
-              onChange={changeHandler}
-              required
-            ></input>
-          </div>
-
-          <button
-            type="submit"
-            class="btn"
-            onClick={registerHandler}
-            disabled={loading}
-          >
-            Запустить тест!
-          </button>
-
-          {/* 
-          <button
-            type="submit"
-            class="btn btn-primary"
-            onClick={registerHandler}
-            disabled={loading}
-          >
-            Вторая кнопка!
-          </button>
-        */}
         </form>
       </div>
+
+      {/* старая форма */}
+      <hr></hr>
+      <form action="/alex" method="POST">
+        <h4>параметры:</h4>
+
+        <div class="input-field">
+          <input type="text" name="symbol" onChange={changeHandler} />
+          <label>Инструмент: btcusdt, ETHUSDT</label>
+        </div>
+
+        <div class="input-field">
+          <input type="text" name="TimeFrame" onChange={changeHandler} />
+          <label>
+            Тайм фрейм: 2h (не более 12h включительно, т.к. требуются доработки
+            в candlesInside)
+          </label>
+        </div>
+
+        <p>
+          Ниже укажи временной интервал в формате YYYY-MM-DDTHH:mm:ss.sss, где:
+          <br />
+          YYYY-MM-DD – дата в формате год-месяц-день.
+          <br />
+          Обычный символ T используется как разделитель.
+          <br />
+          HH:mm:ss.sss – время: часы-минуты-секунды-миллисекунды.
+        </p>
+
+        <div class="input-field">
+          <input type="text" name="dateStart" onChange={changeHandler} />
+          <label>Дата и время первой свечи: 2022-01-01T00:00:00.000</label>
+        </div>
+
+        <div class="input-field">
+          <input type="text" name="dateFinish" onChange={changeHandler} />
+          <label>Дата и время последней свечи: 2022-02-30T00:00:00.000</label>
+        </div>
+
+        <div class="input-field">
+          <input type="text" name="deposit" onChange={changeHandler} />
+          <label>размер депозита</label>
+        </div>
+
+        <div class="input-field">
+          <input type="text" name="partOfDeposit" onChange={changeHandler} />
+          <label>
+            % от депозита: от 0.01 до 1 (через точку). Например: 0.25
+          </label>
+        </div>
+
+        <div class="input-field">
+          <input type="text" name="multiplier" onChange={changeHandler} />
+          <label>плечо: от 1 до 20. Например: 10</label>
+        </div>
+
+        <div class="input-field">
+          <input type="text" name="takeProfit" onChange={changeHandler} />
+          <label>размер ручного Take Profit (%). Например: 4</label>
+        </div>
+
+        <div class="input-field">
+          <input type="text" name="stopLoss" onChange={changeHandler} />
+          <label>размер ручного Stop Loss(%). Например: 2</label>
+        </div>
+
+        <p>
+          {/*<b>Стратегия 3.5: Сигнал № 1 (3 зеленых, 1 красная):</b>
+          <br />*/}
+          <b>Стратегии 3.7: Сигнал № 1 (в таблице: 2g 1r k~0.62):</b>
+          <br /> УСЛОВИЕ входа: 2 зеленых, 1 красная, процент отношения верхней
+          тени к нижней тени (на красной свечке)
+          <br />
+          Условие проверки коэффициента: отношение меньше значения пользователя.
+          <br /> Допустимо: 0.139 - 0.625
+          <br /> Не допустимо: 0.853
+        </p>
+        <div class="input-field">
+          <input type="text" name="diffShadow35big" onChange={changeHandler} />
+          <label>
+            процент отношения теней на красной свечке. Например: 0.62
+          </label>
+        </div>
+
+        <p>
+          <b>Стратегии 3.7: сигнал №3 (в таблице: 2g 1r h=o)</b>
+          <br />
+          УСЛОВИЕ входа: 2 зеленых; 1 красная, у которой нет верхней тени
+        </p>
+
+        <p>
+          {/*<b>Стратегии 3.5: сигнал №3</b>. Вход по <b>Close Price</b>
+          <br />*/}{' '}
+          <b>Стратегии 3.7: сигнал №4 (в таблице: 1r k~0.3)</b>
+          <br /> УСЛОВИЕ входа: на красной свече верхняя тень сильно меньше
+          нижней тени. <b>Низкий коэффициент. Задает пользователь</b>.
+          <br /> Условие проверки: отношение меньше значения пользователя.
+          <br /> на примере atomusdt 24.07 at 09:00 коэффициент = 0.102
+        </p>
+        <div class="input-field">
+          <input
+            type="text"
+            name="diffShadow35small"
+            onChange={changeHandler}
+          />
+          <label>микро процент отношения теней. Например: 0.11</label>
+        </div>
+
+        <p>
+          <b>Стратегия 3.7, сигнал №4</b>: коэффициент для входа в сделку
+          относительно <b>Open Price</b> сигнальной красной свечки
+          <br />
+          На двух примерах было вычислено: от 0.13 до 0.17.
+          <br /> <b>Ноль - коэффициент будет равень нулю.</b>
+        </p>
+        <div class="input-field">
+          <input type="text" name="delta" onChange={changeHandler} />
+          <label>коэффициент для входа в сделку</label>
+        </div>
+
+        <button
+          type="submit"
+          class="btn"
+          onClick={registerHandler}
+          disabled={loading}
+        >
+          Запустить тест!
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          onClick={registerHandler}
+          disabled={loading}
+        >
+          Вторая кнопка!
+        </button>
+      </form>
+
+      {/*
+      <hr></hr>
+      <h5>Общие рекомендации:</h5>
+      <div>
+        <table>
+          <tr>
+            <td>Стратегия</td>
+            <td>таймфрейм</td>
+            <td>Take Profit</td>
+            <td>Stop Loss</td>
+            <td>Выставлены</td>
+          </tr>
+          <tr>
+            <td>3.5: без теневая</td>
+            <td>2h</td>
+            <td>4%</td>
+            <td>2%</td>
+            <td>в коде</td>
+          </tr>
+        </table>
+      </div>
+      */}
 
       <hr></hr>
       <div>

@@ -71,7 +71,7 @@ app.post('/alexPage', async function (req, res) {
 
   const result = await startAlex(
     req.body.symbol,
-    req.body.TimeFrame,
+    req.body.timeFrame,
     req.body.dateStart,
     req.body.dateFinish,
     req.body.deposit,
