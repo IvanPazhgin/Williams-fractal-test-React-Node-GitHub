@@ -5,6 +5,7 @@ const findSygnal38 = require('./findSignal38')
 //const findSygnal39 = require('./findSignal39')
 // const timestampToDateHuman = require('../../common.func/timestampToDateHuman') // временно для проверки свечей
 
+// prepairData
 async function notInPosition(lastCandle, symbolObj, timeFrame) {
   const limitOfCandle = 4 // кол-во свечей для поиска сигнала
   let candles = await getCandles(symbolObj.symbol, timeFrame, limitOfCandle) // получаем первые n свечей

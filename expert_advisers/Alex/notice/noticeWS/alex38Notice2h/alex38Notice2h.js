@@ -13,15 +13,16 @@ const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.us
 const notInPosition = require('./NotInPosition')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
-const closeShort = require('../alex38Common2h/closeShort')
+//const closeShort = require('../alex38Common2h/closeShort')
 const changeTPSL = require('../alex38Common2h/changeTPSL')
 const canShort = require('../alex38Common2h/canShort')
 // const { SymbolObjNotice } = require('../../../../../models/symbolNotice') // for Export вначале файла
 const SymbolObjNotice = require('../../../../../models/symbolNotice')
+//const symbols3 = require('../../../../../models/symbolsClass') // для удобного выноса общих переменных
 
 async function alex38Notice2h(symbols3) {
   const nameStrategy = 'Стратегия №3.8: Без теневая 2h'
-  const timeFrame = '2h'
+  const timeFrames = ['5m', '1m']
 
   let lastCandle // последняя свечка
   let i = 0 // для поиска последней свечи по массиву symbols3
@@ -65,9 +66,10 @@ async function alex38Notice2h(symbols3) {
   // если !inPosidion -> ищем вход; иначе проверяем условие выхода или проверяем условия переноса TP и SL
   await getLastCandle4s(
     symbols3,
-    timeFrame,
+    timeFrames,
     async ({
       symbol: symbol,
+      interval: interval,
       startTime: openTime,
       open: openPrice,
       close: closePrice,
@@ -79,6 +81,7 @@ async function alex38Notice2h(symbols3) {
       // сохраняем новую завершенную свечку
       lastCandle = {
         symbol: symbol,
+        interval: interval,
         openTime: openTime,
         openPrice: openPrice,
         closePrice: closePrice,
@@ -87,116 +90,70 @@ async function alex38Notice2h(symbols3) {
         volume: volume,
         final: final,
       }
+      console.table(lastCandle)
 
-      i = 0
-      do {
-        if (symbolObj3[i].symbol.includes(lastCandle.symbol)) {
+      symbolObj3.forEach(async (item) => {
+        //do {
+        if (item.symbol.includes(lastCandle.symbol)) {
           // проверяем условия выхода из сделки:
-          if (symbolObj3[i].inPosition) {
+          if (item.inPosition) {
             // новая свеча:
             // 1. выходит из сделки по TP и SL
             // или
             // 2. проверяет условия изменения TP и SL
             if (!final) {
               // 1. для начала каждую секунду проверяем условие выхода из сделки по TP и SL
-              symbolObj3[i] = closeShort(lastCandle, symbolObj3[i])
+              item.closeShortPosition(lastCandle, timeFrames[1])
 
               // если вышли из сделки, то обнуляем состояние сделки:
-              if (!symbolObj3[i].inPosition) {
+              if (!item.inPosition) {
                 // можно считать что сделка закрыта
-                symbolObj3[i] = {
-                  symbol: symbolObj3[i].symbol,
-                  canShort: false,
-                  inPosition: false,
-                  deposit: 1000,
-                  whitchSignal: '',
-                  openShort: 0,
-                  positionTime: 0,
-                  sygnalTime: 0,
-                  amountOfPosition: 0,
-                  takeProfit: 0,
-                  stopLoss: 0,
-                  changedTP: false,
-                  changedSL: false,
-                  closeShort: 0,
-                  closeTime: 0,
-                  profit: 0,
-                  percent: 0,
-                  nameStrategy: nameStrategy,
-                  shortCandleColorIsGreen: false,
-                }
+                item.reset()
                 console.log(
-                  `${symbolObj3[i].symbol}: Закрыли short. Очистили параметры сделки`
+                  `${item.symbol}: Закрыли short. Очистили параметры сделки`
                 )
               } // обнуляем состояние сделки до первоначального состояния
             } else {
               // if(final)
               // 2. затем проверяем условие изменения SL и TP
               // console.log(`проверяем условие изменения SL и TP`)
-              symbolObj3[i] = changeTPSL(lastCandle, symbolObj3[i])
+              item.changeTPSL(lastCandle)
             }
             // end of: if (symbolObj.inPosition)
           } else {
             // if (!symbolObj.inPosition)
             // 1. ждем цену на рынке для входа по сигналу
             if (!final) {
-              symbolObj3[i] = canShort(lastCandle, symbolObj3[i])
+              item.canShortPosition(lastCandle)
             } else {
               //if (final) {
               // если не вошли в сделку, то для начала очищаем все параметры
-              if (symbolObj3[i].canShort) {
+              if (item.canShort) {
                 // если до финальной свечке не вошли в сделку, то отменяем сигнал
                 sendInfoToUser(
-                  `${symbolObj3[i].nameStrategy}\n${
-                    symbolObj3[i].whitchSignal
-                  }\n\nМонета: ${
-                    symbolObj3[i].symbol
+                  `${item.nameStrategy}\n${item.whitchSignal}\n\nМонета: ${
+                    item.symbol
                   }\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${timestampToDateHuman(
-                    symbolObj3[i].sygnalTime
+                    item.sygnalTime
                   )}\nУДАЛИ ордер на бирже\n\nЖдем следющего сигнала...`
                 )
-
-                symbolObj3[i] = {
-                  symbol: symbolObj3[i].symbol,
-                  canShort: false,
-                  inPosition: false,
-                  deposit: 1000,
-                  whitchSignal: '',
-                  openShort: 0,
-                  positionTime: 0,
-                  sygnalTime: 0,
-                  amountOfPosition: 0,
-                  takeProfit: 0,
-                  stopLoss: 0,
-                  changedTP: false,
-                  changedSL: false,
-                  closeShort: 0,
-                  closeTime: 0,
-                  profit: 0,
-                  percent: 0,
-                  nameStrategy: nameStrategy,
-                  shortCandleColorIsGreen: false,
-                }
+                item.reset()
                 console.log(
-                  `${symbolObj3[i].symbol}: Отменили сигнал. Очистили параметры сделки`
+                  `${item.symbol}: Отменили сигнал. Очистили параметры сделки`
                 )
               } // обнуляем состояние сигнала
 
               // 2. на финальной свечке запускаем поиск сигнала на вход
               // ищем сигнал для входа
-              symbolObj3[i] = await notInPosition(
-                lastCandle,
-                symbolObj3[i],
-                timeFrame
-              )
+              await item.prepairData(lastCandle, timeFrames[0])
             } // //if (final)
           } // end of: if (symbolObj.inPosition)
         } else {
           //console.log(`${item.symbol}: не пришла свечка из web socket`)
         } // если lastCandle содержит текущую монету в цикле if (symbolObj3[i])
-        i++
         //} // if (symbolObj3[i].symbol.includes(lastCandle.symbol))
-      } while (i < symbolObj3.length)
+        //} while (i < symbolObj3.length)
+      })
     } // callback
   ) // await getLastCandle4s()
 }

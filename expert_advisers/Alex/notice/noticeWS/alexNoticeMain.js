@@ -54,8 +54,8 @@ function alexNoticeMain() {
   )
 
   alex38Notice2h(symbols38) // запускаем 3.8 на 2h
-  alex38Notice2hHard(symbols38hard2h) // запускаем 3.8 HARD на 2h
-  alex38Notice4hHard(symbols38hard4h) // запускаем 3.8 HARD на 4h
+  //alex38Notice2hHard(symbols38hard2h) // запускаем 3.8 HARD на 2h
+  //alex38Notice4hHard(symbols38hard4h) // запускаем 3.8 HARD на 4h
 } // function alexNoticeMain()
 
 module.exports = alexNoticeMain
