@@ -22,6 +22,9 @@ const alex311test = require('./test/alex311test/alex311test')
 const alex312test = require('./test/alex312test/alex312test')
 const alex312test4h = require('./test/alex312test/alex312test4h')
 const alex311test2 = require('./test/alex311test/alex311test2')
+const alex312test2 = require('./test/alex312test/alex312test2')
+const alex312test4h2 = require('./test/alex312test/alex312test4h2')
+const alex311test3 = require('./test/alex311test/alex311test3')
 // const tradeAlex4 = require('./tradeAlex4')
 // const bookTickerFunc = require('./bookOfSymbol')
 
@@ -139,7 +142,7 @@ async function startAlex(
     //const [deals37, statistics37] = alex38test10g(
     //const [deals37, statistics37] = alex38test2h(
     //const [deals37, statistics37] = alex310testH(
-    const [deals37, statistics37] = alex312test(
+    const [deals37, statistics37] = alex312test2(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -153,7 +156,7 @@ async function startAlex(
     )
 
     // Слот 3
-    const [deals38, statistics38] = alex312test4h(
+    const [deals38, statistics38] = alex312test4h2(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -168,7 +171,7 @@ async function startAlex(
 
     // Слот 4
     // !!! const [deals39, statistics39] = await alex39test(
-    const [deals39, statistics39] = alex311test2(
+    const [deals39, statistics39] = alex311test3(
       objectSenior,
       deposit,
       partOfDeposit,

@@ -180,7 +180,7 @@ export const AlexPage = () => {
               required
             ></input>
           </div>
-
+          {/* 
           <p>
             <b>
               К1 - процент отношения верхней тени к нижней тени (на красной
@@ -247,7 +247,7 @@ export const AlexPage = () => {
               required
             ></input>
           </div>
-
+*/}
           <button
             type="submit"
             class="btn"
