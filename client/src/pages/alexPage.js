@@ -58,8 +58,8 @@ export const AlexPage = () => {
       <hr></hr>
       {/* Новая форма */}
       <div class="container py-5">
-        <h4>параметры</h4>
         <form class="mb-5" id="form" action="/alex" method="POST">
+          <h4>параметры</h4>
           <div class="form-group">
             <label for="symbol">Монета: btcusdt, ETHUSDT</label>
             <input
@@ -181,6 +181,7 @@ export const AlexPage = () => {
             ></input>
           </div>
 
+          <br />
           <p>
             <b>
               К1 - процент отношения верхней тени к нижней тени (на красной
@@ -248,9 +249,10 @@ export const AlexPage = () => {
             ></input>
           </div>
 */}
+          <br />
           <button
             type="submit"
-            class="btn"
+            class="btn btn-primary"
             onClick={registerHandler}
             disabled={loading}
           >
@@ -383,17 +385,18 @@ export const AlexPage = () => {
           <div>- кол-во нулевых сделок: {data.statistics37.countOfZero}</div>
         </div>
       )}
+      <br />
 
       <h5>Таблица всех сделок:</h5>
       <div>
-        <table>
+        <table class="deals">
           <tr>
             <td>№</td>
-            <td>Открываем</td>
+            <td>Open</td>
             <td>Цена входа</td>
             <td>Время входа</td>
             <td>Объем сделки</td>
-            <td>Закрываем</td>
+            <td>Close</td>
             <td>Цена выхода</td>
             <td>Время выхода</td>
             <td>Прибыль / Убыток</td>
@@ -462,9 +465,10 @@ export const AlexPage = () => {
         </div>
       )}
 
+      <br />
       <h5>Таблица всех сделок:</h5>
       <div>
-        <table>
+        <table class="deals">
           <tr>
             <td>№</td>
             <td>Открываем</td>
@@ -482,7 +486,7 @@ export const AlexPage = () => {
             <td>Время изменения TP</td>
             <td>Время изменения SL</td>
             <td>Сигнал</td>
-            <td>Условие</td>
+            {/*<td>Условие</td>*/}
           </tr>
           {data &&
             data.deals38 &&
@@ -504,7 +508,7 @@ export const AlexPage = () => {
                 <td>{deal.dateChangeTP}</td>
                 <td>{deal.dateChangeSL}</td>
                 <td>{deal.whitchSignal}</td>
-                <td>{deal.condition}</td>
+                {/*<td>{deal.condition}</td>*/}
               </tr>
             ))}
         </table>
@@ -542,9 +546,10 @@ export const AlexPage = () => {
         </div>
       )}
 
+      <br />
       <h5>Таблица всех сделок:</h5>
       <div>
-        <table>
+        <table class="deals">
           <tr>
             <td>№</td>
             <td>Открываем</td>
@@ -562,7 +567,7 @@ export const AlexPage = () => {
             <td>Время изменения TP</td>
             <td>Время изменения SL</td>
             <td>Сигнал</td>
-            <td>Условие</td>
+            {/*<td>Условие</td>*/}
           </tr>
           {data &&
             data.deals39 &&
@@ -584,7 +589,7 @@ export const AlexPage = () => {
                 <td>{deal.dateChangeTP}</td>
                 <td>{deal.dateChangeSL}</td>
                 <td>{deal.whitchSignal}</td>
-                <td>{deal.condition}</td>
+                {/*<td>{deal.condition}</td>*/}
               </tr>
             ))}
         </table>

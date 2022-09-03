@@ -1,5 +1,48 @@
-@import '~materialize-css/dist/css/materialize.min.css';
+/* https://snipp.ru/html-css/table-style */
+form.mb-5 {
+  max-width: 800px;
+  margin: 0 auto;
+}
 
+h3 {
+  text-align: center;
+}
+
+h4 {
+  color: red;
+}
+
+table.deals {
+  text-align: center;
+  font-size: smaller;
+  border: 1px solid #dddddd;
+}
+
+table th {
+  font-weight: bold;
+  padding: 5px;
+  background: #efefef;
+  border: 1px solid #dddddd;
+}
+table td {
+  border: 1px solid #dddddd;
+  padding: 5px;
+}
+
+/*
+table {
+  width: 100%;
+  margin-bottom: 20px;
+  border: 1px solid #dddddd;
+  border-collapse: collapse;
+}
+*/
+
+/*
+@import '~materialize-css/dist/css/materialize.min.css';
+*/
+
+/*
 input.yellow-input {
   border-bottom: 1px solid #fff !important;
   box-shadow: 0 1px 0 0 #fff !important;
@@ -17,20 +60,7 @@ input.yellow-input:focus {
   border-bottom: 1px solid #ffeb3b !important;
   box-shadow: 0 1px 0 0 #ffeb3b !important;
 }
-
-/*
-table {
-  margin: auto;
-}
 */
-
-div.table {
-  text-align: center;
-}
-
-td.table {
-  text-align: center;
-}
 
 /* 
 .lds-hourglass {
