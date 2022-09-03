@@ -16,6 +16,8 @@ const timestampToDateHuman = require('../../../../common.func/timestampToDateHum
 const closeShort = require('../alex38Common2h/closeShort')
 const changeTPSL = require('../alex38Common2h/changeTPSL')
 const canShort = require('../alex38Common2h/canShort')
+// const { SymbolObjNotice } = require('../../../../../models/symbolNotice') // for Export вначале файла
+const SymbolObjNotice = require('../../../../../models/symbolNotice')
 
 async function alex38Notice2h(symbols3) {
   const nameStrategy = 'Стратегия №3.8: Без теневая 2h'
@@ -25,56 +27,22 @@ async function alex38Notice2h(symbols3) {
   let i = 0 // для поиска последней свечи по массиву symbols3
 
   // получаем от пользователя список инструментов
-  /*
-  const symbols3 = [
-    'UNFIUSDT',
-    'PEOPLEUSDT',
-    'BELUSDT',
-    'BLZUSDT',
-    'SANDUSDT',
-    'BANDUSDT',
-    'STORJUSDT',
-    'ETCUSDT',
-    'ATOMUSDT',
-    'LINAUSDT',
-    'APEUSDT',
-    '1INCHUSDT',
-    'ALPHAUSDT',
-    'API3USDT',
-    'DGBUSDT',
-    'XRPUSDT',
-  ]
-  */
+  // const symbols3 = ['UNFIUSDT', 'PEOPLEUSDT', 'BELUSDT', 'BLZUSDT', 'SANDUSDT']
+  // let symbolObj4 = new SymbolObjNotice('btc', nameStrategy) // одна монета по принципу класса
 
   let symbolObj3 = []
 
   symbols3.forEach(function (item, i, arg) {
-    // создаем массив состояний по сделке
-    symbolObj3[i] = {
-      symbol: item,
-      canShort: false,
-      inPosition: false,
-      deposit: 1000,
-      whitchSignal: '',
-      openShort: 0,
-      positionTime: 0,
-      sygnalTime: 0,
-      amountOfPosition: 0,
-      takeProfit: 0,
-      stopLoss: 0,
-      changedTP: false,
-      changedSL: false,
-      closeShort: 0,
-      closeTime: 0,
-      profit: 0,
-      percent: 0,
-      nameStrategy: nameStrategy,
-      shortCandleColorIsGreen: false,
-    }
+    symbolObj3[i] = new SymbolObjNotice(item, nameStrategy)
   })
 
   // console.log('монеты для старта')
   // console.table(symbolObj3)
+
+  // эксперимент с обнулением состояний каждой монеты
+  //symbolObj3[0].reset('btc', nameStrategy)
+  //console.table(symbolObj3[0])
+  //return
 
   /*
   если несколько монет, то по каждой монете запоминаем еще и номер стратегии
@@ -89,16 +57,6 @@ async function alex38Notice2h(symbols3) {
       stopLoss: stopLoss 
     } 
   }
-  */
-
-  /*
-  sendInfoToUser(
-    `Приложение запущено в ${timestampToDateHuman(new Date().getTime())}\nНа ${
-      symbols3.length
-    } инструментах: ${JSON.stringify(
-      symbols3
-    )}\nТайм Фрэйм: ${timeFrame}\n${nameStrategy}\nЖдем завершенную свечку ${timeFrame}...`
-  )
   */
 
   // родительская функция, которая вызывает весь скрипт ниже по отдельности
