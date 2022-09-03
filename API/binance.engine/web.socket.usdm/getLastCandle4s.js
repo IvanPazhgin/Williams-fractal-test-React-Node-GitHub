@@ -4,7 +4,7 @@ const { WebsocketClient, isWsFormattedKline } = require('binance')
 // далее мы можем получить к ней доступ из любого файла
 // чтобы остановить скрипт - binanceWsClient.close
 
-async function getLastCandle4s(symbols3, timeFrames, callback) {
+async function getLastCandle4s(symbols, timeFrames, callback) {
   // ;(async () => {
   const binanceWsClient = new WebsocketClient({
     // api_key: key,
@@ -51,7 +51,7 @@ async function getLastCandle4s(symbols3, timeFrames, callback) {
   })
 
   //binanceWsClient.subscribeKlines(symbolObj.symbol, timeFrame, 'usdm')
-  symbols3.forEach(function (symbol, i, arg) {
+  symbols.forEach(function (symbol, i, arg) {
     //binanceWsClient.subscribeKlines(item, timeFrame, 'usdm')
     timeFrames.forEach(function (timeFrame, i, arg) {
       binanceWsClient.subscribeKlines(symbol, timeFrame, 'usdm')
