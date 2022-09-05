@@ -12,7 +12,7 @@
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
-const AlexNotice38Class15m = require('./AlexNotice38Class15m')
+const AlexNotice38Class15m = require('./alexNotice38Class15')
 const { symbols15m38, timeFrames, nameStrategy } = require('../symbols') // для удобного выноса общих переменных
 
 async function alex38Notice15m() {
