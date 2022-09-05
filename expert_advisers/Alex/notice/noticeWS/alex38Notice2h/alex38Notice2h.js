@@ -10,17 +10,12 @@
 */
 
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
-//const notInPosition = require('./NotInPosition')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
-//const closeShort = require('../alex38Common2h/closeShort')
-//const changeTPSL = require('../alex38Common2h/changeTPSL')
-//const canShort = require('../alex38Common2h/canShort')
 const AlexNotice38Class2h = require('./alexNotice38Class2h')
 const { symbols2h38, timeFrames, nameStrategy } = require('../symbols') // для удобного выноса общих переменных
 
 async function alex38Notice2h() {
-  //const nameStrategy = 'Стратегия №3.8.2: Без теневая 2h'
   const timeFrames2 = [timeFrames.timeFrame2h, timeFrames.timeFrame1m]
 
   let lastCandle // последняя свечка
