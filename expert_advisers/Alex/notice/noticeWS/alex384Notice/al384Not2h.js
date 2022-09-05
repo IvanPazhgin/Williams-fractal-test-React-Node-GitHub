@@ -12,10 +12,10 @@
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
-const AlexNotice38Class2h = require('./alexNotice38Class2h')
-const { symbols2h38, timeFrames, nameStrategy } = require('../symbols') // для удобного выноса общих переменных
+const AlexNotice384Class2h = require('./alNot384Class2h')
+const { symbols2h384, timeFrames, nameStrategy } = require('./symbols') // для удобного выноса общих переменных // для удобного выноса общих переменных
 
-async function alex38Notice2h() {
+async function alex384Notice2h() {
   const timeFrames2 = [timeFrames.timeFrame2h, timeFrames.timeFrame1m]
 
   let lastCandle // последняя свечка
@@ -26,8 +26,8 @@ async function alex38Notice2h() {
 
   let symbolObj = []
 
-  symbols2h38.forEach(function (item, i, arg) {
-    symbolObj[i] = new AlexNotice38Class2h(item, nameStrategy.notice2h382)
+  symbols2h384.forEach(function (item, i, arg) {
+    symbolObj[i] = new AlexNotice384Class2h(item, nameStrategy.notice2h384)
   })
   // console.log('монеты для старта')
   // console.table(symbolObj3)
@@ -50,7 +50,7 @@ async function alex38Notice2h() {
   // родительская функция, которая вызывает весь скрипт ниже по отдельности
   // для начала получаем новые свечки:
   await getLastCandle4s(
-    symbols2h38,
+    symbols2h384,
     timeFrames2,
     async ({
       symbol: symbol,
@@ -141,4 +141,4 @@ async function alex38Notice2h() {
   ) // await getLastCandle4s()
 }
 
-module.exports = alex38Notice2h
+module.exports = alex384Notice2h

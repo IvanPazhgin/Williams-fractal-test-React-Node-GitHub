@@ -33,8 +33,12 @@ function workingFunctions() {
   // alexNoticeMain() // оповещения 3.8 и 3.8 hard 31.08.2022
 
   // оповещения 3.8 (05.09.2022)
-  const alexNoticeMain = require('./expert_advisers/Alex/notice/noticeWS/alexNoticeMain')
-  alexNoticeMain()
+  // const alexNoticeMain382 = require('./expert_advisers/Alex/notice/noticeWS/alex382Notice/alexNoticeMain382')
+  // alexNoticeMain382()
+
+  // оповещения 3.8.4 (06.09.2022)
+  const alexNoticeMain384 = require('./expert_advisers/Alex/notice/noticeWS/alex384Notice/alexNotMain384')
+  alexNoticeMain384()
 }
 
 function testBinanceTrade() {

@@ -1,5 +1,5 @@
-const { sendInfoToUser } = require('../../../../API/telegram/telegram.bot')
-const timestampToDateHuman = require('../../../common.func/timestampToDateHuman')
+const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
+const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const {
   symbols2h38,
   symbols15m38,
@@ -7,13 +7,13 @@ const {
   nameStrategy,
 } = require('./symbols')
 
-function alexNoticeMain() {
+function alexNoticeMain382() {
   // запускаем 3.8 на 2h
-  const alex38Notice2h = require('./alex38Notice2h/alex38Notice2h')
+  const alex38Notice2h = require('./alex38Notice2h')
   alex38Notice2h()
 
   // запускаем 3.8 на 15m
-  const alex38Notice15m = require('./alex38Notice15m/alex38Notice15m')
+  const alex38Notice15m = require('./alex38Notice15m')
   alex38Notice15m()
 
   // формирование сообщений в телеграм
@@ -40,4 +40,4 @@ function alexNoticeMain() {
   sendInfoToUser(message0 + message1 + message2)
 } // function alexNoticeMain()
 
-module.exports = alexNoticeMain
+module.exports = alexNoticeMain382
