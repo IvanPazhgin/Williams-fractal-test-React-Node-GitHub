@@ -4,6 +4,7 @@ function testOfNewFuctiouns() {
   //testBinanceTrade() // тест торговых функций
   //arbitrationTest() // простейший тест арбитража
   //elasticTest() // тест elastic search
+  //testTelegramBot()
 }
 
 function workingFunctions() {
@@ -131,6 +132,13 @@ function testTelegramBot() {
   // тесты telegram bot's
   // const tgBotExpress = require('./expert_advisers/Alex/trade35WS_RxJS/tg.Bot.Express')
   // tgBotExpress() // не работает
+
+  // попытка разбить "большой" файл на несколько модулей
+  const getTGid = require('./API/telegram2/get.tg.id')
+  getTGid()
+
+  const sendTGmessage = require('./API/telegram2/sendTGmessage')
+  sendTGmessage('проверка связи')
 }
 
 module.exports = testOfNewFuctiouns

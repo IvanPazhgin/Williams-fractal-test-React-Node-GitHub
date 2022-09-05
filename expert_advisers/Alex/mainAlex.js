@@ -24,6 +24,7 @@ const alex311test3 = require('./test/alex311test/alex311test3')
 const Candles = require('../../models/candles')
 const alex38test3 = require('./test/alex38test/alex38test3')
 const alex38test4 = require('./test/alex38test/alex38test4')
+const alex38test42 = require('./test/alex38test/alex38test42')
 // const bookTickerFunc = require('./bookOfSymbol')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
@@ -91,7 +92,7 @@ async function startAlex(
     //const [deals37, statistics37] = alex38test10g(
     //const [deals37, statistics37] = alex38test2h(
     //const [deals37, statistics37] = alex310testH(
-    const [deals37, statistics37] = alex38test3(
+    const [deals37, statistics37] = alex38test42(
       objectSenior,
       deposit,
       partOfDeposit,
