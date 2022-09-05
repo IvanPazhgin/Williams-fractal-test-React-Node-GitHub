@@ -1,9 +1,9 @@
 const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
-const candlesToObject = require('../../../../../expert_advisers/common.func/candlesToObject')
-const timestampToDateHuman = require('../../../../../expert_advisers/common.func/timestampToDateHuman')
+const candlesToObject = require('../../../../common.func/candlesToObject')
+const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 
-class AlexNotice38 {
+class AlexNotice38Class2h {
   constructor(symbol, nameStrategy) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
@@ -30,14 +30,14 @@ class AlexNotice38 {
     this.shortCandleColorIsGreen = false
 
     this.diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
-    this.takeProfitConst = 0.04
-    this.stopLossConst = 0.02
+    this.takeProfitConst = 0.03
+    this.stopLossConst = 0.03
 
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо
 
     this.shiftTime = 1000 * 60 * 60 * 2 // сдвиг на одну 2h свечу
-    this.signalSendingTime = new Date().getTime() // время отправки сигнала
+    // this.signalSendingTime = new Date().getTime() // время отправки сигнала
   }
   // подготовка данных для поиска сигнала
   async prepairData(lastCandle, interval) {
@@ -50,8 +50,8 @@ class AlexNotice38 {
       // заменяем последнюю свечку по примеру кода Толи
       if (
         candlesObject
-          .map(({ openTime }) => openTime)
-          .includes(lastCandle.openTime)
+          .map(({ startTime }) => startTime)
+          .includes(lastCandle.startTime)
       ) {
         // console.log('время последних свечей совпадает')
         const delLastCandle = candlesObject.pop() // для начала удаляем незавршенную свечку
@@ -73,7 +73,7 @@ class AlexNotice38 {
       */
 
       if (!this.inPosition && !this.canShort) {
-        this.findSygnal38(candlesObject)
+        this.findSygnal(candlesObject)
       }
       /*
       if (!this.inPosition && !this.canShort) {
@@ -84,7 +84,7 @@ class AlexNotice38 {
     }
   }
   // поиск сигнала
-  findSygnal38(array) {
+  findSygnal(array) {
     // для сигнала №1
     let lengthUpShadow = 0 // длина верхней тени на красной свечи
     let lengthDownShadow = 0 // длина нижней тени на красной свечи
@@ -99,84 +99,82 @@ class AlexNotice38 {
       if (!this.inPosition) {
         // сигнал №1
         if (
-          array[i - 2].closePrice > array[i - 2].openPrice && // 1 свеча зелёная
-          array[i - 1].closePrice > array[i - 1].openPrice && // 2 свеча зелёная
-          array[i].openPrice > array[i].closePrice && // 3 свеча красная
+          array[i - 2].close > array[i - 2].open && // 1 свеча зелёная
+          array[i - 1].close > array[i - 1].open && // 2 свеча зелёная
+          array[i].open > array[i].close && // 3 свеча красная
           array[i].volume > array[i - 1].volume && // объем 3й красной больше объема 2й зеленой
-          array[i].closePrice > array[i - 1].openPrice // цена закрытия 3й красной выше цены открытия 2й зеленой
+          array[i].close > array[i - 1].open // цена закрытия 3й красной выше цены открытия 2й зеленой
         ) {
           // расчет соотношения верхней тени к нижней тени на 3й красной свече
-          lengthUpShadow = array[i].highPrice - array[i].openPrice
-          lengthDownShadow = array[i].closePrice - array[i].lowPrice
+          lengthUpShadow = array[i].high - array[i].open
+          lengthDownShadow = array[i].close - array[i].low
           diffShadow = lengthUpShadow / lengthDownShadow
 
-          candleBodyLength =
-            (array[i].openPrice / array[i].closePrice - 1) * 1000 // расчет тела 3й красной свечи, 1000 - это просто коэффициент для удобства
+          candleBodyLength = (array[i].open / array[i].close - 1) * 1000 // расчет тела 3й красной свечи, 1000 - это просто коэффициент для удобства
 
           // дополнительные условия от 28.08.2022
-          shadow1g = array[i - 2].highPrice / array[i - 2].closePrice - 1 // процент роста верхней тени 1й зеленой свечи
-          shadow2g = array[i - 1].highPrice / array[i - 1].closePrice - 1 // процент роста верхней тени 2й зеленой свечи
+          shadow1g = array[i - 2].high / array[i - 2].close - 1 // процент роста верхней тени 1й зеленой свечи
+          shadow2g = array[i - 1].high / array[i - 1].close - 1 // процент роста верхней тени 2й зеленой свечи
           if (
             diffShadow < this.diffShadowBigUser && // расчетный diff < пользовательского значения
             candleBodyLength > 0.8 && // взято из таблицы
             // дополнительные условия от 28.08.2022
-            //array[i].lowPrice > array[i - 2].openPrice && // лой 3й красной большое цены открытия 1й зеленой
+            //array[i].low > array[i - 2].open && // лой 3й красной большое цены открытия 1й зеленой
             shadow1g > shadow2g // % тени 1й зеленой больше % тени второй зеленой
           ) {
             this.canShort = true
-            this.whitchSignal = 'Стратегия 3.8: сигнал №1'
-            this.openShort = array[i].highPrice
-            this.openShortCommon(array[i].openTime)
+            this.whitchSignal = this.nameStrategy + ': сигнал №1'
+            this.openShort = array[i].high
+            this.openShortCommon(array[i].startTime)
           } // второй блок if (расчетный)
         } // первый блок if на поиск конфигурации свечей
 
         // сигнал №2
         if (
-          array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
-          array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
+          array[i - 3].close > array[i - 3].open && // 1 свеча зелёная
+          array[i - 2].close > array[i - 2].open && // 2 свеча зелёная
           array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объёма 2й зеленой
-          array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
-          array[i - 1].closePrice > array[i - 2].openPrice && // цена закрытия 3й красной выше цены открытия 2й зеленой
-          array[i].openPrice > array[i].closePrice && // 4 свеча красная
+          array[i - 1].open > array[i - 1].close && // 3 свеча красная
+          array[i - 1].close > array[i - 2].open && // цена закрытия 3й красной выше цены открытия 2й зеленой
+          array[i].open > array[i].close && // 4 свеча красная
           // дополнительные условия от 28.08.2022
-          array[i].lowPrice > array[i - 3].lowPrice // лой последней красной выше лоя первой зеленой
+          array[i].low > array[i - 3].low // лой последней красной выше лоя первой зеленой
         ) {
           // расчет соотношения верхней тени к нижней тени на 4й красной свече
-          lengthUpShadow = array[i].highPrice - array[i].openPrice
-          lengthDownShadow = array[i].closePrice - array[i].lowPrice
+          lengthUpShadow = array[i].high - array[i].open
+          lengthDownShadow = array[i].close - array[i].low
           diffShadow = lengthUpShadow / lengthDownShadow
 
-          candleBodyLength =
-            (array[i].openPrice / array[i].closePrice - 1) * 1000 // расчет тела 4й красной свечи, 1000 - это просто коэффициент для удобства
+          candleBodyLength = (array[i].open / array[i].close - 1) * 1000 // расчет тела 4й красной свечи, 1000 - это просто коэффициент для удобства
 
           if (
             diffShadow < this.diffShadowBigUser && // расчетный diff < пользовательского значения
             candleBodyLength > 0.8 // взято из таблицы
           ) {
             this.canShort = true
-            this.whitchSignal = 'Стратегия 3.8: сигнал №2'
-            this.openShort = array[i].highPrice
-            this.openShortCommon(array[i].openTime)
+            this.whitchSignal = this.nameStrategy + ': сигнал №2'
+            this.openShort = array[i].high
+            this.openShortCommon(array[i].startTime)
           } // второй блок if (расчетный)
         } // первый блок if на поиск конфигурации свечей
 
         // отправляем сообщение в tg о найденном сигнале
         if (this.canShort) {
           console.log(
-            `${this.symbol}: Нашли сигнал для Open SHORT: ${this.whitchSignal} (стратегия 3.8.2)`
+            `${this.symbol}: Нашли сигнал для Open SHORT: ${this.whitchSignal}`
           )
 
           sendInfoToUser(
-            `---=== НОВЫЙ СИГНАЛ ===---\n${this.nameStrategy}\nСработал: ${
-              this.whitchSignal
-            }\n\nМонета: ${this.symbol}\nЦена для входа в SHORT: ${
+            `---=== НОВЫЙ СИГНАЛ ===---\n${this.whitchSignal}\n\nМонета: ${
+              this.symbol
+            }\nЦена для входа в SHORT: ${
               this.openShort
             }\n\nВремя сигнальной свечи: ${timestampToDateHuman(
-              array[i].openTime
+              array[i].startTime
             )}\nВремя сигнала: ${timestampToDateHuman(
               this.sygnalTime
             )}\nВремя отправки сообщения: ${timestampToDateHuman(
-              this.signalSendingTime
+              new Date().getTime()
             )}\n\nКол-во монет: ${this.amountOfPosition}\nВзяли ${
               this.partOfDeposit * 100
             }% c плечом ${this.multiplier}x от депозита = ${
@@ -220,14 +218,14 @@ class AlexNotice38 {
   canShortPosition(lastCandle, interval) {
     if (this.canShort) {
       if (lastCandle.interval == interval) {
-        if (lastCandle.highPrice > this.openShort) {
+        if (lastCandle.high > this.openShort) {
           this.canShort = false
           this.inPosition = true
-          //this.positionTime = lastCandle.openTime
+          //this.positionTime = lastCandle.startTime
           this.positionTime = new Date().getTime()
 
           sendInfoToUser(
-            `${this.nameStrategy}\n${this.whitchSignal}\n\nМонета: ${
+            `${this.whitchSignal}\n\nМонета: ${
               this.symbol
             }\n\n--== Вошли в SHORT ==--\nпо цене: ${
               this.openShort
@@ -248,10 +246,10 @@ class AlexNotice38 {
     if (this.inPosition) {
       // условия выхода из сделки по TP
       if (lastCandle.interval == interval) {
-        if (lastCandle.lowPrice <= this.takeProfit) {
-          //this.closeShort = lastCandle.lowPrice
+        if (lastCandle.low <= this.takeProfit) {
+          //this.closeShort = lastCandle.low
           this.closeShort = this.takeProfit
-          //this.closeTime = lastCandle.openTime
+          //this.closeTime = lastCandle.startTime
           this.closeTime = new Date().getTime()
 
           this.profit = +(
@@ -275,10 +273,10 @@ class AlexNotice38 {
           )
         } // условия выхода из сделки по TP
         // условия выхода из сделки по SL
-        else if (lastCandle.highPrice >= this.stopLoss) {
-          //this.closeShort = lastCandle.highPrice
+        else if (lastCandle.high >= this.stopLoss) {
+          //this.closeShort = lastCandle.high
           this.closeShort = this.stopLoss
-          //this.closeTime = lastCandle.openTime
+          //this.closeTime = lastCandle.startTime
           this.closeTime = new Date().getTime()
 
           this.profit = +(
@@ -309,74 +307,93 @@ class AlexNotice38 {
   ///////////////////////////
   //// общие функции для условия переноса Take Profit или Stop Loss
   changeTPSLCommon(lastCandle) {
+    // отправка сообщения для контроля расчета времени сдвига
+    /*
+    sendInfoToUser(
+      `${
+        this.whitchSignal
+      }\nПроверка расчета времени переноса TP и SL\nМонета: ${
+        this.symbol
+      }:\n\nВремя появления сигнала:\n${timestampToDateHuman(
+        this.sygnalTime
+      )}\n\nВремя свечи для изменения TP и SL:\n${timestampToDateHuman(
+        this.sygnalTime + this.shiftTime * 2
+      )}\n\nВремя входа в позицию:\n${timestampToDateHuman(this.positionTime)}`
+    )
+    */
+
     // моделирование условия if (i >= indexOfPostion + 2)
-    if (lastCandle.openTime >= this.sygnalTime + this.shiftTime * 2) {
-      // изменение TP: если мы в просадке
-      if (this.openShort < lastCandle.closePrice) {
-        if (!this.changedTP) {
-          this.takeProfit = this.openShort
-          // dateChangeTP = array[i].openTime
-          this.changedTP = true
-          sendInfoToUser(
-            `${this.symbol}\n\nВремя появления сигнала:\n${timestampToDateHuman(
-              this.sygnalTime
-            )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
-              this.positionTime
-            )}\n\n--== Мы в вариативной просадке ==--\nМеняем take profit на точку входа: ${
-              this.takeProfit
-            }`
-          )
-        }
-      } else {
-        if (!this.changedSL) {
-          // изменение SL: если мы в прибыли
-          this.stopLoss = this.openShort
-          // dateChangeSL = array[i].openTime
-          this.changedSL = true
-          sendInfoToUser(
-            `${this.symbol}\n\nВремя появления сигнала:\n${timestampToDateHuman(
-              this.sygnalTime
-            )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
-              this.positionTime
-            )}\n\n--= Мы в вариативной прибыли ==--\nМеняем stop loss на точку входа: ${
-              this.stopLoss
-            }`
-          )
-        }
+    //if (lastCandle.startTime >= this.sygnalTime + this.shiftTime) {
+    // изменение TP: если мы в просадке
+    if (this.openShort < lastCandle.close) {
+      if (!this.changedTP) {
+        this.takeProfit = this.openShort
+        // dateChangeTP = array[i].startTime
+        this.changedTP = true
+        sendInfoToUser(
+          `${this.whitchSignal}\nМонета: ${
+            this.symbol
+          }\n\nВремя появления сигнала:\n${timestampToDateHuman(
+            this.sygnalTime
+          )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
+            this.positionTime
+          )}\n\n--== Мы в вариативной просадке ==--\nМеняем take profit на точку входа: ${
+            this.takeProfit
+          }`
+        )
       }
-    } // if (lastCandle.openTime >= this.openTime + shiftTime)
+    } else {
+      if (!this.changedSL) {
+        // изменение SL: если мы в прибыли
+        this.stopLoss = this.openShort
+        // dateChangeSL = array[i].startTime
+        this.changedSL = true
+        sendInfoToUser(
+          `${this.whitchSignal}\nМонета: ${
+            this.symbol
+          }\n\nВремя появления сигнала:\n${timestampToDateHuman(
+            this.sygnalTime
+          )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
+            this.positionTime
+          )}\n\n--= Мы в вариативной прибыли ==--\nМеняем stop loss на точку входа: ${
+            this.stopLoss
+          }`
+        )
+      }
+    }
+    //} // if (lastCandle.startTime >= this.startTime + shiftTime)
   }
   //// условия переноса Take Profit или Stop Loss
   changeTPSL(lastCandle, interval) {
     if (lastCandle.interval == interval) {
-      if (lastCandle.openTime <= this.sygnalTime + this.shiftTime * 2) {
-        const candleColor = lastCandle.closePrice - lastCandle.openPrice // цвет текущей свечи - зеленый
-        // проверка условия: если (свеча входа в шорт оказалась зеленая) и (текущая свеча тоже зеленая), то переносим TP и SL
-        if (this.shortCandleColorIsGreen && candleColor > 0) {
-          // временно консолим проверки
-          sendInfoToUser(
-            `Проверка расчета времени переноса TP и SL\n${this.nameStrategy}\n\nМонета: ${this.symbol}\n--== Вторая свеча - ЗЕЛЕНАЯ ==--`
-          )
-          this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
-        }
-
-        // если (свеча [i] входа в шорт оказалась зеленая), то сохраняем эту информацию для проверки условия выше на следующей свече [i+1]
-        if (!this.shortCandleColorIsGreen && candleColor > 0) {
+      // если первая свеча - зеленая, то после закрытия первой свечи [i] (т.е. на второй) - переносим TPSL в БУ
+      if (lastCandle.startTime == this.sygnalTime) {
+        const candleColor = lastCandle.close - lastCandle.open // цвет текущей свечи - зеленый
+        // если (свеча[i] входа в шорт оказалась зеленая)
+        if (candleColor > 0) {
           this.shortCandleColorIsGreen = true
           // временно консолим проверки
           sendInfoToUser(
-            `Проверка расчета времени переноса TP и SL\n${this.nameStrategy}\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - ЗЕЛЕНАЯ ==--`
+            `${this.whitchSignal}\nПроверка переноса TP и SL\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - ЗЕЛЕНАЯ ==--`
           )
+          this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
         }
-      } else {
-        // после закрытий 3й свечи [i+2] переносим TP и SL
+      }
+
+      // а если первая свеча - красная, то переносим после закрытия 3й свечи
+      if (
+        !this.shortCandleColorIsGreen && // если первая свеча - красная
+        lastCandle.startTime == this.sygnalTime + this.shiftTime * 2 // то переносим после закрытия 3й свечи
+      ) {
+        sendInfoToUser(
+          `${this.whitchSignal}\nПроверка переноса TP и SL\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - КРАСНАЯ ==--`
+        )
         this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
       }
     }
-
     return this
   }
   ////
 }
 
-module.exports = AlexNotice38
+module.exports = AlexNotice38Class2h

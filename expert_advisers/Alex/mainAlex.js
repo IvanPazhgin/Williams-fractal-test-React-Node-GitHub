@@ -1,5 +1,5 @@
 const config = require('config')
-const candlesToObject = require('../common.func/candlesToObject')
+const candlesToObject4test = require('../common.func/candlesToObject4test')
 const diffCandle = require('../common.func/diffCandle')
 const getCandles = require('../../API/binance.engine/usdm/getCandles.5param')
 const timestampToDateHuman = require('../common.func/timestampToDateHuman')
@@ -61,7 +61,7 @@ async function startAlex(
       candlesSeniorFull = candlesSeniorFull.concat(candlesSenior)
     }
 
-    const objectSenior = candlesToObject(candlesSeniorFull)
+    const objectSenior = candlesToObject4test(candlesSeniorFull)
 
     /*
     const kkk = new Candles()

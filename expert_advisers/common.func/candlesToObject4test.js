@@ -4,14 +4,14 @@ function candlesToObject(arg) {
   let target = []
   arg.forEach(function (item, i, arg) {
     target[i] = {
-      startTime: item[0],
+      openTime: item[0],
       //openTimeH: timestampToDateHuman(item[0]),
-      open: Number(item[1]),
-      high: Number(item[2]),
-      low: Number(item[3]),
-      close: Number(item[4]),
+      openPrice: Number(item[1]),
+      highPrice: Number(item[2]),
+      lowPrice: Number(item[3]),
+      closePrice: Number(item[4]),
       volume: Number(item[5]),
-      endTime: Number(item[6]),
+      closeTime: Number(item[6]),
     }
   })
   return target

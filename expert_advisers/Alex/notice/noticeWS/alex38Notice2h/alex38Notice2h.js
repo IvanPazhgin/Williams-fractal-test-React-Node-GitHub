@@ -16,11 +16,11 @@ const timestampToDateHuman = require('../../../../common.func/timestampToDateHum
 //const closeShort = require('../alex38Common2h/closeShort')
 //const changeTPSL = require('../alex38Common2h/changeTPSL')
 //const canShort = require('../alex38Common2h/canShort')
-const AlexNotice38 = require('./alexNotice38')
-const { symbols38, timeFrames } = require('../symbols') // для удобного выноса общих переменных
+const AlexNotice38Class2h = require('./alexNotice38Class2h')
+const { symbols2h38, timeFrames, nameStrategy } = require('../symbols') // для удобного выноса общих переменных
 
 async function alex38Notice2h() {
-  const nameStrategy = 'Стратегия №3.8.2: Без теневая 2h'
+  //const nameStrategy = 'Стратегия №3.8.2: Без теневая 2h'
   const timeFrames2 = [timeFrames.timeFrame2h, timeFrames.timeFrame1m]
 
   let lastCandle // последняя свечка
@@ -31,8 +31,8 @@ async function alex38Notice2h() {
 
   let symbolObj = []
 
-  symbols38.forEach(function (item, i, arg) {
-    symbolObj[i] = new AlexNotice38(item, nameStrategy)
+  symbols2h38.forEach(function (item, i, arg) {
+    symbolObj[i] = new AlexNotice38Class2h(item, nameStrategy.notice2h382)
   })
   // console.log('монеты для старта')
   // console.table(symbolObj3)
@@ -55,16 +55,17 @@ async function alex38Notice2h() {
   // родительская функция, которая вызывает весь скрипт ниже по отдельности
   // для начала получаем новые свечки:
   await getLastCandle4s(
-    symbols38,
+    symbols2h38,
     timeFrames2,
     async ({
       symbol: symbol,
       interval: interval,
-      startTime: openTime,
-      open: openPrice,
-      close: closePrice,
-      low: lowPrice,
-      high: highPrice,
+      startTime: startTime,
+      endTime: endTime,
+      open: open,
+      close: close,
+      low: low,
+      high: high,
       volume: volume,
       final: final,
     }) => {
@@ -72,11 +73,12 @@ async function alex38Notice2h() {
       lastCandle = {
         symbol: symbol,
         interval: interval,
-        openTime: openTime,
-        openPrice: openPrice,
-        closePrice: closePrice,
-        lowPrice: lowPrice,
-        highPrice: highPrice,
+        startTime: startTime,
+        endTime: endTime,
+        open: open,
+        close: close,
+        low: low,
+        high: high,
         volume: volume,
         final: final,
       }
@@ -120,7 +122,7 @@ async function alex38Notice2h() {
               ) {
                 // если до финальной свечки не вошли в сделку, то отменяем сигнал
                 sendInfoToUser(
-                  `${item.nameStrategy}\n${item.whitchSignal}\n\nМонета: ${
+                  `${item.whitchSignal}\n\nМонета: ${
                     item.symbol
                   }\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${timestampToDateHuman(
                     item.sygnalTime

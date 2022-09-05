@@ -22,12 +22,18 @@ const symbols38 = [
 
 const timeFrames = {
   timeFrame2h: '2h',
+  timeFrame15m: '15m',
   timeFrame1m: '1m',
 }
 
+const nameStrategy = {
+  notice2h382: `Стратегия №3.8.2: Без теневая на ${timeFrames.timeFrame2h}`,
+  notice15m382: `Стратегия №3.8.2: Без теневая на ${timeFrames.timeFrame15m}`,
+}
+
 // 03.09.2022 для alex38Notice2h (внесли дополнительные условия)
-const symbols38 = [
-  '1000SHIBUSDT',
+const symbols2h38 = [
+  //'1000SHIBUSDT',
   '1INCHUSDT',
   'AAVEUSDT',
   'ADAUSDT',
@@ -54,12 +60,12 @@ const symbols38 = [
   'DOTUSDT',
   'EGLDUSDT',
   'ENJUSDT',
-  'ENSUSDT',
+  //'ENSUSDT',
   'EOSUSDT',
   'ETCUSDT',
   'ETHUSDT',
   'FILUSDT',
-  'FTMUSDT',
+  //'FTMUSDT',
   'GALUSDT',
   'GMTUSDT',
   'HBARUSDT',
@@ -74,7 +80,7 @@ const symbols38 = [
   'RVNUSDT',
   'SANDUSDT',
   'SNXUSDT',
-  'SOLUSDT',
+  //'SOLUSDT',
   'STORJUSDT',
   'THETAUSDT',
   'TRBUSDT',
@@ -85,7 +91,7 @@ const symbols38 = [
   'WAVESUSDT',
   'XMRUSDT',
   'XRPUSDT',
-  'XTZUSDT',
+  //'XTZUSDT',
 ]
 
 // 01.09.2022 для alex38Notice2hHard
@@ -100,4 +106,10 @@ const symbols38hard4h = [
   'DGBUSDT',
 ]
 
-module.exports = { symbols38, symbols38hard2h, symbols38hard4h, timeFrames }
+module.exports = {
+  symbols2h38,
+  symbols38hard2h,
+  symbols38hard4h,
+  timeFrames,
+  nameStrategy,
+}
