@@ -1,11 +1,20 @@
 const { sendInfoToUser } = require('../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../common.func/timestampToDateHuman')
-const { symbols2h38, timeFrames, nameStrategy } = require('./symbols')
+const {
+  symbols2h38,
+  symbols15m38,
+  timeFrames,
+  nameStrategy,
+} = require('./symbols')
 
 function alexNoticeMain() {
   // запускаем 3.8 на 2h
   const alex38Notice2h = require('./alex38Notice2h/alex38Notice2h')
   alex38Notice2h()
+
+  // запускаем 3.8 на 15m
+  const alex38Notice15m = require('./alex38Notice15m/alex38Notice15m')
+  alex38Notice15m()
 
   // формирование сообщений в телеграм
   const message0 = `Приложение запущено в ${timestampToDateHuman(
@@ -20,7 +29,13 @@ function alexNoticeMain() {
     timeFrames.timeFrame2h
   }\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
 
-  const message2 = '\n\nВторая стратегия...'
+  const message2 = `\n\n${nameStrategy.notice15m382}\nНа ${
+    symbols15m38.length
+  } монетах: ${JSON.stringify(
+    symbols15m38
+  )}\nПоиск сигнала и перенос TPSL на ТФ: ${
+    timeFrames.timeFrame15m
+  }\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
 
   sendInfoToUser(message0 + message1 + message2)
 } // function alexNoticeMain()

@@ -3,7 +3,7 @@ const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 
-class AlexNotice38Class2h {
+class AlexNotice38Class15m {
   constructor(symbol, nameStrategy) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
@@ -30,13 +30,13 @@ class AlexNotice38Class2h {
     this.shortCandleColorIsGreen = false
 
     this.diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
-    this.takeProfitConst = 0.03
-    this.stopLossConst = 0.03
+    this.takeProfitConst = 0.01
+    this.stopLossConst = 0.01
 
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо
 
-    this.shiftTime = 1000 * 60 * 60 * 2 // сдвиг на одну 2h свечу
+    this.shiftTime = 1000 * 60 * 15 // сдвиг на одну 15m свечу
     // this.signalSendingTime = new Date().getTime() // время отправки сигнала
   }
   // подготовка данных для поиска сигнала
@@ -366,34 +366,11 @@ class AlexNotice38Class2h {
   //// условия переноса Take Profit или Stop Loss
   changeTPSL(lastCandle, interval) {
     if (lastCandle.interval == interval) {
-      // если первая свеча - зеленая, то после закрытия первой свечи [i] (т.е. на второй) - переносим TPSL в БУ
-      if (lastCandle.startTime == this.sygnalTime) {
-        const candleColor = lastCandle.close - lastCandle.open // цвет текущей свечи - зеленый
-        // если (свеча[i] входа в шорт оказалась зеленая)
-        if (candleColor > 0) {
-          this.shortCandleColorIsGreen = true
-          // временно консолим проверки
-          sendInfoToUser(
-            `${this.whitchSignal}\nПроверка переноса TP и SL\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - ЗЕЛЕНАЯ ==--`
-          )
-          this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
-        }
-      }
-
-      // а если первая свеча - красная, то переносим после закрытия 3й свечи
-      if (
-        !this.shortCandleColorIsGreen && // если первая свеча - красная
-        lastCandle.startTime == this.sygnalTime + this.shiftTime * 2 // то переносим после закрытия 3й свечи
-      ) {
-        sendInfoToUser(
-          `${this.whitchSignal}\nПроверка переноса TP и SL\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - КРАСНАЯ ==--`
-        )
-        this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
-      }
+      this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
     }
     return this
   }
   ////
 }
 
-module.exports = AlexNotice38Class2h
+module.exports = AlexNotice38Class15m
