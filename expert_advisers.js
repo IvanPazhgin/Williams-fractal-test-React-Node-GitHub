@@ -37,8 +37,12 @@ function workingFunctions() {
   // alexNoticeMain382()
 
   // оповещения 3.8.4 (06.09.2022)
-  const alexNoticeMain384 = require('./expert_advisers/Alex/notice/noticeWS/alex384Notice/alexNotMain384')
-  alexNoticeMain384()
+  // const alexNoticeMain384 = require('./expert_advisers/Alex/notice/noticeWS/alex384Notice/alexNotMain384')
+  // alexNoticeMain384()
+
+  // оповещения 3.8.2 (06.09.2022)
+  const alexNoticeMain382 = require('./expert_advisers/Alex/notice/noticeWS/alex382Notice2/alexNoticeMain382')
+  alexNoticeMain382()
 }
 
 function testBinanceTrade() {
