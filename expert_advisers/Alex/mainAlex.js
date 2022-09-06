@@ -92,7 +92,7 @@ async function startAlex(
     //const [deals37, statistics37] = alex38test10g(
     //const [deals37, statistics37] = alex38test2h(
     //const [deals37, statistics37] = alex310testH(
-    const [deals37, statistics37] = alex38test42(
+    const [deals37, statistics37] = alex38test2(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -121,7 +121,7 @@ async function startAlex(
 
     // Слот 4
     // !!! const [deals39, statistics39] = await alex39test(
-    const [deals39, statistics39] = alex311test3(
+    const [deals39, statistics39] = alex38test3(
       objectSenior,
       deposit,
       partOfDeposit,
