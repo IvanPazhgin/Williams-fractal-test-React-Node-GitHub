@@ -25,6 +25,7 @@ const Candles = require('../../models/candles')
 const alex38test3 = require('./test/alex38test/alex38test3')
 const alex38test4 = require('./test/alex38test/alex38test4')
 const alex38test42 = require('./test/alex38test/alex38test42')
+const alex38test22 = require('./test/alex38test/alex38test22')
 // const bookTickerFunc = require('./bookOfSymbol')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
@@ -106,7 +107,7 @@ async function startAlex(
     )
 
     // Слот 3
-    const [deals38, statistics38] = alex38test4(
+    const [deals38, statistics38] = alex38test22(
       objectSenior,
       deposit,
       partOfDeposit,
