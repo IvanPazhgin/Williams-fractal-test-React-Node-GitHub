@@ -73,8 +73,8 @@ async function startAlex(
     */
 
     // Слот 1
-    /*
-    const [deals35, statistics35] = tradeAlex35(
+
+    const [deals35, statistics35] = alex38test2h(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -84,7 +84,6 @@ async function startAlex(
       diffShadow35big,
       diffShadow35small
     )
-    */
 
     // Слот 2
     //const [deals37, statistics37] = await alex37testMainMod(
@@ -122,7 +121,7 @@ async function startAlex(
 
     // Слот 4
     // !!! const [deals39, statistics39] = await alex39test(
-    const [deals39, statistics39] = alex38test3(
+    const [deals39, statistics39] = alex38test42(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -135,10 +134,8 @@ async function startAlex(
     console.log(`программа завершена (ОК)`)
 
     return {
-      /*
       deals35,
       statistics35,
-      */
       deals37,
       statistics37,
       deals38,

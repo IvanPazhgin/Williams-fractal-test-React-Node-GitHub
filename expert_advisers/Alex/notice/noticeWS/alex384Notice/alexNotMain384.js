@@ -29,6 +29,7 @@ function alexNoticeMain384() {
     timeFrames.timeFrame2h
   }\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
 
+  /*
   const message2 = `\n\n${nameStrategy.notice15m384}\nНа ${
     symbols15m384.length
   } монетах: ${JSON.stringify(
@@ -36,8 +37,10 @@ function alexNoticeMain384() {
   )}\nПоиск сигнала и перенос TPSL на ТФ: ${
     timeFrames.timeFrame15m
   }\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
+  */
 
-  sendInfoToUser(message0 + message1 + message2)
+  // sendInfoToUser(message0 + message1 + message2)
+  sendInfoToUser(message0 + message1)
 } // function alexNoticeMain384()
 
 module.exports = alexNoticeMain384

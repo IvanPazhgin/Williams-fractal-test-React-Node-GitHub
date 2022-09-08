@@ -31,8 +31,8 @@ class AlexNotice384Class2h {
     this.shortCandleColorIsGreen = false
 
     this.diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
-    this.takeProfitConst = 0.03
-    this.stopLossConst = 0.03
+    this.takeProfitConst = 0.04
+    this.stopLossConst = 0.02
 
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо

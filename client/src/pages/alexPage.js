@@ -280,8 +280,11 @@ export const AlexPage = () => {
       <hr></hr>
 
       {/*таблица всех сделок: Слот №1*/}
-      {/* 
-      <h4>Стратегия №3.5: "без теневая"</h4>
+      <h4>
+        {data && data.statistics35 && (
+          <div>{data.statistics35.nameStrategy}</div>
+        )}
+      </h4>
 
       <h5>Общая статистика:</h5>
       {data && data.statistics35 && (
@@ -306,22 +309,23 @@ export const AlexPage = () => {
           <div>- кол-во нулевых сделок: {data.statistics35.countOfZero}</div>
         </div>
       )}
+      <br />
 
       <h5>Таблица всех сделок:</h5>
       <div>
-        <table>
+        <table class="deals">
           <tr>
             <td>№</td>
-            <td>Открываем</td>
+            <td>Open</td>
             <td>Цена входа</td>
             <td>Время входа</td>
             <td>Объем сделки</td>
-            <td>Закрываем</td>
+            <td>Close</td>
             <td>Цена выхода</td>
             <td>Время выхода</td>
             <td>Прибыль / Убыток</td>
             <td>в процентах</td>
-            <td>Депозит</td>
+            {/*<td>Депозит2</td>*/}
             <td>Take Profit</td>
             <td>Stop Loss</td>
             <td>Время изменения TP</td>
@@ -342,7 +346,7 @@ export const AlexPage = () => {
                 <td>{deal.closeTime}</td>
                 <td>{deal.profit}</td>
                 <td>{deal.percent}</td>
-                <td>{deal.deposit}</td>
+                {/*<td>{deal.deposit2}</td>*/}
                 <td>{deal.takeProfit}</td>
                 <td>{deal.stopLoss}</td>
                 <td>{deal.dateChangeTP}</td>
@@ -354,7 +358,7 @@ export const AlexPage = () => {
       </div>
 
       <hr></hr>
-*/}
+
       {/*таблица всех сделок: Слот №2*/}
       <h4>
         {data && data.statistics37 && (

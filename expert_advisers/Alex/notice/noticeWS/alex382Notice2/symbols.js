@@ -5,8 +5,8 @@ const timeFrames = {
 }
 
 const nameStrategy = {
-  notice2h382: `Стратегия №3.8.2: Без теневая на ${timeFrames.timeFrame2h}`,
-  notice15m382: `Стратегия №3.8.2: Без теневая на ${timeFrames.timeFrame15m}`,
+  notice2h382: `Стратегия №3.8.2.2: Без теневая на ${timeFrames.timeFrame2h}`,
+  notice15m382: `Стратегия №3.8.2.2: Без теневая на ${timeFrames.timeFrame15m}`,
 }
 
 // 06.09.2022 для alex38Notice2h (перенос TP SL: сразу после закрытия свечи, на которой открылись)

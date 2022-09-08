@@ -99,7 +99,7 @@ function alex38test22(
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
         //array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объема 2й зеленой
         //diffShadow < 0.3
-        //diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения (оставил для автотестов)
+        diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения (оставил для автотестов)
         // array[i - 1].highPrice / array[i - 1].lowPrice - 1 < 0.04 // отношение хая к лою менее 5%
         candleBodyLength > 0.8 // взято из таблицы
       ) {
@@ -138,7 +138,7 @@ function alex38test22(
           (array[i - 1].openPrice / array[i - 1].closePrice - 1) * 1000
 
         if (
-          //diffShadow < Number(diffShadowBigUser) &&
+          diffShadow < Number(diffShadowBigUser) &&
           candleBodyLength > 0.8 // взято из таблицы
         ) {
           canShort = true

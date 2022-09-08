@@ -7,7 +7,7 @@ const {
   nameStrategy,
 } = require('./symbols')
 
-function alexNoticeMain382() {
+function alexNoticeMain3822() {
   // запускаем 3.8 на 2h
   const alex38Notice2h = require('./alex38Notice2h')
   alex38Notice2h()
@@ -29,6 +29,7 @@ function alexNoticeMain382() {
     timeFrames.timeFrame2h
   }\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
 
+  /*
   const message2 = `\n\n${nameStrategy.notice15m382}\nНа ${
     symbols15m38.length
   } монетах: ${JSON.stringify(
@@ -36,9 +37,10 @@ function alexNoticeMain382() {
   )}\nПоиск сигнала и перенос TPSL на ТФ: ${
     timeFrames.timeFrame15m
   }\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
+  */
 
   //sendInfoToUser(message0 + message1 + message2)
   sendInfoToUser(message0 + message1)
 } // function alexNoticeMain()
 
-module.exports = alexNoticeMain382
+module.exports = alexNoticeMain3822
