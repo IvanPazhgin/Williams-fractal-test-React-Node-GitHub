@@ -263,7 +263,7 @@ class AlexNotice38Class15m {
 
           // console.log(`Close SHORT with takeProfit: ${this.closeShort}`)
           sendInfoToUser(
-            `${this.nameStrategy}\n${this.whitchSignal}\n${timestampToDateHuman(
+            `${this.whitchSignal}\n${timestampToDateHuman(
               this.closeTime
             )}\n\nМонета: ${
               this.symbol
@@ -290,7 +290,7 @@ class AlexNotice38Class15m {
 
           //console.log(`Close SHORT with stopLoss: ${this.closeShort}`)
           sendInfoToUser(
-            `${this.nameStrategy}\n${this.whitchSignal}\n${timestampToDateHuman(
+            `${this.whitchSignal}\n${timestampToDateHuman(
               this.closeTime
             )}\n\nМонета: ${
               this.symbol
