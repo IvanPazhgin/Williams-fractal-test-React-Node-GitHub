@@ -12,7 +12,7 @@ const alex37test3 = require('./test/alex37test/alex37test3')
 const alex39test = require('./test/alex39test/alex39test')
 const alex38test2 = require('./test/alex38test/alex38test2')
 const alex38test10g = require('./test/alex38test/alex38test10g')
-const alex38test2h = require('./test/alex38test/alex38test2h')
+const alex38test2hard = require('./test/alex38test/alex38test2hard')
 const alex310testH = require('./test/alex310testH/alex310testH')
 const alex311test = require('./test/alex311test/alex311test')
 const alex312test = require('./test/alex312test/alex312test')
@@ -74,7 +74,7 @@ async function startAlex(
 
     // Слот 1
 
-    const [deals35, statistics35] = alex38test2h(
+    const [deals35, statistics35] = alex38test22(
       objectSenior,
       deposit,
       partOfDeposit,
@@ -106,7 +106,7 @@ async function startAlex(
     )
 
     // Слот 3
-    const [deals38, statistics38] = alex38test22(
+    const [deals38, statistics38] = alex38test2hard(
       objectSenior,
       deposit,
       partOfDeposit,

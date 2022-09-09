@@ -10,6 +10,7 @@ const nameStrategy = {
 }
 
 // 06.09.2022 для alex38Notice2h (перенос TP SL: сразу после закрытия свечи, на которой открылись)
+/*
 const symbols2h38 = [
   'UNFIUSDT',
   'BLZUSDT',
@@ -38,6 +39,7 @@ const symbols2h38 = [
   'GMTUSDT',
   'XRPUSDT',
 ]
+*/
 
 const symbols15m38 = [
   //'1000SHIBUSDT',
@@ -99,6 +101,31 @@ const symbols15m38 = [
   //'XMRUSDT',
   'XRPUSDT',
   //'XTZUSDT',
+]
+
+// 09.09.2022
+const symbols2h38 = [
+  'HOTUSDT',
+  'ETCUSDT',
+  'AVAXUSDT',
+  'ARPAUSDT',
+  'COMPUSDT',
+  'APEUSDT',
+  'ATOMUSDT',
+  'API3USDT',
+  'BANDUSDT',
+  'CTKUSDT',
+  'PEOPLEUSDT',
+  'EGLDUSDT',
+  'EOSUSDT',
+  '1INCHUSDT',
+  'GALUSDT',
+  'DARUSDT',
+  'LINAUSDT',
+  'GMTUSDT',
+  'XRPUSDT',
+  'XMRUSDT',
+  'UNFIUSDT',
 ]
 
 module.exports = {

@@ -30,7 +30,7 @@ class AlexNotice38Class2h {
     this.percent = 0
     this.shortCandleColorIsGreen = false
 
-    this.diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
+    this.diffShadowBigUser = 0.3 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
     this.takeProfitConst = 0.04
     this.stopLossConst = 0.02
 

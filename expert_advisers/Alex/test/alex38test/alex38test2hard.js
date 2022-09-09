@@ -4,7 +4,7 @@
 // const candlesInside = require('../../../common.func/candlesInside')
 const timestampToDateHuman = require('../../../common.func/timestampToDateHuman')
 
-function alex38test2h(
+function alex38test2hard(
   array,
   depositTemp,
   partOfDeposit,
@@ -339,4 +339,4 @@ function alex38test2h(
   return [deals, statistics]
 } // function alex38test2h
 
-module.exports = alex38test2h
+module.exports = alex38test2hard

@@ -13,10 +13,10 @@ function alex38test22(
   stopLossUser, // = 0.02
   diffShadowBigUser,
   diffShadowSmallUser,
-  delta,
+  deltaConst,
   symbol
 ) {
-  const nameStrategy = 'Стратегия №3.8.2.2: Без теневая'
+  const nameStrategy = 'Стратегия №3.8.2.2: Без теневая на 1h (K3=0.5)'
   // для сигналов
   let canShort = false // есть ли сигнал для входа в шорт или нет
   let whitchSignal = '' // вносим в таблицу  номер сигнала
@@ -42,6 +42,8 @@ function alex38test22(
   let percent = 0
   // let deposit2 = 0
   let deposit = Number(depositTemp)
+  // const delta = 1.005 // вход на 0.5% выше хая сигнальной свечи
+  const delta = 1 + deltaConst / 100
 
   let takeProfit = 0
   let stopLoss = 0
@@ -97,6 +99,8 @@ function alex38test22(
         array[i - 3].closePrice > array[i - 3].openPrice && // 1 свеча зелёная
         array[i - 2].closePrice > array[i - 2].openPrice && // 2 свеча зелёная
         array[i - 1].openPrice > array[i - 1].closePrice && // 3 свеча красная
+        // дополнительные условия от 09.09.2022
+        array[i - 1].lowPrice > array[i - 2].openPrice && // лой 3й красной большое цены открытия 2й зеленой
         //array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объема 2й зеленой
         //diffShadow < 0.3
         diffShadow < Number(diffShadowBigUser) && // расчетный diff < пользовательского значения (оставил для автотестов)
@@ -107,8 +111,6 @@ function alex38test22(
         shadow1g = array[i - 3].highPrice / array[i - 3].closePrice - 1 // процент роста верхней тени 1й зеленой свечи
         shadow2g = array[i - 2].highPrice / array[i - 2].closePrice - 1 // процент роста верхней тени 2й зеленой свечи
         if (
-          // дополнительные условия от 28.08.2022
-          //array[i - 1].lowPrice > array[i - 3].openPrice && // лой 3й красной большое цены открытия 1й зеленой
           shadow1g > shadow2g // % тени 1й зеленой больше % тени второй зеленой
         ) {
           canShort = true
@@ -118,6 +120,7 @@ function alex38test22(
       }
 
       // сигнал № 2: вариант №2 от 28.08.2022
+      /*
       if (
         array[i - 4].closePrice > array[i - 4].openPrice && // 1 свеча зелёная
         array[i - 3].closePrice > array[i - 3].openPrice && // 2 свеча зелёная
@@ -145,6 +148,7 @@ function alex38test22(
           whitchSignal = 'сигнал №2'
         }
       }
+      */
 
       // сигнал № 3
       /*
@@ -165,8 +169,8 @@ function alex38test22(
 
       // входим в шорт
       if (canShort) {
-        if (array[i].highPrice >= array[i - 1].highPrice) {
-          positionDown = array[i - 1].highPrice // вход по цене открытия красной [i-1]
+        if (array[i].highPrice >= array[i - 1].highPrice * delta) {
+          positionDown = array[i - 1].highPrice * delta // вход по цене открытия красной [i-1] + 0.5%
           openShortCommon() // функция openShortCommon для входа в сделку с общими полями
         } else {
           // отменяем сигнал
@@ -200,7 +204,7 @@ function alex38test22(
       // changeTPSL() // 2. по финальной свече меняем SL и TP
 
       function changeTPSLCommon() {
-        if (i >= indexOfPostion + 1) {
+        if (i == indexOfPostion + 1) {
           // изменение TP: если мы в просадке
           if (positionDown < array[i].closePrice) {
             if (!changedTP) {

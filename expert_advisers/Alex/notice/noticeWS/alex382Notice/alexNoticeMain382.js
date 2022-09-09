@@ -2,19 +2,19 @@ const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const {
   symbols2h38,
-  symbols15m38,
+  //symbols15m38,
   timeFrames,
   nameStrategy,
 } = require('./symbols')
 
 function alexNoticeMain382() {
-  // запускаем 3.8 на 2h
+  // запускаем 3.8.2 на 2h
   const alex38Notice2h = require('./alex38Notice2h')
   alex38Notice2h()
 
-  // запускаем 3.8 на 15m
-  const alex38Notice15m = require('./alex38Notice15m')
-  alex38Notice15m()
+  // запускаем 3.8.2 на 15m
+  //const alex38Notice15m = require('./alex38Notice15m')
+  //alex38Notice15m()
 
   // формирование сообщений в телеграм
   const message0 = `Приложение запущено в ${timestampToDateHuman(

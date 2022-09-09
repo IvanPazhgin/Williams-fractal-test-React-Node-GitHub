@@ -181,7 +181,7 @@ export const AlexPage = () => {
             ></input>
           </div>
 
-          <br />
+          <hr></hr>
           <p>
             <b>
               К1 - процент отношения верхней тени к нижней тени (на красной
@@ -228,17 +228,19 @@ export const AlexPage = () => {
               required
             ></input>
           </div>
-
+*/}
+          <hr></hr>
           <p>
             <b>К3</b> - коэффициент для входа в сделку относительно{' '}
-            <b>Open Price</b> сигнальной красной свечки
+            <b>High Price</b> сигнальной красной свечки
+            {/* <br />
+            На двух примерах было вычислено: от 0.13 до 0.17.*/}
             <br />
-            На двух примерах было вычислено: от 0.13 до 0.17.
-            <br /> <b>Ноль - коэффициент будет равень нулю.</b>
+            Ноль - коэффициент будет равень нулю.
           </p>
 
           <div class="form-group">
-            <label for="delta">коэффициент для входа в сделку</label>
+            <label for="delta">коэффициент для входа в сделку (K3 = 0.5)</label>
             <input
               type="number"
               class="form-control"
@@ -248,7 +250,7 @@ export const AlexPage = () => {
               required
             ></input>
           </div>
-*/}
+
           <br />
           <button
             type="submit"
