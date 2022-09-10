@@ -1,5 +1,5 @@
 const { Client } = require('@elastic/elasticsearch')
-const client = new Client({
+const elasticClient = new Client({
   node: 'http://80.249.150.229:9200',
   auth: {
     username: 'elastic',
@@ -7,9 +7,4 @@ const client = new Client({
   },
 })
 
-async function elasticPut() {
-  const response = await client.info()
-  console.log(response)
-}
-
-module.exports = elasticPut
+module.exports = elasticClient

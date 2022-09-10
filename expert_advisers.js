@@ -3,7 +3,9 @@ function testOfNewFuctiouns() {
   //testWilliams() // тест одновременного запуска оповещений на разных стратегиях
   //testBinanceTrade() // тест торговых функций
   //arbitrationTest() // простейший тест арбитража
-  //elasticTest() // тест elastic search
+  //elasticPut() // тест elastic search: put (реализовано в MainAlex)
+  //elasticInfo() // тест elastic search: info (работает)
+  //elasticPutTest() // тесты с эластик по видео (работает)
   //testTelegramBot()
 }
 
@@ -103,12 +105,25 @@ function arbitrationTest() {
   arbitration()
 }
 
-function elasticTest() {
-  const elasticPut = require('./API/elastic.search/elastic.put')
-  elasticPut().catch((err) => {
+function elasticPut() {
+  const elasticPutFromTest = require('./API/elastic.search/elastic.putFtest')
+  elasticPutFromTest().catch((err) => {
     console.log(err)
     process.exit(1)
   })
+}
+
+function elasticInfo() {
+  const elasticInfo = require('./API/elastic.search/elascit.info')
+  elasticInfo().catch((err) => {
+    console.log(err)
+    process.exit(1)
+  })
+}
+
+function elasticPutTest() {
+  const elasticTest = require('./API/elastic.search/elastic.test')
+  elasticTest()
 }
 
 function alexTestStrategy() {

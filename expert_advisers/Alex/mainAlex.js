@@ -66,11 +66,23 @@ async function startAlex(
 
     const objectSenior = candlesToObject4test(candlesSeniorFull)
 
+    // второй вариант преобразовать массив полученных свечей в объект
     /*
-    const kkk = new Candles()
-    let lll = []
-    lll = kkk.toObject(candlesSeniorFull)
-    console.table(lll)
+    const kkk = []
+    candlesSeniorFull.forEach(function (candle, i) {
+      kkk[i] = new Candles(candle)
+    })
+    console.table(kkk)
+    */
+
+    // заливаем свечи в БД
+    /*
+    // ConfigurationError: bulk helper: the datasource is required (Ошибка конфигурации: массовый помощник: требуется источник данных)
+    const elasticPutFromTest = require('../../API/elastic.search/elastic.putFtest')
+    await elasticPutFromTest(symbol, timeFrame, objectSenior).catch((err) => {
+      console.log(err)
+      process.exit(1)
+    })
     */
 
     // Слот 1

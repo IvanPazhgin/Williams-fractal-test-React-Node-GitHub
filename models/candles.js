@@ -21,6 +21,7 @@ class Candles {
   }
   */
 
+  /*
   toObject(arg) {
     let target = []
     arg.forEach(function (item, i, arg) {
@@ -37,6 +38,7 @@ class Candles {
     })
     return target
   }
+  */
 }
 
 module.exports = Candles
