@@ -39,6 +39,7 @@ class AlexNotice38Class2h {
 
     this.shiftTime = 1000 * 60 * 60 * 2 // сдвиг на одну 2h свечу
     // this.signalSendingTime = new Date().getTime() // время отправки сигнала
+    return this
   }
   // подготовка данных для поиска сигнала
   async prepairData(lastCandle, interval) {

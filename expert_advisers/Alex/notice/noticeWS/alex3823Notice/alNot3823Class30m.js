@@ -39,6 +39,7 @@ class alNot3823Class30m {
 
     this.shiftTime = 1000 * 60 * 30 // сдвиг на одну 30m свечу
     // this.signalSendingTime = new Date().getTime() // время отправки сигнала
+    return this
   }
   // подготовка данных для поиска сигнала
   async prepairData(lastCandle, interval) {

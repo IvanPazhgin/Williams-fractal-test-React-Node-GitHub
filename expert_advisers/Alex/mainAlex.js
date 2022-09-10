@@ -27,6 +27,7 @@ const alex38test4 = require('./test/alex38test/alex38test4')
 const alex38test42 = require('./test/alex38test/alex38test42')
 const alex38test22 = require('./test/alex38test/alex38test22')
 const alex38test23 = require('./test/alex38test/alex38test23')
+const alex38test24 = require('./test/alex38test/alex38test24')
 // const bookTickerFunc = require('./bookOfSymbol')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
@@ -48,6 +49,7 @@ async function startAlex(
 ) {
   // const bookOfSymbol = bookTickerFunc()
   const startProgramAt = timestampToDateHuman(new Date().getTime()) // для расчета времени работы приложения
+  console.log(`тест стратегий запущен в ${startProgramAt}`)
 
   const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, timeFrame)
   let candlesSeniorFull = []
@@ -63,11 +65,14 @@ async function startAlex(
       )
       candlesSeniorFull = candlesSeniorFull.concat(candlesSenior)
     }
+  } catch (err) {
+    console.error('get Account Trade List error: ', err)
+  }
 
-    const objectSenior = candlesToObject4test(candlesSeniorFull)
+  const objectSenior = candlesToObject4test(candlesSeniorFull)
 
-    // второй вариант преобразовать массив полученных свечей в объект
-    /*
+  // второй вариант преобразовать массив полученных свечей в объект
+  /*
     const kkk = []
     candlesSeniorFull.forEach(function (candle, i) {
       kkk[i] = new Candles(candle)
@@ -75,8 +80,8 @@ async function startAlex(
     console.table(kkk)
     */
 
-    // заливаем свечи в БД
-    /*
+  // заливаем свечи в БД
+  /*
     // ConfigurationError: bulk helper: the datasource is required (Ошибка конфигурации: массовый помощник: требуется источник данных)
     const elasticPutFromTest = require('../../API/elastic.search/elastic.putFtest')
     await elasticPutFromTest(symbol, timeFrame, objectSenior).catch((err) => {
@@ -85,81 +90,70 @@ async function startAlex(
     })
     */
 
-    // Слот 1
+  // Слот 1
+  const [deals35, statistics35] = alex38test24(
+    objectSenior,
+    deposit,
+    partOfDeposit,
+    multiplier,
+    takeProfit,
+    stopLoss,
+    diffShadow35big,
+    diffShadow35small,
+    delta
+  )
 
-    const [deals35, statistics35] = alex38test23(
-      objectSenior,
-      deposit,
-      partOfDeposit,
-      multiplier,
-      takeProfit,
-      stopLoss,
-      diffShadow35big,
-      diffShadow35small,
-      delta
-    )
+  // Слот 2
+  const [deals37, statistics37] = alex38test22(
+    objectSenior,
+    deposit,
+    partOfDeposit,
+    multiplier,
+    takeProfit,
+    stopLoss,
+    diffShadow35big,
+    diffShadow35small,
+    delta,
+    symbol
+  )
 
-    // Слот 2
-    //const [deals37, statistics37] = await alex37testMainMod(
-    //const [deals37, statistics37] = await alex37testMain2(
-    // !!!! const [deals37, statistics37] = await alex37test3(
-    //const [deals37, statistics37] = alex38test10g(
-    //const [deals37, statistics37] = alex38test2h(
-    //const [deals37, statistics37] = alex310testH(
-    const [deals37, statistics37] = alex38test22(
-      objectSenior,
-      deposit,
-      partOfDeposit,
-      multiplier,
-      takeProfit,
-      stopLoss,
-      diffShadow35big,
-      diffShadow35small,
-      delta,
-      symbol
-    )
+  // Слот 3
+  const [deals38, statistics38] = alex38test2(
+    objectSenior,
+    deposit,
+    partOfDeposit,
+    multiplier,
+    takeProfit,
+    stopLoss,
+    diffShadow35big,
+    diffShadow35small,
+    delta,
+    symbol
+  )
 
-    // Слот 3
-    const [deals38, statistics38] = alex38test2hard(
-      objectSenior,
-      deposit,
-      partOfDeposit,
-      multiplier,
-      takeProfit,
-      stopLoss,
-      diffShadow35big,
-      diffShadow35small,
-      delta,
-      symbol
-    )
+  // Слот 4
+  const [deals39, statistics39] = alex38test42(
+    objectSenior,
+    deposit,
+    partOfDeposit,
+    multiplier,
+    takeProfit,
+    stopLoss,
+    symbol
+  )
 
-    // Слот 4
-    // !!! const [deals39, statistics39] = await alex39test(
-    const [deals39, statistics39] = alex38test42(
-      objectSenior,
-      deposit,
-      partOfDeposit,
-      multiplier,
-      takeProfit,
-      stopLoss,
-      symbol
-    )
+  console.log(`программа завершена (ОК)`)
 
-    console.log(`программа завершена (ОК)`)
-
-    return {
-      deals35,
-      statistics35,
-      deals37,
-      statistics37,
-      deals38,
-      statistics38,
-      deals39,
-      statistics39,
-      startProgramAt,
-    }
-  } catch (err) {
-    console.error('get Account Trade List error: ', err)
+  return {
+    deals35,
+    statistics35,
+    deals37,
+    statistics37,
+    deals38,
+    statistics38,
+    deals39,
+    statistics39,
+    startProgramAt,
   }
 }
 
