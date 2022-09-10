@@ -43,6 +43,10 @@ function workingFunctions() {
   // оповещения 3.8.2.2 (09.09.2022)
   const alexNoticeMain3822 = require('./expert_advisers/Alex/notice/noticeWS/alex382Notice2/alexNoticeMain3822')
   alexNoticeMain3822()
+
+  // оповещения 3.8.2.3 на 30m (10.09.2022)
+  const alexNoticeMain3823 = require('./expert_advisers/Alex/notice/noticeWS/alex3823Notice/alexNoticeMain3823')
+  alexNoticeMain3823()
 }
 
 function testBinanceTrade() {
