@@ -31,7 +31,27 @@ const nameStrategy = {
   notice15m382: `Стратегия №3.8.2: Без теневая на ${timeFrames.timeFrame15m}`,
 }
 
+// 11.09.2022
+const symbols2h38 = [
+  'UNFIUSDT',
+  'PEOPLEUSDT',
+  'BELUSDT',
+  'BLZUSDT',
+  'SANDUSDT',
+  'BANDUSDT',
+  'STORJUSDT',
+  'ETCUSDT',
+  'ATOMUSDT',
+  'LINAUSDT',
+  'APEUSDT',
+  '1INCHUSDT',
+  'ALPHAUSDT',
+  'API3USDT',
+  'DGBUSDT',
+]
+
 // 03.09.2022 для alex38Notice2h (внесли дополнительные условия)
+/*
 const symbols2h38 = [
   //'1000SHIBUSDT',
   '1INCHUSDT',
@@ -93,6 +113,7 @@ const symbols2h38 = [
   'XRPUSDT',
   //'XTZUSDT',
 ]
+*/
 
 const symbols15m38 = [
   //'1000SHIBUSDT',
