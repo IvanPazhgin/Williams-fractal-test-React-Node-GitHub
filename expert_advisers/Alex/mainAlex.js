@@ -28,6 +28,7 @@ const alex38test42 = require('./test/alex38test/alex38test42')
 const alex38test22 = require('./test/alex38test/alex38test22')
 const alex38test23 = require('./test/alex38test/alex38test23')
 const alex38test24 = require('./test/alex38test/alex38test24')
+const alex38test25 = require('./test/alex38test/alex38test25')
 // const bookTickerFunc = require('./bookOfSymbol')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
@@ -91,7 +92,7 @@ async function startAlex(
     */
 
   // Слот 1
-  const [deals35, statistics35] = alex38test24(
+  const [deals35, statistics35] = alex38test23(
     objectSenior,
     deposit,
     partOfDeposit,
@@ -104,7 +105,7 @@ async function startAlex(
   )
 
   // Слот 2
-  const [deals37, statistics37] = alex38test22(
+  const [deals37, statistics37] = alex38test25(
     objectSenior,
     deposit,
     partOfDeposit,
