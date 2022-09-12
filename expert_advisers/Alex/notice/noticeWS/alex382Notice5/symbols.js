@@ -10,6 +10,7 @@ const nameStrategy = {
 }
 
 // 11.09.2022
+/*
 const symbols2h3825 = [
   '1000SHIBUSDT',
   '1INCHUSDT',
@@ -67,6 +68,57 @@ const symbols2h3825 = [
   'VETUSDT',
   'WAVESUSDT',
   'XMRUSDT',
+  'XRPUSDT',
+]
+*/
+
+// 12.09.2022
+const symbols2h3825 = [
+  '1000SHIBUSDT',
+  '1INCHUSDT',
+  'AAVEUSDT',
+  'ADAUSDT',
+  'ALGOUSDT',
+  'ALPHAUSDT',
+  'ANCUSDT',
+  'APEUSDT',
+  'API3USDT',
+  'ARPAUSDT',
+  'ATOMUSDT',
+  'AVAXUSDT',
+  'BANDUSDT',
+  'BLZUSDT',
+  'C98USDT',
+  'CELOUSDT',
+  'COMPUSDT',
+  'CRVUSDT',
+  'CTKUSDT',
+  'DARUSDT',
+  'DASHUSDT',
+  'DGBUSDT',
+  'DOTUSDT',
+  'EGLDUSDT',
+  'ENJUSDT',
+  'ENSUSDT',
+  'EOSUSDT',
+  'ETCUSDT',
+  'ETHUSDT',
+  'FILUSDT',
+  'GALUSDT',
+  'GMTUSDT',
+  'HNTUSDT',
+  'HOTUSDT',
+  'KAVAUSDT',
+  'LINAUSDT',
+  'LINKUSDT',
+  'MANAUSDT',
+  'PEOPLEUSDT',
+  'RSRUSDT',
+  'RVNUSDT',
+  'SANDUSDT',
+  'SNXUSDT',
+  'STORJUSDT',
+  'UNFIUSDT',
   'XRPUSDT',
 ]
 

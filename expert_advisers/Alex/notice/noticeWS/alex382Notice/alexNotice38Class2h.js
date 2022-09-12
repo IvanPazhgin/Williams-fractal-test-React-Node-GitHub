@@ -363,7 +363,18 @@ class AlexNotice38Class2h {
     }
     //} // if (lastCandle.startTime >= this.startTime + shiftTime)
   }
-  //// условия переноса Take Profit или Stop Loss
+  //// условия переноса Take Profit или Stop Loss (12.09.2022)
+  changeTPSL(lastCandle, interval) {
+    if (lastCandle.interval == interval) {
+      // перенос TP SL: сразу после закрытия свечи, на которой открылись
+      if (lastCandle.startTime == this.sygnalTime) {
+        this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
+      }
+    }
+    return this
+  }
+  // ниже первая версия функции переноса TP SL
+  /*
   changeTPSL(lastCandle, interval) {
     if (lastCandle.interval == interval) {
       // если первая свеча - зеленая, то после закрытия первой свечи [i] (т.е. на второй) - переносим TPSL в БУ
@@ -393,6 +404,7 @@ class AlexNotice38Class2h {
     }
     return this
   }
+  */
   ////
 }
 
