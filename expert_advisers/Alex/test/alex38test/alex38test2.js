@@ -13,10 +13,10 @@ function alex38test2(
   stopLossUser, // = 0.02
   diffShadowBigUser,
   diffShadowSmallUser,
-  delta,
+  deltaConst,
   symbol
 ) {
-  const nameStrategy = 'Стратегия №3.8.2: Без теневая'
+  const nameStrategy = 'Стратегия №3.8.2: Без теневая (K3 = 1%..1.5%)'
   // для сигналов
   let canShort = false // есть ли сигнал для входа в шорт или нет
   let whitchSignal = '' // вносим в таблицу  номер сигнала
@@ -42,6 +42,7 @@ function alex38test2(
   let percent = 0
   // let deposit2 = 0
   let deposit = Number(depositTemp)
+  const delta = 1 + deltaConst / 100
 
   let takeProfit = 0
   let stopLoss = 0
@@ -165,8 +166,8 @@ function alex38test2(
 
       // входим в шорт
       if (canShort) {
-        if (array[i].highPrice >= array[i - 1].highPrice) {
-          positionDown = array[i - 1].highPrice // вход по цене открытия красной [i-1]
+        if (array[i].highPrice >= array[i - 1].highPrice * delta) {
+          positionDown = array[i - 1].highPrice * delta // вход по цене открытия красной [i-1]
           openShortCommon() // функция openShortCommon для входа в сделку с общими полями
         } else {
           // отменяем сигнал
@@ -200,26 +201,41 @@ function alex38test2(
       // changeTPSL() // 2. по финальной свече меняем SL и TP
 
       function changeTPSLCommon() {
-        if (i >= indexOfPostion + 2) {
-          // изменение TP: если мы в просадке
-          if (positionDown < array[i].closePrice) {
-            if (!changedTP) {
-              takeProfit = positionDown
-              dateChangeTP = array[i].openTime
-              changedTP = true
-            }
-          } else {
-            if (!changedSL) {
-              // изменение SL: если мы в прибыли
-              stopLoss = positionDown
-              dateChangeSL = array[i].openTime
-              changedSL = true
-            }
+        //if (i >= indexOfPostion + 2) {
+        // изменение TP: если мы в просадке
+        if (positionDown < array[i].closePrice) {
+          if (!changedTP) {
+            takeProfit = positionDown
+            dateChangeTP = array[i].openTime
+            changedTP = true
           }
-        } // if (i >= (indexOfPostion + 2))
+        } else {
+          if (!changedSL) {
+            // изменение SL: если мы в прибыли
+            stopLoss = positionDown
+            dateChangeSL = array[i].openTime
+            changedSL = true
+          }
+        }
+        //} // if (i >= (indexOfPostion + 2))
       }
 
-      changeTPSLCommon() // проверка общих условий по переносу TP и SL
+      // changeTPSLCommon() // проверка общих условий по переносу TP и SL
+
+      // изменения по переносу TP SL от 12.09.2022
+      // если свеча открытия будет зеленой тогда переносим после закрытия свечи открытия
+      if (i == indexOfPostion && array[i].closePrice > array[i].openPrice) {
+        changeTPSLCommon() // проверка общих условий по переносу TP и SL
+      }
+
+      // если свеча открытия оказалась красной то перенос после закрытия второй свечи
+      if (
+        i == indexOfPostion + 1 &&
+        array[i - 1].openPrice > array[i - 1].closePrice
+      ) {
+        changeTPSLCommon() // проверка общих условий по переносу TP и SL
+      }
+      // конец условий по переносу TP SL
 
       // выход из сделки
       // условия выхода из сделки по TP
