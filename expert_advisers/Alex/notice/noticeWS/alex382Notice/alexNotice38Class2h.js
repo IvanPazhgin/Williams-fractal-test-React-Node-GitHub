@@ -32,6 +32,7 @@ class AlexNotice38Class2h {
     this.diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
     this.takeProfitConst = 0.04
     this.stopLossConst = 0.02
+    this.delta = 1.007 // вход на 0.7% выше хая сигнальной свечи
 
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо
@@ -124,7 +125,7 @@ class AlexNotice38Class2h {
           ) {
             this.canShort = true
             this.whitchSignal = this.nameStrategy + ': сигнал №1'
-            this.openShort = array[i].high
+            this.openShort = array[i].high * this.delta
             this.openShortCommon(array[i].startTime)
           } // второй блок if (расчетный)
         } // первый блок if на поиск конфигурации свечей
@@ -153,7 +154,7 @@ class AlexNotice38Class2h {
           ) {
             this.canShort = true
             this.whitchSignal = this.nameStrategy + ': сигнал №2'
-            this.openShort = array[i].high
+            this.openShort = array[i].high * this.delta
             this.openShortCommon(array[i].startTime)
           } // второй блок if (расчетный)
         } // первый блок if на поиск конфигурации свечей
@@ -364,6 +365,7 @@ class AlexNotice38Class2h {
     //} // if (lastCandle.startTime >= this.startTime + shiftTime)
   }
   //// условия переноса Take Profit или Stop Loss (12.09.2022)
+  /*
   changeTPSL(lastCandle, interval) {
     if (lastCandle.interval == interval) {
       // перенос TP SL: сразу после закрытия свечи, на которой открылись
@@ -373,8 +375,9 @@ class AlexNotice38Class2h {
     }
     return this
   }
-  // ниже первая версия функции переноса TP SL
-  /*
+  */
+
+  // первая версия функции переноса TP SL
   changeTPSL(lastCandle, interval) {
     if (lastCandle.interval == interval) {
       // если первая свеча - зеленая, то после закрытия первой свечи [i] (т.е. на второй) - переносим TPSL в БУ
@@ -391,10 +394,10 @@ class AlexNotice38Class2h {
         }
       }
 
-      // а если первая свеча - красная, то переносим после закрытия 3й свечи
+      // а если первая свеча - красная, то переносим после закрытия 2й свечи
       if (
         !this.shortCandleColorIsGreen && // если первая свеча - красная
-        lastCandle.startTime == this.sygnalTime + this.shiftTime * 2 // то переносим после закрытия 3й свечи
+        lastCandle.startTime == this.sygnalTime + this.shiftTime // то переносим после закрытия 2й свечи
       ) {
         sendInfoToUser(
           `${this.whitchSignal}\nПроверка переноса TP и SL\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - КРАСНАЯ ==--`
@@ -404,7 +407,6 @@ class AlexNotice38Class2h {
     }
     return this
   }
-  */
   ////
 }
 

@@ -102,7 +102,6 @@ const symbols2h3825 = [
   'ENSUSDT',
   'EOSUSDT',
   'ETCUSDT',
-  'ETHUSDT',
   'FILUSDT',
   'GALUSDT',
   'GMTUSDT',

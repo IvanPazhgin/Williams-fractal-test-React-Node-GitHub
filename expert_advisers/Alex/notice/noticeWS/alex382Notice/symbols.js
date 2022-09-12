@@ -39,7 +39,6 @@ const symbols2h38 = [
   'ENSUSDT',
   'EOSUSDT',
   'ETCUSDT',
-  'ETHUSDT',
   'FILUSDT',
   'GALUSDT',
   'GMTUSDT',
