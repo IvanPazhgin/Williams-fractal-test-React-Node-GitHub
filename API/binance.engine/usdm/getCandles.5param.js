@@ -10,14 +10,18 @@ const client = new USDMClient({
 })
 
 async function getCandles(symbol, interval, startTime, endTime, limit) {
-  const candles = await client.getKlines({
-    symbol: symbol,
-    interval: interval,
-    startTime: startTime,
-    endTime: endTime,
-    limit: limit,
-  })
-  return candles
+  try {
+    const candles = await client.getKlines({
+      symbol: symbol,
+      interval: interval,
+      startTime: startTime,
+      endTime: endTime,
+      limit: limit,
+    })
+    return candles
+  } catch (err) {
+    console.error('getAccountTradeList error: ', err)
+  }
 }
 
 module.exports = getCandles

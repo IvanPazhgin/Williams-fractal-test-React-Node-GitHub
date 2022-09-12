@@ -55,19 +55,15 @@ async function startAlex(
   const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, timeFrame)
   let candlesSeniorFull = []
 
-  try {
-    for (let i = 0; i < arrayOf1kPeriod.length; i++) {
-      const candlesSenior = await getCandles(
-        symbol,
-        timeFrame,
-        arrayOf1kPeriod[i].dateFirst,
-        arrayOf1kPeriod[i].dateSecond,
-        limitSeniorTrend
-      )
-      candlesSeniorFull = candlesSeniorFull.concat(candlesSenior)
-    }
-  } catch (err) {
-    console.error('get Account Trade List error: ', err)
+  for (let i = 0; i < arrayOf1kPeriod.length; i++) {
+    const candlesSenior = await getCandles(
+      symbol,
+      timeFrame,
+      arrayOf1kPeriod[i].dateFirst,
+      arrayOf1kPeriod[i].dateSecond,
+      limitSeniorTrend
+    )
+    candlesSeniorFull = candlesSeniorFull.concat(candlesSenior)
   }
 
   const objectSenior = candlesToObject4test(candlesSeniorFull)

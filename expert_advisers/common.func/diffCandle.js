@@ -79,6 +79,12 @@ function diffCandle(date1, date2, timeFrame) {
       shiftOndeCandle = 60 * 5 * 1000
       shiftTime = shiftOndeCandle * lengthOfPart
       break
+    case '1m':
+      console.log('1m свечи')
+      countOfCandles = diffday / 1000 / 60
+      shiftOndeCandle = 60 * 1000
+      shiftTime = shiftOndeCandle * lengthOfPart
+      break
     default:
       console.log('нет таких свечей')
   }

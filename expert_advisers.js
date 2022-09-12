@@ -7,6 +7,8 @@ function testOfNewFuctiouns() {
   //elasticInfo() // тест elastic search: info (работает)
   //elasticPutTest() // тесты с эластик по видео (работает)
   //testTelegramBot()
+  //saveCandle() // сохраняем свечи в JSON для тестера (эмуляция elastic)
+  //readCandle() // считываем свечи в JSON для тестера (эмуляция elastic)
 }
 
 function workingFunctions() {
@@ -65,6 +67,17 @@ function testBinanceTrade() {
   // Толя предложил: ищи видос вебпак+тайпскрипт
   const spotTrade = require(`./binance_Engine/tests_Ivan/spot-trade.ts`)
   spotTrade()
+}
+
+function saveCandle() {
+  const saveCandleToJSON = require('./utils/saveCandle')
+  saveCandleToJSON()
+}
+
+function readCandle() {
+  const readCandleFromJSON = require('./utils/readCandle')
+  const data = readCandleFromJSON('UNFIUSDT', '2021', '4h')
+  console.table(data)
 }
 
 async function testWilliams() {
