@@ -33,7 +33,7 @@ class alNot3825Class2h {
     this.diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
     this.takeProfitConst = 0.03
     this.stopLossConst = 0.02
-    this.delta = 1.015 // вход на 1.5% выше хая сигнальной свечи
+    this.delta = 1.012 // вход на 1.2% выше хая сигнальной свечи
 
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо

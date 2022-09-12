@@ -9,6 +9,7 @@ function testOfNewFuctiouns() {
   //testTelegramBot()
   //saveCandle() // сохраняем свечи в JSON для тестера (эмуляция elastic)
   //readCandle() // считываем свечи в JSON для тестера (эмуляция elastic)
+  //testOnDonwloadCandles() // тестер на основе закаченных свечек
 }
 
 function workingFunctions() {
@@ -78,6 +79,11 @@ function readCandle() {
   const readCandleFromJSON = require('./utils/readCandle')
   const data = readCandleFromJSON('UNFIUSDT', '2021', '4h')
   console.table(data)
+}
+
+function testOnDonwloadCandles() {
+  const testLogics3825 = require('./expert_advisers/test_on_downloaded/alex/testLogics3825')
+  testLogics3825('UNFIUSDT', '2022')
 }
 
 async function testWilliams() {
