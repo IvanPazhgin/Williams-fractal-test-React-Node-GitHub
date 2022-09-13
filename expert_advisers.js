@@ -71,19 +71,21 @@ function testBinanceTrade() {
 }
 
 function saveCandle() {
-  const saveCandleToJSON = require('./utils/saveCandle')
+  const saveCandleToJSON = require('./expert_advisers/test_on_downloaded/utils/saveCandle')
   saveCandleToJSON()
 }
 
 function readCandle() {
-  const readCandleFromJSON = require('./utils/readCandle')
-  const data = readCandleFromJSON('UNFIUSDT', '2021', '4h')
+  const readCandleFromJSON = require('./expert_advisers/test_on_downloaded/utils/readCandle')
+  const input_parameters = require('./expert_advisers/test_on_downloaded/alex/input_parameters')
+  const data = readCandleFromJSON(input_parameters, input_parameters.interval)
   console.table(data)
 }
 
 function testOnDonwloadCandles() {
   const testLogics3825 = require('./expert_advisers/test_on_downloaded/alex/testLogics3825')
-  testLogics3825('UNFIUSDT', '2022')
+  const input_parameters = require('./expert_advisers/test_on_downloaded/alex/input_parameters')
+  testLogics3825(input_parameters)
 }
 
 async function testWilliams() {

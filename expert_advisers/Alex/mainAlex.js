@@ -136,6 +136,9 @@ async function startAlex(
     multiplier,
     takeProfit,
     stopLoss,
+    diffShadow35big,
+    diffShadow35small,
+    delta,
     symbol
   )
 

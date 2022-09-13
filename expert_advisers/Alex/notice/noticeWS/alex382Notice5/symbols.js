@@ -73,6 +73,7 @@ const symbols2h3825 = [
 */
 
 // 12.09.2022
+/*
 const symbols2h3825 = [
   '1000SHIBUSDT',
   '1INCHUSDT',
@@ -90,7 +91,7 @@ const symbols2h3825 = [
   'BLZUSDT',
   'C98USDT',
   'CELOUSDT',
-  'COMPUSDT',
+  //'COMPUSDT',
   //'CRVUSDT',
   'CTKUSDT',
   'DARUSDT',
@@ -104,7 +105,7 @@ const symbols2h3825 = [
   'ETCUSDT',
   'FILUSDT',
   'GALUSDT',
-  'GMTUSDT',
+  //'GMTUSDT',
   'HNTUSDT',
   'HOTUSDT',
   'KAVAUSDT',
@@ -117,6 +118,42 @@ const symbols2h3825 = [
   'SANDUSDT',
   'SNXUSDT',
   //'STORJUSDT',
+  'UNFIUSDT',
+  'XRPUSDT',
+]
+*/
+
+// 13.09.2022
+const symbols2h3825 = [
+  '1000SHIBUSDT',
+  '1INCHUSDT',
+  'AAVEUSDT',
+  'ADAUSDT',
+  'ALGOUSDT',
+  'APEUSDT',
+  'API3USDT',
+  'ARPAUSDT',
+  'ATOMUSDT',
+  'BLZUSDT',
+  'C98USDT',
+  'CELOUSDT',
+  'CTKUSDT',
+  'DARUSDT',
+  'DASHUSDT',
+  'DGBUSDT',
+  'ENSUSDT',
+  'EOSUSDT',
+  'ETCUSDT',
+  'FILUSDT',
+  'GALUSDT',
+  'HNTUSDT',
+  'HOTUSDT',
+  'KAVAUSDT',
+  'LINAUSDT',
+  'MANAUSDT',
+  'PEOPLEUSDT',
+  'SANDUSDT',
+  'SNXUSDT',
   'UNFIUSDT',
   'XRPUSDT',
 ]

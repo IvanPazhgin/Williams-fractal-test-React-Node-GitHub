@@ -1,9 +1,15 @@
 const fs = require('fs')
+const { pathDirForCandles } = require('../paths')
 
-function readCandleFromJSON(symbol, year, interval) {
-  const pathDir = require('./settings')
-  const fileName = symbol + '_' + year + '_usdm_' + interval + '.json'
-  const inPutName = pathDir + fileName
+function readCandleFromJSON(input_parameters, interval) {
+  const fileName =
+    input_parameters.symbol +
+    '_' +
+    input_parameters.year +
+    '_usdm_' +
+    interval +
+    '.json'
+  const inPutName = pathDirForCandles + fileName
 
   let databases = []
   try {
