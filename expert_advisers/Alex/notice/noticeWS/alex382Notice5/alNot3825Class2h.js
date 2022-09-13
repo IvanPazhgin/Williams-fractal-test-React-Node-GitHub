@@ -31,7 +31,7 @@ class alNot3825Class2h {
     //this.shortCandleColorIsGreen = false
 
     this.diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
-    this.takeProfitConst = 0.03
+    this.takeProfitConst = 0.04
     this.stopLossConst = 0.02
     this.delta = 1.012 // вход на 1.2% выше хая сигнальной свечи
 
