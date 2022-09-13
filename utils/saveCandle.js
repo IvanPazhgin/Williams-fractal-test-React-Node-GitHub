@@ -2,62 +2,70 @@ const fs = require('fs')
 const getCandles = require('../API/binance.engine/usdm/getCandles.5param')
 const candlesToObject = require('../expert_advisers/common.func/candlesToObject')
 const diffCandle = require('../expert_advisers/common.func/diffCandle')
+const {
+  intervalArray,
+} = require('../expert_advisers/test_on_downloaded/alex/intervals')
 
 // инструция https://attacomsian.com/blog/nodejs-read-write-json-files
 async function saveCandleToJSON() {
+  // переменные параметры
   const year = '2022'
-  // параметры для скачивания свечей
   const symbol = 'AVAXUSDT'
-  const interval = '4h'
-  const intervalArray = ['4h', '2h', '1h', '30m', '15m', '1m'] // прописать запрос свечей в цикле
+
+  // постоянные параметры для скачивания свечей
   const dateStart = year + '-01-01T00:00:00.000'
   const dateFinish = year + '-10-01T00:00:00.000'
   const limit = 1000
 
-  // подготовка имени файла
-  // const pathDir = './downloaded_candles/' // перенёс папку из dropBox, убрал из .gitignore
-  const pathDir = require('./settings')
-  const fileName = symbol + '_' + year + '_usdm_' + interval + '.json'
-  const outPutName = pathDir + fileName
+  // в цикле загружаем свечи по всем интервалам
+  intervalArray.forEach(async (interval) => {
+    // подготовка имени файла
+    const pathDir = require('./settings')
+    const fileName = symbol + '_' + year + '_usdm_' + interval + '.json'
+    const outPutName = pathDir + fileName
 
-  // запрашиваем свечки на бирже
-  const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, interval)
-  const n = arrayOf1kPeriod.length
+    // расчет количества периодов для каждого интервала
+    const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, interval)
+    const n = arrayOf1kPeriod.length
 
-  let candlesFull = [] // полный массив всех свечек за весь период
+    let candlesFull = [] // полный массив всех свечек за весь период
 
-  try {
-    for (let i = 0; i < n; i++) {
-      console.log(`ждем свечи за период ${i + 1} из ${n}`)
-      const candles = await getCandles(
-        symbol,
-        interval,
-        arrayOf1kPeriod[i].dateFirst,
-        arrayOf1kPeriod[i].dateSecond,
-        limit
-      )
-      candlesFull = candlesFull.concat(candles)
+    // запрашиваем свечки на бирже
+    try {
+      for (let i = 0; i < n; i++) {
+        console.log(`ждем свечи за период ${i + 1} из ${n}`)
+        const candles = await getCandles(
+          symbol,
+          interval,
+          arrayOf1kPeriod[i].dateFirst,
+          arrayOf1kPeriod[i].dateSecond,
+          limit
+        )
+        candlesFull = candlesFull.concat(candles)
+      }
+    } catch (err) {
+      console.error('get Account Trade List error: ', err)
     }
-  } catch (err) {
-    console.error('get Account Trade List error: ', err)
-  }
 
-  const objectCandles = candlesToObject(candlesFull)
-  // console.log(`получили ${objectCandles.length} свечей`)
+    const objectCandles = candlesToObject(candlesFull)
+    console.log(
+      `Интервал: ${interval}: получили ${objectCandles.length} свечей`
+    )
 
-  // convert JSON object to a string
-  // const data = JSON.stringify(objectCandles)
+    // convert JSON object to a string
+    // const data = JSON.stringify(objectCandles)
 
-  // pretty-print JSON object to string
-  const data = JSON.stringify(objectCandles, null, 2)
+    // pretty-print JSON object to string
+    const data = JSON.stringify(objectCandles, null, 2)
 
-  // write file to disk
-  fs.writeFile(outPutName, data, 'utf8', (err) => {
-    if (err) {
-      console.log(`Error writing file: ${err}`)
-    } else {
-      console.log(`File is written successfully!`)
-    }
+    // write file to disk
+    fs.writeFile(outPutName, data, 'utf8', (err) => {
+      if (err) {
+        console.log(`Error writing file: ${err}`)
+      } else {
+        console.log(`${fileName} is written successfully!`)
+      }
+    })
   })
 }
 
