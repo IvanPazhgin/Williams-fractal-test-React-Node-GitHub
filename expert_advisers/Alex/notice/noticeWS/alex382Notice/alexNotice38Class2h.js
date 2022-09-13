@@ -103,8 +103,8 @@ class AlexNotice38Class2h {
           array[i - 2].close > array[i - 2].open && // 1 свеча зелёная
           array[i - 1].close > array[i - 1].open && // 2 свеча зелёная
           array[i].open > array[i].close && // 3 свеча красная
-          array[i].volume > array[i - 1].volume && // объем 3й красной больше объема 2й зеленой
-          array[i].close > array[i - 1].open // цена закрытия 3й красной выше цены открытия 2й зеленой
+          array[i].volume > array[i - 1].volume // объем 3й красной больше объема 2й зеленой
+          //array[i].close > array[i - 1].open // цена закрытия 3й красной выше цены открытия 2й зеленой
         ) {
           // расчет соотношения верхней тени к нижней тени на 3й красной свече
           lengthUpShadow = array[i].high - array[i].open
@@ -136,10 +136,10 @@ class AlexNotice38Class2h {
           array[i - 2].close > array[i - 2].open && // 2 свеча зелёная
           array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объёма 2й зеленой
           array[i - 1].open > array[i - 1].close && // 3 свеча красная
-          array[i - 1].close > array[i - 2].open && // цена закрытия 3й красной выше цены открытия 2й зеленой
-          array[i].open > array[i].close && // 4 свеча красная
+          // array[i - 1].close > array[i - 2].open && // цена закрытия 3й красной выше цены открытия 2й зеленой
+          array[i].open > array[i].close // 4 свеча красная
           // дополнительные условия от 28.08.2022
-          array[i].low > array[i - 3].low // лой последней красной выше лоя первой зеленой
+          // array[i].low > array[i - 3].low // лой последней красной выше лоя первой зеленой
         ) {
           // расчет соотношения верхней тени к нижней тени на 4й красной свече
           lengthUpShadow = array[i].high - array[i].open

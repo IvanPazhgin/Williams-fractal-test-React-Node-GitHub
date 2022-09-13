@@ -5,10 +5,10 @@ const diffCandle = require('../expert_advisers/common.func/diffCandle')
 
 // инструция https://attacomsian.com/blog/nodejs-read-write-json-files
 async function saveCandleToJSON() {
-  const year = '2021'
+  const year = '2022'
   // параметры для скачивания свечей
-  const symbol = 'UNFIUSDT'
-  const interval = '1h'
+  const symbol = 'AVAXUSDT'
+  const interval = '4h'
   const intervalArray = ['4h', '2h', '1h', '30m', '15m', '1m'] // прописать запрос свечей в цикле
   const dateStart = year + '-01-01T00:00:00.000'
   const dateFinish = year + '-10-01T00:00:00.000'

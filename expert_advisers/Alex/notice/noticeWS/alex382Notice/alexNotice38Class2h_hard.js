@@ -3,8 +3,7 @@ const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 
-// простые условия переноса TP SL
-class alNot3825Class2h {
+class AlexNotice38Class2h {
   constructor(symbol, nameStrategy) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
@@ -28,19 +27,18 @@ class alNot3825Class2h {
     this.closeTime = 0
     this.profit = 0
     this.percent = 0
-    //this.shortCandleColorIsGreen = false
+    this.shortCandleColorIsGreen = false
 
     this.diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
-    this.takeProfitConst = 0.03
+    this.takeProfitConst = 0.04
     this.stopLossConst = 0.02
-    this.delta = 1.012 // вход на 1.2% выше хая сигнальной свечи
+    this.delta = 1.007 // вход на 0.7% выше хая сигнальной свечи
 
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо
 
     this.shiftTime = 1000 * 60 * 60 * 2 // сдвиг на одну 2h свечу
     // this.signalSendingTime = new Date().getTime() // время отправки сигнала
-    return this
   }
   // подготовка данных для поиска сигнала
   async prepairData(lastCandle, interval) {
@@ -104,9 +102,9 @@ class alNot3825Class2h {
         if (
           array[i - 2].close > array[i - 2].open && // 1 свеча зелёная
           array[i - 1].close > array[i - 1].open && // 2 свеча зелёная
-          array[i].open > array[i].close // 3 свеча красная
-          //array[i].volume > array[i - 1].volume && // объем 3й красной больше объема 2й зеленой
-          //array[i].close > array[i - 1].open // цена закрытия 3й красной выше цены открытия 2й зеленой
+          array[i].open > array[i].close && // 3 свеча красная
+          array[i].volume > array[i - 1].volume && // объем 3й красной больше объема 2й зеленой
+          array[i].close > array[i - 1].open // цена закрытия 3й красной выше цены открытия 2й зеленой
         ) {
           // расчет соотношения верхней тени к нижней тени на 3й красной свече
           lengthUpShadow = array[i].high - array[i].open
@@ -136,12 +134,12 @@ class alNot3825Class2h {
         if (
           array[i - 3].close > array[i - 3].open && // 1 свеча зелёная
           array[i - 2].close > array[i - 2].open && // 2 свеча зелёная
-          //array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объёма 2й зеленой
+          array[i - 1].volume > array[i - 2].volume && // объем 3й красной больше объёма 2й зеленой
           array[i - 1].open > array[i - 1].close && // 3 свеча красная
-          //array[i - 1].close > array[i - 2].open && // цена закрытия 3й красной выше цены открытия 2й зеленой
-          array[i].open > array[i].close // 4 свеча красная
+          array[i - 1].close > array[i - 2].open && // цена закрытия 3й красной выше цены открытия 2й зеленой
+          array[i].open > array[i].close && // 4 свеча красная
           // дополнительные условия от 28.08.2022
-          //array[i].low > array[i - 3].low // лой последней красной выше лоя первой зеленой
+          array[i].low > array[i - 3].low // лой последней красной выше лоя первой зеленой
         ) {
           // расчет соотношения верхней тени к нижней тени на 4й красной свече
           lengthUpShadow = array[i].high - array[i].open
@@ -366,7 +364,8 @@ class alNot3825Class2h {
     }
     //} // if (lastCandle.startTime >= this.startTime + shiftTime)
   }
-  //// условия переноса Take Profit или Stop Loss
+  //// условия переноса Take Profit или Stop Loss (12.09.2022)
+  /*
   changeTPSL(lastCandle, interval) {
     if (lastCandle.interval == interval) {
       // перенос TP SL: сразу после закрытия свечи, на которой открылись
@@ -376,7 +375,39 @@ class alNot3825Class2h {
     }
     return this
   }
+  */
+
+  // первая версия функции переноса TP SL
+  changeTPSL(lastCandle, interval) {
+    if (lastCandle.interval == interval) {
+      // если первая свеча - зеленая, то после закрытия первой свечи [i] (т.е. на второй) - переносим TPSL в БУ
+      if (lastCandle.startTime == this.sygnalTime) {
+        const candleColor = lastCandle.close - lastCandle.open // цвет текущей свечи - зеленый
+        // если (свеча[i] входа в шорт оказалась зеленая)
+        if (candleColor > 0) {
+          this.shortCandleColorIsGreen = true
+          // временно консолим проверки
+          sendInfoToUser(
+            `${this.whitchSignal}\nПроверка переноса TP и SL\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - ЗЕЛЕНАЯ ==--`
+          )
+          this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
+        }
+      }
+
+      // а если первая свеча - красная, то переносим после закрытия 2й свечи
+      if (
+        !this.shortCandleColorIsGreen && // если первая свеча - красная
+        lastCandle.startTime == this.sygnalTime + this.shiftTime // то переносим после закрытия 2й свечи
+      ) {
+        sendInfoToUser(
+          `${this.whitchSignal}\nПроверка переноса TP и SL\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - КРАСНАЯ ==--`
+        )
+        this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
+      }
+    }
+    return this
+  }
   ////
 }
 
-module.exports = alNot3825Class2h
+module.exports = AlexNotice38Class2h
