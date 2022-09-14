@@ -7,6 +7,7 @@ const optionsForSaveStat4h = {
   year: input_parameters.year,
   interval: intervalObject.timeFrame4h,
   nameStrategy: input_parameters.nameStrategy,
+  market: input_parameters.market,
   comment: 'statistics',
 }
 
@@ -15,6 +16,7 @@ const optionsForSaveStat2h = {
   year: input_parameters.year,
   interval: intervalObject.timeFrame2h,
   nameStrategy: input_parameters.nameStrategy,
+  market: input_parameters.market,
   comment: 'statistics',
 }
 
@@ -23,6 +25,7 @@ const optionsForSaveStat1h = {
   year: input_parameters.year,
   interval: intervalObject.timeFrame1h,
   nameStrategy: input_parameters.nameStrategy,
+  market: input_parameters.market,
   comment: 'statistics',
 }
 
@@ -31,6 +34,7 @@ const optionsForSaveStat30m = {
   year: input_parameters.year,
   interval: intervalObject.timeFrame30m,
   nameStrategy: input_parameters.nameStrategy,
+  market: input_parameters.market,
   comment: 'statistics',
 }
 
@@ -39,6 +43,7 @@ const optionsForSaveStat15m = {
   year: input_parameters.year,
   interval: intervalObject.timeFrame15m,
   nameStrategy: input_parameters.nameStrategy,
+  market: input_parameters.market,
   comment: 'statistics',
 }
 
@@ -47,6 +52,7 @@ const optionsForSaveStat5m = {
   year: input_parameters.year,
   interval: intervalObject.timeFrame5m,
   nameStrategy: input_parameters.nameStrategy,
+  market: input_parameters.market,
   comment: 'statistics',
 }
 
@@ -55,6 +61,7 @@ const optionsForSaveStatAll = {
   year: input_parameters.year,
   interval: 'all',
   nameStrategy: input_parameters.nameStrategy,
+  market: input_parameters.market,
   comment: 'statistics',
 }
 

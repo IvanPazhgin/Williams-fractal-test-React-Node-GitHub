@@ -9,6 +9,8 @@ function saveDeals(deals, options) {
     '_' +
     options.year +
     '_' +
+    options.market +
+    '_' +
     options.interval +
     '_' +
     options.comment +
