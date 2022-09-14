@@ -76,18 +76,27 @@ function testLogics3825(input_parameters) {
 
   ///////////////////////////////////
   // считаем общую прибыль по всем ТФ
-  let totalSumm4h = statistics(deals4h)
-  let totalSumm2h = statistics(deals2h)
-  let totalSumm1h = statistics(deals1h)
-  let totalSumm30m = statistics(deals30m)
-  let totalSumm15m = statistics(deals15m)
+  let totalSumm4h = statistics(deals4h, intervalObject.timeFrame4h)
+  let totalSumm2h = statistics(deals2h, intervalObject.timeFrame2h)
+  let totalSumm1h = statistics(deals1h, intervalObject.timeFrame1h)
+  let totalSumm30m = statistics(deals30m, intervalObject.timeFrame30m)
+  let totalSumm15m = statistics(deals15m, intervalObject.timeFrame15m)
+
+  let totalSumm = []
+  totalSumm = totalSumm
+    .concat(totalSumm4h)
+    .concat(totalSumm2h)
+    .concat(totalSumm1h)
+    .concat(totalSumm30m)
+    .concat(totalSumm15m)
 
   // сохраняем статистику в файл
-  saveDeals(totalSumm4h, optionsForStat.optionsForSaveStat4h)
-  saveDeals(totalSumm2h, optionsForStat.optionsForSaveStat2h)
-  saveDeals(totalSumm1h, optionsForStat.optionsForSaveStat1h)
-  saveDeals(totalSumm30m, optionsForStat.optionsForSaveStat30m)
-  saveDeals(totalSumm15m, optionsForStat.optionsForSaveStat15m)
+  // saveDeals(totalSumm4h, optionsForStat.optionsForSaveStat4h)
+  // saveDeals(totalSumm2h, optionsForStat.optionsForSaveStat2h)
+  // saveDeals(totalSumm1h, optionsForStat.optionsForSaveStat1h)
+  // saveDeals(totalSumm30m, optionsForStat.optionsForSaveStat30m)
+  // saveDeals(totalSumm15m, optionsForStat.optionsForSaveStat15m)
+  saveDeals(totalSumm, optionsForStat.optionsForSaveStatAll)
 
   console.log(`программа завершена (ОК)`)
 }

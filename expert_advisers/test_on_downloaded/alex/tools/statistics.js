@@ -1,5 +1,6 @@
 class TotalSumm {
-  constructor() {
+  constructor(interval) {
+    this.interval = interval
     this.totalSumm = 0
     this.countOfPositive = 0
     this.countOfNegative = 0
@@ -19,8 +20,8 @@ function summ(deals, SumObj) {
   return SumObj
 }
 
-function statistics(deals) {
-  let totalSumm = new TotalSumm()
+function statistics(deals, interval) {
+  let totalSumm = new TotalSumm(interval)
   //let totalSumm2h = new TotalSumm()
   //let totalSumm1h = new TotalSumm()
   //let totalSumm30m = new TotalSumm()

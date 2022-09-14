@@ -264,6 +264,16 @@ class TestClass3825 {
   }
 
   saveDeal() {
+    this.dateChangeTP =
+      this.dateChangeTP == 0
+        ? (this.dateChangeTP = '')
+        : timestampToDateHuman(this.dateChangeTP)
+
+    this.dateChangeSL =
+      this.dateChangeSL == 0
+        ? (this.dateChangeSL = '')
+        : timestampToDateHuman(this.dateChangeSL)
+
     const deal = {
       // константы
       takeProfitConst: this.takeProfitConst,

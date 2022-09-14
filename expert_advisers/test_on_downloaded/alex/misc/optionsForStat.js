@@ -42,12 +42,21 @@ const optionsForSaveStat15m = {
   comment: 'statistics',
 }
 
+const optionsForSaveStatAll = {
+  symbol: input_parameters.symbol,
+  year: input_parameters.year,
+  interval: 'all',
+  nameStrategy: input_parameters.nameStrategy,
+  comment: 'statistics',
+}
+
 const optionsForSaveStat = {
   optionsForSaveStat4h: optionsForSaveStat4h,
   optionsForSaveStat2h: optionsForSaveStat2h,
   optionsForSaveStat1h: optionsForSaveStat1h,
   optionsForSaveStat30m: optionsForSaveStat30m,
   optionsForSaveStat15m: optionsForSaveStat15m,
+  optionsForSaveStatAll: optionsForSaveStatAll,
 }
 
 module.exports = optionsForSaveStat
