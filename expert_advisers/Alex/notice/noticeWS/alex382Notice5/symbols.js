@@ -138,7 +138,7 @@ const symbols2h3825 = [
   'C98USDT',
   'CELOUSDT',
   'CTKUSDT',
-  'DARUSDT',
+  //'DARUSDT',
   'DASHUSDT',
   'DGBUSDT',
   'ENSUSDT',
