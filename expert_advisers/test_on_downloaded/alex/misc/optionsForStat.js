@@ -42,6 +42,14 @@ const optionsForSaveStat15m = {
   comment: 'statistics',
 }
 
+const optionsForSaveStat5m = {
+  symbol: input_parameters.symbol,
+  year: input_parameters.year,
+  interval: intervalObject.timeFrame5m,
+  nameStrategy: input_parameters.nameStrategy,
+  comment: 'statistics',
+}
+
 const optionsForSaveStatAll = {
   symbol: input_parameters.symbol,
   year: input_parameters.year,
@@ -56,6 +64,7 @@ const optionsForSaveStat = {
   optionsForSaveStat1h: optionsForSaveStat1h,
   optionsForSaveStat30m: optionsForSaveStat30m,
   optionsForSaveStat15m: optionsForSaveStat15m,
+  optionsForSaveStat5m: optionsForSaveStat5m,
   optionsForSaveStatAll: optionsForSaveStatAll,
 }
 

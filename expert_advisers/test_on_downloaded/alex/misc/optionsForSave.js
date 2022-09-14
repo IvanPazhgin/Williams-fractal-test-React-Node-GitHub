@@ -44,12 +44,21 @@ const optionsForSave15m = {
   comment: 'deals',
 }
 
+const optionsForSave5m = {
+  symbol: input_parameters.symbol,
+  year: input_parameters.year,
+  interval: intervalObject.timeFrame5m,
+  nameStrategy: input_parameters.nameStrategy,
+  comment: 'deals',
+}
+
 const optionsForSaveDeals = {
   optionsForSave4h: optionsForSave4h,
   optionsForSave2h: optionsForSave2h,
   optionsForSave1h: optionsForSave1h,
   optionsForSave30m: optionsForSave30m,
   optionsForSave15m: optionsForSave15m,
+  optionsForSave5m: optionsForSave5m,
 }
 
 module.exports = optionsForSaveDeals

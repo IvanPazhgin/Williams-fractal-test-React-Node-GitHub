@@ -32,7 +32,7 @@ class AlexNotice38Class2h {
     this.diffShadowBigUser = 0.62 // Из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
     this.takeProfitConst = 0.04
     this.stopLossConst = 0.02
-    this.delta = 1.007 // вход на 0.7% выше хая сигнальной свечи
+    this.delta = 1.008 // вход на 0.8% выше хая сигнальной свечи
 
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо

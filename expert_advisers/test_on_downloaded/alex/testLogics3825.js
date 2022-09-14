@@ -32,6 +32,12 @@ function testLogics3825(input_parameters) {
     input_parameters,
     intervalObject.timeFrame15m
   )
+
+  const candles5m = readCandleFromJSON(
+    input_parameters,
+    intervalObject.timeFrame5m
+  )
+
   const candles1m = readCandleFromJSON(
     input_parameters,
     intervalObject.timeFrame1m
@@ -67,12 +73,18 @@ function testLogics3825(input_parameters) {
   let deals15m = deal.findSygnal(candles15m, candles1m)
   console.log(`кол-во сделок 15m = ${deals15m.length} штук`)
 
+  // запускаем тест стратегии 5m
+  deal = new TestClass3825(optionsForTest.options5m) // придумать как передать symbol в optionsForTest
+  let deals5m = deal.findSygnal(candles5m, candles1m)
+  console.log(`кол-во сделок 5m = ${deals5m.length} штук`)
+
   // сохраняем сделки в файл
   saveDeals(deals4h, optionsForSaveDeals.optionsForSave4h)
   saveDeals(deals2h, optionsForSaveDeals.optionsForSave2h)
   saveDeals(deals1h, optionsForSaveDeals.optionsForSave1h)
   saveDeals(deals30m, optionsForSaveDeals.optionsForSave30m)
   saveDeals(deals15m, optionsForSaveDeals.optionsForSave15m)
+  saveDeals(deals5m, optionsForSaveDeals.optionsForSave5m)
 
   ///////////////////////////////////
   // считаем общую прибыль по всем ТФ
@@ -81,6 +93,7 @@ function testLogics3825(input_parameters) {
   let totalSumm1h = statistics(deals1h, intervalObject.timeFrame1h)
   let totalSumm30m = statistics(deals30m, intervalObject.timeFrame30m)
   let totalSumm15m = statistics(deals15m, intervalObject.timeFrame15m)
+  let totalSumm5m = statistics(deals5m, intervalObject.timeFrame5m)
 
   let totalSumm = []
   totalSumm = totalSumm
@@ -89,6 +102,7 @@ function testLogics3825(input_parameters) {
     .concat(totalSumm1h)
     .concat(totalSumm30m)
     .concat(totalSumm15m)
+    .concat(totalSumm5m)
 
   // сохраняем статистику в файл
   // saveDeals(totalSumm4h, optionsForStat.optionsForSaveStat4h)

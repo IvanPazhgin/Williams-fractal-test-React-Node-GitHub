@@ -18,6 +18,7 @@ const options2h = new OptionsTemplate(intervalObject.timeFrame2h)
 const options1h = new OptionsTemplate(intervalObject.timeFrame1h)
 const options30m = new OptionsTemplate(intervalObject.timeFrame30m)
 const options15m = new OptionsTemplate(intervalObject.timeFrame15m)
+const options5m = new OptionsTemplate(intervalObject.timeFrame5m)
 */
 
 // запилить через класс, который описан выше
@@ -71,12 +72,23 @@ const options15m = {
   delta: 1.012, // вход на 1.2% выше хая сигнальной свечи
 }
 
+const options5m = {
+  symbol: input_parameters.symbol,
+  nameStrategy: `${input_parameters.nameStrategy} на ${intervalObject.timeFrame5m}`,
+
+  diffShadowBigUser: 0.62, // из примеров Алекса получилось: 0.62. ПРОТЕСТИРОВАТЬ в диапозоне: 0.139 - 0.625
+  takeProfitConst: 0.04,
+  stopLossConst: 0.02,
+  delta: 1.012, // вход на 1.2% выше хая сигнальной свечи
+}
+
 const optionsForTest = {
   options4h: options4h,
   options2h: options2h,
   options1h: options1h,
   options30m: options30m,
   options15m: options15m,
+  options5m: options5m,
 }
 
 /*
