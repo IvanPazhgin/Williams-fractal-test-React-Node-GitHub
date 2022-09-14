@@ -10,6 +10,7 @@ const tradeAlex35 = require('./tradeAlex3.5') // тестер стратегии
 const alex37test3 = require('./test/alex37test/alex37test3')
 // const alex38test = require('./alex38test/alex38test')
 const alex39test = require('./test/alex39test/alex39test')
+const alex39test2 = require('./test/alex39test/alex39test2')
 const alex38test2 = require('./test/alex38test/alex38test2')
 const alex38test10g = require('./test/alex38test/alex38test10g')
 const alex38test2hard = require('./test/alex38test/alex38test2hard')
@@ -129,7 +130,7 @@ async function startAlex(
   )
 
   // Слот 4
-  const [deals39, statistics39] = alex38test42(
+  const [deals39, statistics39] = alex39test2(
     objectSenior,
     deposit,
     partOfDeposit,

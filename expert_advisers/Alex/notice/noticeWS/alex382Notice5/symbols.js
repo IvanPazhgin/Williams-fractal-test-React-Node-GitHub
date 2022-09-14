@@ -125,7 +125,7 @@ const symbols2h3825 = [
 
 // 13.09.2022
 const symbols2h3825 = [
-  '1000SHIBUSDT',
+  //'1000SHIBUSDT',
   '1INCHUSDT',
   'AAVEUSDT',
   'ADAUSDT',

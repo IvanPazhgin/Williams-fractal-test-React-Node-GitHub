@@ -11,7 +11,7 @@ const nameStrategy = {
 
 // 13.09.2022
 const symbols2h38 = [
-  '1000SHIBUSDT',
+  //'1000SHIBUSDT',
   '1INCHUSDT',
   'AAVEUSDT',
   'ADAUSDT',
