@@ -39,7 +39,6 @@ function alex39test2(
   //let deposit2 = 0
   let deposit = Number(depositTemp)
   const delta = 1 + deltaConst / 100
-  //console.log(`deltaConst = ${deltaConst}, delta = ${delta}`)
 
   let takeProfit = 0
   let stopLoss = 0
@@ -301,8 +300,6 @@ function alex39test2(
     countOfZero: countOfZero,
   }
 
-  console.table(deals)
-  console.table(statistics)
   return [deals, statistics]
 } // function alex39test2
 

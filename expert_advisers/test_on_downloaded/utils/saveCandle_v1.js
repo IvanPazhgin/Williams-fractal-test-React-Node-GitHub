@@ -1,24 +1,24 @@
 const fs = require('fs')
-const getCandles = require('../API/binance.engine/usdm/getCandles.5param')
-const candlesToObject = require('../expert_advisers/common.func/candlesToObject')
-const diffCandle = require('../expert_advisers/common.func/diffCandle')
+const getCandles = require('../../../API/binance.engine/usdm/getCandles.5param')
+const candlesToObject = require('../../common.func/candlesToObject')
+const diffCandle = require('../../common.func/diffCandle')
+const { pathDirForCandles } = require('../paths')
 
 // инструция https://attacomsian.com/blog/nodejs-read-write-json-files
-async function saveCandleToJSON() {
-  const year = '2022'
+async function saveCandleToJSONoneInterval() {
+  const year = '2021'
   // параметры для скачивания свечей
   const symbol = 'AVAXUSDT'
-  const interval = '4h'
-  const intervalArray = ['4h', '2h', '1h', '30m', '15m', '1m'] // прописать запрос свечей в цикле
+  const interval = '1h'
   const dateStart = year + '-01-01T00:00:00.000'
-  const dateFinish = year + '-10-01T00:00:00.000'
+  const dateFinish = year + '-12-31T00:00:00.000'
   const limit = 1000
+  //const market = 'usdm'
+  const market = 'spot'
 
   // подготовка имени файла
-  // const pathDir = './downloaded_candles/' // перенёс папку из dropBox, убрал из .gitignore
-  const pathDir = require('./settings')
-  const fileName = symbol + '_' + year + '_usdm_' + interval + '.json'
-  const outPutName = pathDir + fileName
+  const fileName = symbol + '_' + year + '_' + market + '_' + interval + '.json'
+  const outPutName = pathDirForCandles + fileName
 
   // запрашиваем свечки на бирже
   const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, interval)
@@ -56,9 +56,9 @@ async function saveCandleToJSON() {
     if (err) {
       console.log(`Error writing file: ${err}`)
     } else {
-      console.log(`File is written successfully!`)
+      console.log(`${fileName} is written successfully!`)
     }
   })
 }
 
-module.exports = saveCandleToJSON
+module.exports = saveCandleToJSONoneInterval

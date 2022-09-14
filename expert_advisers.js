@@ -10,6 +10,7 @@ function testOfNewFuctiouns() {
   //saveCandle() // сохраняем свечи в JSON для тестера (эмуляция elastic)
   //readCandle() // считываем свечи в JSON для тестера (эмуляция elastic)
   //testOnDonwloadCandles() // тестер на основе закаченных свечек
+  //testDotJJ() // тест стратегии Точка JJ
 }
 
 function workingFunctions() {
@@ -71,8 +72,13 @@ function testBinanceTrade() {
 }
 
 function saveCandle() {
+  // качаем свечи по всем интервалам
   const saveCandleToJSON = require('./expert_advisers/test_on_downloaded/utils/saveCandle')
   saveCandleToJSON()
+
+  // качаем свечи по каждому интвервалу в отдельности
+  //const saveCandleToJSONoneInterval = require('./expert_advisers/test_on_downloaded/utils/saveCandle_v1')
+  //saveCandleToJSONoneInterval()
 }
 
 function readCandle() {
@@ -86,6 +92,11 @@ function testOnDonwloadCandles() {
   const testLogics3825 = require('./expert_advisers/test_on_downloaded/alex/testLogics3825')
   const input_parameters = require('./expert_advisers/test_on_downloaded/alex/input_parameters')
   testLogics3825(input_parameters)
+}
+
+function testDotJJ() {
+  const findCandle = require('./expert_advisers/test_on_downloaded/dotJJ/findCandle')
+  findCandle()
 }
 
 async function testWilliams() {

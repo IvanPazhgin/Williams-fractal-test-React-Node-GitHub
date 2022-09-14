@@ -9,18 +9,21 @@ const { pathDirForCandles } = require('../paths')
 async function saveCandleToJSON() {
   // переменные параметры
   const year = '2021'
-  const symbol = 'AVAXUSDT'
+  const symbol = 'ETHUSDT'
 
   // постоянные параметры для скачивания свечей
   const dateStart = year + '-01-01T00:00:00.000'
   const dateFinish = year + '-12-31T00:00:00.000'
   const limit = 1000
+  const market = 'usdm'
+  //const market = 'spot'
 
   // в цикле загружаем свечи по всем интервалам
   intervalArray.forEach(async (interval) => {
     // подготовка имени файла
     //const pathDir = require('./settings')
-    const fileName = symbol + '_' + year + '_usdm_' + interval + '.json'
+    const fileName =
+      symbol + '_' + year + '_' + market + '_' + interval + '.json'
     // const outPutName = pathDir + fileName
     const outPutName = pathDirForCandles + fileName
 
@@ -33,7 +36,7 @@ async function saveCandleToJSON() {
     // запрашиваем свечки на бирже
     try {
       for (let i = 0; i < n; i++) {
-        console.log(`ждем свечи за период ${i + 1} из ${n}`)
+        console.log(`${interval}: ждем свечи за период ${i + 1} из ${n}`)
         const candles = await getCandles(
           symbol,
           interval,

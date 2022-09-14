@@ -6,7 +6,9 @@ function readCandleFromJSON(input_parameters, interval) {
     input_parameters.symbol +
     '_' +
     input_parameters.year +
-    '_usdm_' +
+    '_' +
+    input_parameters.market +
+    '_' +
     interval +
     '.json'
   const inPutName = pathDirForCandles + fileName
