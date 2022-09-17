@@ -42,6 +42,7 @@ const symbols2h38 = [
   'SNXUSDT',
   'UNFIUSDT',
   'XRPUSDT',
+  'FLOWUSDT',
 ]
 
 // 12.09.2022

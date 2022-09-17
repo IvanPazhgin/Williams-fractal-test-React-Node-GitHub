@@ -156,6 +156,7 @@ const symbols2h3825 = [
   'SNXUSDT',
   'UNFIUSDT',
   'XRPUSDT',
+  'FLOWUSDT',
 ]
 
 module.exports = {

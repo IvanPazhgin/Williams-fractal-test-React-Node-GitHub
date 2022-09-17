@@ -2,8 +2,8 @@ const fs = require('fs')
 const getCandles = require('../../../API/binance.engine/usdm/getCandles.5param')
 const candlesToObject = require('../../common.func/candlesToObject')
 const diffCandle = require('../../common.func/diffCandle')
-const { intervalArray } = require('../alex/misc/intervals')
-const { pathDirForCandles } = require('../paths')
+const { intervalArray } = require('../common.files/intervals')
+const { pathDirForCandles } = require('../common.files/paths')
 
 // инструция https://attacomsian.com/blog/nodejs-read-write-json-files
 async function saveCandleToJSON() {
@@ -11,13 +11,17 @@ async function saveCandleToJSON() {
   const year1 = '2021'
   const year2 = '2022'
   const symbol = 'ETHUSDT'
+  const market = 'usdm'
+  //const market = 'spot'
 
   // постоянные параметры для скачивания свечей
   const dateStart = year1 + '-01-01T00:00:00.000'
   const dateFinish = year2 + '-01-01T00:00:00.000'
   const limit = 1000
-  const market = 'usdm'
-  //const market = 'spot'
+
+  // сохранаяем все ТФ по монете в отдельную папку
+  const symbolDir =
+    pathDirForCandles + symbol + '_' + year1 + '_' + market + '/'
 
   // в цикле загружаем свечи по всем интервалам
   intervalArray.forEach(async (interval) => {
@@ -26,7 +30,8 @@ async function saveCandleToJSON() {
     const fileName =
       symbol + '_' + year1 + '_' + market + '_' + interval + '.json'
     // const outPutName = pathDir + fileName
-    const outPutName = pathDirForCandles + fileName
+    //const outPutName = pathDirForCandles + fileName
+    const outPutName = symbolDir + fileName
 
     // расчет количества периодов для каждого интервала
     const arrayOf1kPeriod = diffCandle(dateStart, dateFinish, interval)

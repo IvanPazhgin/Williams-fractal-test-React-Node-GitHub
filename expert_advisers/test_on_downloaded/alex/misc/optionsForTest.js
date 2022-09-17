@@ -1,5 +1,5 @@
 const input_parameters = require('../input_parameters')
-const { intervalObject } = require('./intervals')
+const { intervalObject } = require('../../common.files/intervals')
 
 /*
 class OptionsTemplate {

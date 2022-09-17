@@ -95,8 +95,13 @@ function testOnDonwloadCandles() {
 }
 
 function testDotJJ() {
+  // проверка гипотез на 1h
   const findCandle = require('./expert_advisers/test_on_downloaded/dotJJ/findCandle')
-  findCandle()
+  //findCandle()
+
+  const mainJJ = require('./expert_advisers/test_on_downloaded/dotJJ/MainJJ')
+  const input_parameters = require('./expert_advisers/test_on_downloaded/dotJJ/input_parameters')
+  mainJJ(input_parameters)
 }
 
 async function testWilliams() {

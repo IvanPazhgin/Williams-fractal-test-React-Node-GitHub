@@ -1,5 +1,5 @@
 const input_parameters = require('../input_parameters')
-const { intervalObject } = require('./intervals')
+const { intervalObject } = require('../../common.files/intervals')
 
 // подготавливаем настройки для сохранения статистики в файлы
 const optionsForSaveStat4h = {

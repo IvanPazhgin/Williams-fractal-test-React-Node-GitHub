@@ -30,7 +30,6 @@ const alex38test22 = require('./test/alex38test/alex38test22')
 const alex38test23 = require('./test/alex38test/alex38test23')
 const alex38test24 = require('./test/alex38test/alex38test24')
 const alex38test25 = require('./test/alex38test/alex38test25')
-// const bookTickerFunc = require('./bookOfSymbol')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
 
@@ -49,7 +48,6 @@ async function startAlex(
   diffShadow35small, // стратегия 3.5
   delta // стратегия 3.7
 ) {
-  // const bookOfSymbol = bookTickerFunc()
   const startProgramAt = timestampToDateHuman(new Date().getTime()) // для расчета времени работы приложения
   console.log(`тест стратегий запущен в ${startProgramAt}`)
 

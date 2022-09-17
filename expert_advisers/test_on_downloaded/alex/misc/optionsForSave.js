@@ -1,5 +1,5 @@
 const input_parameters = require('../input_parameters')
-const { intervalObject } = require('./intervals')
+const { intervalObject } = require('../../common.files/intervals')
 
 // подготавливаем настройки для сохранения сделок в файлы
 // !! сделать через класс

@@ -1,5 +1,5 @@
 const readCandleFromJSON = require('../utils/readCandle')
-const { intervalObject } = require('./misc/intervals')
+const { intervalObject } = require('../common.files/intervals')
 const optionsForTest = require('./misc/optionsForTest')
 const optionsForSaveDeals = require('./misc/optionsForSave')
 const optionsForStat = require('./misc/optionsForStat')
