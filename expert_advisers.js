@@ -51,8 +51,8 @@ function workingFunctions() {
   // alexNoticeMain3822()
 
   // оповещения 3.8.2.3 на 30m (10.09.2022)
-  const alexNoticeMain3823 = require('./expert_advisers/Alex/notice/noticeWS/alex3823Notice/alexNoticeMain3823')
-  alexNoticeMain3823()
+  //const alexNoticeMain3823 = require('./expert_advisers/Alex/notice/noticeWS/alex3823Notice/alexNoticeMain3823')
+  //alexNoticeMain3823()
 
   // оповещения 3.8.2.4 (10.09.2022)
   // const alexNoticeMain3824 = require('./expert_advisers/Alex/notice/noticeWS/alex382Notice4/alexNoticeMain3824')
@@ -62,9 +62,13 @@ function workingFunctions() {
   const alexNoticeMain3825 = require('./expert_advisers/Alex/notice/noticeWS/alex382Notice5/alexNoticeMain3825')
   //alexNoticeMain3825()
 
-  // оповещения 4.1 (17.09.2022)
-  const alex41Main = require('./expert_advisers/Alex/notice/noticeWS/alex4Notice/alex41Main')
-  alex41Main()
+  // оповещения 4.1 на 4h (17.09.2022)
+  //const alex41Main = require('./expert_advisers/Alex/notice/noticeWS/alex4Notice/alex41Main')
+  //alex41Main()
+
+  // оповещения 4.1 на: 4h, 1m, 30m (19.09.2022)
+  const alex41Launch = require('./expert_advisers/Alex/notice/noticeWS/alex4Notice/alex41Launch')
+  alex41Launch()
 }
 
 function testBinanceTrade() {

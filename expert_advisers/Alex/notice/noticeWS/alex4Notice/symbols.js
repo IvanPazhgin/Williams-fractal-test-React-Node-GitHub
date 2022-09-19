@@ -2,6 +2,8 @@ const timeFrames = {
   timeFrame4h: '4h',
   //timeFrame4h: '5m', // для тестов
   timeFrame2h: '2h',
+  timeFrame1h: '1h',
+  timeFrame30m: '30m',
   timeFrame15m: '15m',
   timeFrame5m: '5m',
   timeFrame1m: '1m',
@@ -9,6 +11,8 @@ const timeFrames = {
 
 const nameStrategy = {
   notice4h41: `Test_4.1 на ${timeFrames.timeFrame4h}`,
+  notice1h41: `Test_4.1 на ${timeFrames.timeFrame1h}`,
+  notice30m41: `Test_4.1 на ${timeFrames.timeFrame30m}`,
   notice5m41: `Test_4.1 на ${timeFrames.timeFrame5m}`,
 }
 
