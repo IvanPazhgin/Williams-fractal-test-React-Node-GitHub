@@ -1,3 +1,5 @@
+const timestampToDateHuman = require('./timestampToDateHuman')
+
 function diffCandle(date1, date2, timeFrame) {
   // const timeFrame = '1h'
   let dateFirst = Date.parse(date1) // первая дата partOfTimeFrame
@@ -93,8 +95,8 @@ function diffCandle(date1, date2, timeFrame) {
 
   if (countOfCandles <= 1000) {
     partOfTimeFrame[0] = {
-      //dateFirst: timestampToDateHuman(dateFirst),
-      //dateSecond: timestampToDateHuman(dateSecond),
+      dateFirstH: timestampToDateHuman(dateFirst),
+      dateSecondH: timestampToDateHuman(dateSecond),
       dateFirst: dateFirst,
       dateSecond: dateSecond,
     }
@@ -103,9 +105,12 @@ function diffCandle(date1, date2, timeFrame) {
     console.log(`кол-во периодов = ${needTimeFrame}`)
     for (let i = 0; i < needTimeFrame; i++) {
       if (i == needTimeFrame - 1) {
+        if (dateSecond < dateFirst) {
+          break
+        }
         partOfTimeFrame[i] = {
-          //dateFirst: timestampToDateHuman(dateFirst),
-          //dateSecond: timestampToDateHuman(dateSecond),
+          dateFirstH: timestampToDateHuman(dateFirst),
+          dateSecondH: timestampToDateHuman(dateSecond),
           dateFirst: dateFirst,
           dateSecond: dateSecond,
         }
@@ -115,10 +120,13 @@ function diffCandle(date1, date2, timeFrame) {
         //break
       } else {
         dateMiddle = dateFirst + shiftTime
+        if (dateMiddle > dateSecond) {
+          dateMiddle = dateSecond
+        }
         // partOfTimeFrame[i] = [dateFirst, dateMiddle]
         partOfTimeFrame[i] = {
-          //dateFirst: timestampToDateHuman(dateFirst),
-          //dateSecond: timestampToDateHuman(dateMiddle),
+          dateFirstH: timestampToDateHuman(dateFirst),
+          dateSecondH: timestampToDateHuman(dateMiddle),
           dateFirst: dateFirst,
           dateSecond: dateMiddle,
         }

@@ -2,22 +2,24 @@ const fs = require('fs')
 const getCandles = require('../../../API/binance.engine/usdm/getCandles.5param')
 const candlesToObject = require('../../common.func/candlesToObject')
 const diffCandle = require('../../common.func/diffCandle')
-const { pathDirForCandles } = require('../paths')
+const { pathDirForCandles } = require('../common.files/paths')
 
 // инструция https://attacomsian.com/blog/nodejs-read-write-json-files
 async function saveCandleToJSONoneInterval() {
-  const year = '2021'
+  const year1 = '2021'
+  const year2 = '2022'
   // параметры для скачивания свечей
   const symbol = 'AVAXUSDT'
   const interval = '1h'
-  const dateStart = year + '-01-01T00:00:00.000'
-  const dateFinish = year + '-12-31T00:00:00.000'
+  const dateStart = year1 + '-01-01T00:00:00.000'
+  const dateFinish = year2 + '-01-01T00:00:00.000'
   const limit = 1000
-  //const market = 'usdm'
-  const market = 'spot'
+  const market = 'usdm'
+  //const market = 'spot'
 
   // подготовка имени файла
-  const fileName = symbol + '_' + year + '_' + market + '_' + interval + '.json'
+  const fileName =
+    symbol + '_' + year1 + '_' + market + '_' + interval + '.json'
   const outPutName = pathDirForCandles + fileName
 
   // запрашиваем свечки на бирже
