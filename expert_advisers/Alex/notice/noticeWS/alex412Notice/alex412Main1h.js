@@ -11,13 +11,18 @@
 */
 
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
-const Alex41Class = require('./Alex41Class')
-const { symbols4h41, timeFrames } = require('./symbols')
+const Alex412Class1h = require('./Alex412Class1h')
+const { symbols4h41, timeFrames } = require('./symbols412')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 
 // общий шаблон
-async function alex41Main2(timeFrameSenior, nameStrategy) {
+async function alex412Main1h(
+  timeFrameSenior,
+  nameStrategy,
+  takeProfitConst,
+  stopLossConst
+) {
   const timeFrames2 = [timeFrameSenior, timeFrames.timeFrame1m]
 
   let lastCandle // последняя свечка
@@ -25,7 +30,12 @@ async function alex41Main2(timeFrameSenior, nameStrategy) {
   let symbolObj = []
 
   symbols4h41.forEach(function (item, i, arg) {
-    symbolObj[i] = new Alex41Class(item, nameStrategy)
+    symbolObj[i] = new Alex412Class1h(
+      item,
+      nameStrategy,
+      takeProfitConst,
+      stopLossConst
+    )
   })
   //console.log('монеты для старта')
   //console.table(symbolObj)
@@ -84,7 +94,7 @@ async function alex41Main2(timeFrameSenior, nameStrategy) {
                 console.log(
                   `${item.symbol}: Закрыли short. Очистили параметры сделки`
                 )
-                // await item.prepair5Candles(timeFrameSenior)
+                //await item.prepair5Candles(timeFrameSenior)
               } // обнуляем состояние сделки до первоначального состояния
             } // if (!final)
             if (final) {
@@ -105,7 +115,7 @@ async function alex41Main2(timeFrameSenior, nameStrategy) {
               if (item.canShort && lastCandle.interval == timeFrameSenior) {
                 // если до финальной свечки не вошли в сделку, то отменяем сигнал
                 sendInfoToUser(
-                  `${item.nameStrategy}\n\nМонета: ${
+                  `${item.whitchSignal}\n\nМонета: ${
                     item.symbol
                   }\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${timestampToDateHuman(
                     item.sygnalTime
@@ -127,4 +137,4 @@ async function alex41Main2(timeFrameSenior, nameStrategy) {
     } // callback
   ) // await getLastCandle4s()
 }
-module.exports = alex41Main2
+module.exports = alex412Main1h
