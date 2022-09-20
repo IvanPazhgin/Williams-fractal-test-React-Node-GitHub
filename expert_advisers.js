@@ -1,6 +1,7 @@
 function testOfNewFuctiouns() {
   workingFunctions()
   //testWilliams() // тест одновременного запуска оповещений на разных стратегиях
+  //testWilliamsOnDownload() // Тесты на скаченных свечах
   //testBinanceTrade() // тест торговых функций
   //arbitrationTest() // простейший тест арбитража
   //elasticPut() // тест elastic search: put (реализовано в MainAlex)
@@ -154,6 +155,11 @@ async function testWilliams() {
       console.log(`test of Williams noteice is processing...`)
     }
   )
+}
+
+function testWilliamsOnDownload() {
+  const startWilliamsTest = require('./expert_advisers/test_on_downloaded/Williams_fractal/mainWilliamsTest')
+  startWilliamsTest()
 }
 
 function arbitrationTest() {
