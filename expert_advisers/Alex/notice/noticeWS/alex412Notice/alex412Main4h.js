@@ -12,12 +12,18 @@
 
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
 const Alex412Class4h = require('./Alex412Class4h')
-const { symbols4h41, timeFrames } = require('./symbols412')
+const { symbols4h41, timeFrames } = require('./input_parameters412')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 
 // общий шаблон
-async function alex412Main4h(timeFrameSenior, nameStrategy) {
+async function alex412Main4h(
+  timeFrameSenior,
+  nameStrategy,
+  takeProfitConst,
+  stopLossConst,
+  shiftTime
+) {
   const timeFrames2 = [timeFrameSenior, timeFrames.timeFrame1m]
 
   let lastCandle // последняя свечка
@@ -25,7 +31,13 @@ async function alex412Main4h(timeFrameSenior, nameStrategy) {
   let symbolObj = []
 
   symbols4h41.forEach(function (item, i, arg) {
-    symbolObj[i] = new Alex412Class4h(item, nameStrategy)
+    symbolObj[i] = new Alex412Class4h(
+      item,
+      nameStrategy,
+      takeProfitConst,
+      stopLossConst,
+      shiftTime
+    )
   })
   //console.log('монеты для старта')
   //console.table(symbolObj)

@@ -2,8 +2,8 @@ const {
   symbols4h41,
   timeFrames,
   nameStrategy,
-  constTPSL,
-} = require('./symbols412')
+  options,
+} = require('./input_parameters412')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const alex412Main4h = require('./alex412Main4h')
@@ -11,18 +11,31 @@ const alex412Main1h = require('./alex412Main1h')
 
 function alex412Launch() {
   // запуск основного приложения
-  alex412Main4h(timeFrames.timeFrame4h, nameStrategy.notice4h41)
+  // 4h
+  alex412Main4h(
+    timeFrames.timeFrame4h,
+    nameStrategy.notice4h41,
+    options.takeProfitConst4h,
+    options.stopLossConst4h,
+    options.shiftTime4h
+  )
+
+  // 1h
   alex412Main1h(
     timeFrames.timeFrame1h,
     nameStrategy.notice1h41,
-    constTPSL.takeProfitConst1h,
-    constTPSL.stopLossConst1h
+    options.takeProfitConst1h,
+    options.stopLossConst1h,
+    options.shiftTime1h
   )
+
+  // 30m
   alex412Main1h(
     timeFrames.timeFrame30m,
     nameStrategy.notice30m41,
-    constTPSL.takeProfitConst30m,
-    constTPSL.stopLossConst30m
+    options.takeProfitConst30m,
+    options.stopLossConst30m,
+    options.shiftTime30m
   )
 
   // формирование сообщений в телеграм

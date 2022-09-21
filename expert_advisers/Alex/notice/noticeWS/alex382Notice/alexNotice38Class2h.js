@@ -1,5 +1,7 @@
 const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
-const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
+const {
+  sendInfo382ToUser,
+} = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 
@@ -166,7 +168,7 @@ class AlexNotice38Class2h {
             `${this.symbol}: Нашли сигнал для Open SHORT: ${this.whitchSignal}`
           )
 
-          sendInfoToUser(
+          sendInfo382ToUser(
             `---=== НОВЫЙ СИГНАЛ ===---\n${this.whitchSignal}\n\nМонета: ${
               this.symbol
             }\nЦена для входа в SHORT: ${
@@ -187,12 +189,12 @@ class AlexNotice38Class2h {
               this.stopLossConst * 100
             }%)\n\nЖдем цену на рынке для входа в SHORT...`
           )
-          //sendInfoToUser(JSON.stringify(this))
+          //sendInfo382ToUser(JSON.stringify(this))
         } else {
           console.log(
             `${this.symbol}: Сигнала на вход не было. Ждем следующую свечу (${this.nameStrategy})`
           )
-          // sendInfoToUser(`Сигнала на вход не было. \nЖдем следующую свечу`)
+          // sendInfo382ToUser(`Сигнала на вход не было. \nЖдем следующую свечу`)
         } // if (canShort)
       } // if (!inShortPosition)
     } // for (let i = 4; i < array.length; i++)
@@ -226,7 +228,7 @@ class AlexNotice38Class2h {
           //this.positionTime = lastCandle.startTime
           this.positionTime = new Date().getTime()
 
-          sendInfoToUser(
+          sendInfo382ToUser(
             `${this.whitchSignal}\n\nМонета: ${
               this.symbol
             }\n\n--== Вошли в SHORT ==--\nпо цене: ${
@@ -264,7 +266,7 @@ class AlexNotice38Class2h {
           this.inPosition = false
 
           // console.log(`Close SHORT with takeProfit: ${this.closeShort}`)
-          sendInfoToUser(
+          sendInfo382ToUser(
             `${this.whitchSignal}\n${timestampToDateHuman(
               this.closeTime
             )}\n\nМонета: ${
@@ -291,7 +293,7 @@ class AlexNotice38Class2h {
           this.inPosition = false
 
           //console.log(`Close SHORT with stopLoss: ${this.closeShort}`)
-          sendInfoToUser(
+          sendInfo382ToUser(
             `${this.whitchSignal}\n${timestampToDateHuman(
               this.closeTime
             )}\n\nМонета: ${
@@ -311,7 +313,7 @@ class AlexNotice38Class2h {
   changeTPSLCommon(lastCandle) {
     // отправка сообщения для контроля расчета времени сдвига
     /*
-    sendInfoToUser(
+    sendInfo382ToUser(
       `${
         this.whitchSignal
       }\nПроверка расчета времени переноса TP и SL\nМонета: ${
@@ -332,7 +334,7 @@ class AlexNotice38Class2h {
         this.takeProfit = this.openShort
         // dateChangeTP = array[i].startTime
         this.changedTP = true
-        sendInfoToUser(
+        sendInfo382ToUser(
           `${this.whitchSignal}\nМонета: ${
             this.symbol
           }\n\nВремя появления сигнала:\n${timestampToDateHuman(
@@ -350,7 +352,7 @@ class AlexNotice38Class2h {
         this.stopLoss = this.openShort
         // dateChangeSL = array[i].startTime
         this.changedSL = true
-        sendInfoToUser(
+        sendInfo382ToUser(
           `${this.whitchSignal}\nМонета: ${
             this.symbol
           }\n\nВремя появления сигнала:\n${timestampToDateHuman(
@@ -388,7 +390,7 @@ class AlexNotice38Class2h {
         if (candleColor > 0) {
           this.shortCandleColorIsGreen = true
           // временно консолим проверки
-          sendInfoToUser(
+          sendInfo382ToUser(
             `${this.whitchSignal}\nПроверка переноса TP и SL\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - ЗЕЛЕНАЯ ==--`
           )
           this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
@@ -400,7 +402,7 @@ class AlexNotice38Class2h {
         !this.shortCandleColorIsGreen && // если первая свеча - красная
         lastCandle.startTime == this.sygnalTime + this.shiftTime // то переносим после закрытия 2й свечи
       ) {
-        sendInfoToUser(
+        sendInfo382ToUser(
           `${this.whitchSignal}\nПроверка переноса TP и SL\n\nМонета: ${this.symbol}\n--== Свеча входа в шорт - КРАСНАЯ ==--`
         )
         this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL

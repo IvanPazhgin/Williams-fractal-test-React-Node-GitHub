@@ -26,17 +26,16 @@ const timestampToDateHuman = require('../../../../common.func/timestampToDateHum
 */
 
 class Alex412Class1h {
-  constructor(symbol, nameStrategy, takeProfitConst, stopLossConst) {
+  constructor(symbol, nameStrategy, takeProfitConst, stopLossConst, shiftTime) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
 
     this.takeProfitConst = takeProfitConst
     this.stopLossConst = stopLossConst
+    this.shiftTime = shiftTime // сдвиг на одну свечу любого ТФ
 
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо
-
-    this.shiftTime = 1000 * 60 * 60 // сдвиг на одну 1h свечу
 
     this.candlesForFractal = [] // свечи для поиска фрактала
 
@@ -221,7 +220,8 @@ class Alex412Class1h {
   canShortPosition(lastCandle, interval) {
     if (this.canShort) {
       if (lastCandle.interval == interval) {
-        if (lastCandle.high > this.openShort) {
+        //if (lastCandle.high > this.openShort) {
+        if (lastCandle.close > this.openShort) {
           this.canShort = false
           this.inPosition = true
           //this.positionTime = lastCandle.startTime
@@ -250,7 +250,8 @@ class Alex412Class1h {
     if (this.inPosition) {
       // условия выхода из сделки по TP
       if (lastCandle.interval == interval) {
-        if (lastCandle.low <= this.takeProfit) {
+        //if (lastCandle.low <= this.takeProfit) {
+        if (lastCandle.close <= this.takeProfit) {
           //this.closeShort = lastCandle.low
           this.closeShort = this.takeProfit
           //this.closeTime = lastCandle.startTime

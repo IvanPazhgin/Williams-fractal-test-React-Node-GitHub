@@ -1,4 +1,6 @@
-const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
+const {
+  sendInfo382ToUser,
+} = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const {
   symbols2h3825,
@@ -39,8 +41,8 @@ function alexNoticeMain3825() {
   }\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
   */
 
-  //sendInfoToUser(message0 + message1 + message2)
-  sendInfoToUser(message0 + message1)
+  //sendInfo382ToUser(message0 + message1 + message2)
+  sendInfo382ToUser(message0 + message1)
 } // function alexNoticeMain()
 
 module.exports = alexNoticeMain3825

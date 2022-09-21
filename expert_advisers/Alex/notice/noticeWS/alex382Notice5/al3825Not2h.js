@@ -10,7 +10,9 @@
 */
 
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
-const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
+const {
+  sendInfo382ToUser,
+} = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const alNot3825Class2h = require('./alNot3825Class2h')
 const { symbols2h3825, timeFrames, nameStrategy } = require('./symbols') // для удобного выноса общих переменных
@@ -116,7 +118,7 @@ async function al3825Not2h() {
                 lastCandle.interval == timeFrames.timeFrame2h
               ) {
                 // если до финальной свечки не вошли в сделку, то отменяем сигнал
-                sendInfoToUser(
+                sendInfo382ToUser(
                   `${item.whitchSignal}\n\nМонета: ${
                     item.symbol
                   }\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${timestampToDateHuman(

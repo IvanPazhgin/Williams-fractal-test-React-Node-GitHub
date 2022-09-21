@@ -17,16 +17,27 @@ const nameStrategy = {
   notice5m41: `Test_4.1.2 на ${timeFrames.timeFrame5m}`,
 }
 
-const constTPSL = {
+const options = {
+  // 4h
+  takeProfitConst4h: 0.03,
+  stopLossConst4h: 0.02,
+  shiftTime4h: 1000 * 60 * 60 * 4, // сдвиг на одну 4h свечу
+
+  // 1h
   takeProfitConst1h: 0.015,
   stopLossConst1h: 0.01,
+  shiftTime1h: 1000 * 60 * 60, // сдвиг на одну 1h свечу
+
+  // 30m
   takeProfitConst30m: 0.01,
   stopLossConst30m: 0.01,
+  shiftTime30m: 1000 * 60 * 30, // сдвиг на одну 30m свечу
 }
 
 //const symbols4h41 = ['UNFIUSDT', 'XRPUSDT', 'BLZUSDT']
 
 const symbols4h41 = [
+  'ATAUSDT',
   'ETHUSDT',
   'BNBUSDT',
   '1INCHUSDT',
@@ -117,5 +128,5 @@ module.exports = {
   symbols4h41,
   timeFrames,
   nameStrategy,
-  constTPSL,
+  options,
 }

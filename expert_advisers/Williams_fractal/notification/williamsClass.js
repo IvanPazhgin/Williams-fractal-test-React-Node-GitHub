@@ -132,7 +132,8 @@ class williamsClass {
   findTrendOnline(lastCandle, interval) {
     if (lastCandle.interval == interval) {
       if (this.fractalOfBullish.isFractal && !this.trend.isDownTrend) {
-        if (lastCandle.low < this.fractalOfBullish.low) {
+        //if (lastCandle.low < this.fractalOfBullish.low) {
+        if (lastCandle.close < this.fractalOfBullish.low) {
           this.trend.isDownTrend = true
           this.trend.trendName = 'DownTrend'
           //this.trend.isUpTrend = false
@@ -153,7 +154,8 @@ class williamsClass {
       } // if (this.fractalOfBullish.isFractal && !this.trend.isDownTrend)
 
       if (this.fractalOfBearish.isFractal && !this.trend.isUpTrend) {
-        if (lastCandle.high > this.fractalOfBearish.high) {
+        //if (lastCandle.high > this.fractalOfBearish.high) {
+        if (lastCandle.close > this.fractalOfBearish.high) {
           this.trend.isUpTrend = true
           this.trend.trendName = 'UpTrend'
           //this.trend.isDownTrend = false

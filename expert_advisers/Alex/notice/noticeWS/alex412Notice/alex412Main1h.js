@@ -12,7 +12,7 @@
 
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
 const Alex412Class1h = require('./Alex412Class1h')
-const { symbols4h41, timeFrames } = require('./symbols412')
+const { symbols4h41, timeFrames } = require('./input_parameters412')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 
@@ -21,7 +21,8 @@ async function alex412Main1h(
   timeFrameSenior,
   nameStrategy,
   takeProfitConst,
-  stopLossConst
+  stopLossConst,
+  shiftTime
 ) {
   const timeFrames2 = [timeFrameSenior, timeFrames.timeFrame1m]
 
@@ -34,7 +35,8 @@ async function alex412Main1h(
       item,
       nameStrategy,
       takeProfitConst,
-      stopLossConst
+      stopLossConst,
+      shiftTime
     )
   })
   //console.log('монеты для старта')
