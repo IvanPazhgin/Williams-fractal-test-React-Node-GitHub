@@ -36,7 +36,7 @@ class Alex412Class1h {
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо
 
-    this.shiftTime = 1000 * 60 * 60 * 4 // сдвиг на одну 4h свечу
+    this.shiftTime = 1000 * 60 * 60 // сдвиг на одну 1h свечу
 
     this.candlesForFractal = [] // свечи для поиска фрактала
 
@@ -384,6 +384,10 @@ class Alex412Class1h {
       }
 
       // 2. перенос TP SL: после закрытия второй свечи. (последняя свеча фрактала - первая, на которой зашли)
+      if (interval == '30m') {
+        this.shiftTime = 1000 * 60 * 30 // сдвиг на одну 30m свечу
+      }
+
       if (lastCandle.startTime == this.sygnalTime + this.shiftTime) {
         this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
       }

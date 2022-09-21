@@ -1,7 +1,7 @@
 const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 const readCandleFromJSON = require('../utils/readCandle')
-const findTrends2Stage = require('./findTrends2Stage')
-const Trend = require('./trendClass')
+const findTrends2Stage = require('../../common.func/findTrends2Stage')
+const Trend = require('../../common.func/trendClass')
 
 function findTrends(input_parameters, intervalSenior, intervalJunior) {
   // определяем шаблоны фракталов
@@ -91,10 +91,6 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
         // информация по фракталу
         trend.fractalUpTime = fractal_Bearish.timeHuman
         trend.fractalUpPrice = fractal_Bearish.high
-        // информация по цене старшего ТФ
-        trend.upPriceTime = candlesSenior[i].startTime
-        trend.upPriceTimeH = timestampToDateHuman(candlesSenior[i].startTime)
-        trend.upPrice = candlesSenior[i].high
 
         // поиск точки пересечения фрактала ценой младшего ТФ для определения точного времени начала тренда
         temp = findTrends2Stage(

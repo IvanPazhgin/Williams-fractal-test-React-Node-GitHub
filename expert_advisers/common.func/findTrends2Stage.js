@@ -1,3 +1,4 @@
+// для стратегии: фракталы Билла Вильямса
 function findTrends2Stage(candlesJunior, candleSenior, fractal) {
   // фиксируем начало и конец свечки, которая пересекла фрактал
   const startTimeSenior = candleSenior.startTime

@@ -73,6 +73,10 @@ function workingFunctions() {
 
   const alex412Launch = require('./expert_advisers/Alex/notice/noticeWS/alex412Notice/alex412Launch')
   alex412Launch()
+
+  // оповещения по стратегии Билла Вильямса
+  const williamsMain = require('./expert_advisers/Williams_fractal/notification/williamsMain')
+  williamsMain()
 }
 
 function testBinanceTrade() {

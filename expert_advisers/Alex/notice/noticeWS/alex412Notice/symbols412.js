@@ -27,6 +27,8 @@ const constTPSL = {
 //const symbols4h41 = ['UNFIUSDT', 'XRPUSDT', 'BLZUSDT']
 
 const symbols4h41 = [
+  'ETHUSDT',
+  'BNBUSDT',
   '1INCHUSDT',
   '1000SHIBUSDT',
   'ALICEUSDT',
@@ -50,7 +52,7 @@ const symbols4h41 = [
   'COMPUSDT',
   //'CVXUSDT',
   'CTKUSDT',
-  'COTIUSDT',
+  //'COTIUSDT',
   'C98USDT',
   'DASHUSDT',
   'DYDXUSDT',
@@ -74,7 +76,7 @@ const symbols4h41 = [
   'GALUSDT',
   'GALAUSDT',
   'GTCUSDT',
-  'NEARUSDT',
+  //'NEARUSDT',
   'NEOUSDT',
   'NKNUSDT',
   'MATICUSDT',

@@ -1,3 +1,4 @@
+// для стратегии: фракталы Билла Вильямса
 class Trend {
   constructor() {
     this.trendName = ''

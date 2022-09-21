@@ -54,7 +54,7 @@ function sendInfoToUser(text) {
   const tgid = [
     { name: 'Ivan', id: 591611622 },
     { name: 'Alex', id: 1589257165 },
-    { name: 'Maks', id: 237283171 },
+    //{ name: 'Maks', id: 237283171 },
   ]
   tgid.forEach(function (item) {
     //bot.sendMessage(item.id, 'локальный запуск')
@@ -74,12 +74,29 @@ function sendInfoToUser(text) {
   // bot2.sendMessage(tgid, text)
 }
 
+function sendInfoToUserWilliams(text) {
+  const tgid = [
+    { name: 'Ivan', id: 591611622 },
+    //{ name: 'Alex', id: 1589257165 },
+    //{ name: 'Maks', id: 237283171 },
+  ]
+  tgid.forEach(function (item) {
+    //bot.sendMessage(item.id, 'локальный запуск')
+    bot.sendMessage(item.id, text)
+  })
+}
+
 function sendSymbolObjToUser(symbolObj) {
   const tgidIvan = 591611622
   const tgidAlex = 1589257165
   bot.sendMessage(tgidIvan, symbolObj)
 }
 
-module.exports = { tgBotExample, sendInfoToUser, sendSymbolObjToUser }
+module.exports = {
+  tgBotExample,
+  sendInfoToUser,
+  sendInfoToUserWilliams,
+  sendSymbolObjToUser,
+}
 
 // module.exports = tgBotExample
