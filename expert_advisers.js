@@ -74,6 +74,10 @@ function workingFunctions() {
   const alex412Launch = require('./expert_advisers/Alex/notice/noticeWS/alex412Notice/alex412Launch')
   alex412Launch()
 
+  // оповещения 4.1.3 + DEMA на: 4h, 1m, 30m (22.09.2022)
+  const alex413Launch = require('./expert_advisers/Alex/notice/noticeWS/alex413Notice/alex413Launch')
+  alex413Launch()
+
   // оповещения по стратегии Билла Вильямса
   const williamsMain = require('./expert_advisers/Williams_fractal/notification/williamsMain')
   williamsMain()
