@@ -14,7 +14,7 @@ class Trend {
     // цена, которая пробила фрактал
     this.isUpTrend = false
     this.upPriceTime = ''
-    this.upPriceTimeH = ''
+    this.upPriceTimeHuman = ''
     this.upPrice = 0
   }
 
@@ -25,7 +25,7 @@ class Trend {
 
     this.isDownTrend = false
     this.downPriceTime = ''
-    this.downPriceTimeH = ''
+    this.downPriceTimeHuman = ''
     this.downPrice = 0
   }
 }

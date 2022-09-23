@@ -7,9 +7,14 @@ const {
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 //const alex412Main4h = require('./alex412Main4h')
-const alex412Main1h = require('./alex412Main1h')
+//const alex412Main1h = require('./alex412Main1h')
 
 function alex412Launch() {
+  // исключил 1m свечи. Свёл все проверки к close на старщем ТФ
+  const alex412Main1h = require('./alex412Main1h_mod')
+  const message1h41 = `\n\n${nameStrategy.notice1h41}. Монет ${symbols4h41.length}` // 1h
+  const message30m41 = `\n\n${nameStrategy.notice30m41}. Монет ${symbols4h41.length}` // 30m
+
   // запуск основного приложения
   // 4h
   /*
@@ -49,10 +54,10 @@ function alex412Launch() {
   //const message4h41 = `\n\n${nameStrategy.notice4h41}\nНа ${symbols4h41.length} монетах\nПоиск сигнала и перенос TPSL на ТФ: ${timeFrames.timeFrame4h}\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
 
   // 1h
-  const message1h41 = `\n\n${nameStrategy.notice1h41}\nНа ${symbols4h41.length} монетах\nПоиск сигнала и перенос TPSL на ТФ: ${timeFrames.timeFrame1h}\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
+  //const message1h41 = `\n\n${nameStrategy.notice1h41}\nНа ${symbols4h41.length} монетах\nПоиск сигнала и перенос TPSL на ТФ: ${timeFrames.timeFrame1h}\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
 
   // 30m
-  const message30m41 = `\n\n${nameStrategy.notice30m41}\nНа ${symbols4h41.length} монетах\nПоиск сигнала и перенос TPSL на ТФ: ${timeFrames.timeFrame30m}\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
+  //const message30m41 = `\n\n${nameStrategy.notice30m41}\nНа ${symbols4h41.length} монетах\nПоиск сигнала и перенос TPSL на ТФ: ${timeFrames.timeFrame30m}\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
 
   //sendInfoToUser(message0 + message4h41 + message1h41 + message30m41)
   sendInfoToUser(message0 + message1h41 + message30m41)

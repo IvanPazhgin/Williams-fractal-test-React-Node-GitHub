@@ -68,7 +68,7 @@ function workingFunctions() {
   //alex41Main()
 
   // оповещения 4.1 на: 4h, 1m, 30m (19.09.2022)
-  const alex41Launch = require('./expert_advisers/Alex/notice/noticeWS/alex4Notice/alex41Launch')
+  //const alex41Launch = require('./expert_advisers/Alex/notice/noticeWS/alex4Notice/alex41Launch')
   //alex41Launch()
 
   const alex412Launch = require('./expert_advisers/Alex/notice/noticeWS/alex412Notice/alex412Launch')

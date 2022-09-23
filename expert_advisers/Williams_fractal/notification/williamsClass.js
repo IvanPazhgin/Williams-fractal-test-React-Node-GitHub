@@ -271,9 +271,11 @@ class williamsClass {
               this.fractalOfBullish
             )
             // информация по цене младшего ТФ
-            this.trend.downPriceTime = temp.startTime
-            this.trend.downPriceTimeHuman = timestampToDateHuman(temp.startTime)
-            this.trend.downPrice = temp.low
+            this.trend.downPriceTime = temp.candlesJunior.startTime
+            this.trend.downPriceTimeHuman = timestampToDateHuman(
+              temp.candlesJunior.startTime
+            )
+            this.trend.downPrice = temp.candlesJunior.low
 
             this.sendMessageAboutDownTrendToConsole()
             break
@@ -297,9 +299,11 @@ class williamsClass {
               this.fractalOfBearish
             )
             // информация по цене младшего ТФ
-            this.trend.upPriceTime = temp.startTime
-            this.trend.upPriceTimeHuman = timestampToDateHuman(temp.startTime)
-            this.trend.upPrice = temp.high
+            this.trend.upPriceTime = temp.candlesJunior.startTime
+            this.trend.upPriceTimeHuman = timestampToDateHuman(
+              temp.candlesJunior.startTime
+            )
+            this.trend.upPrice = temp.candlesJunior.high
 
             this.sendMessageAboutUpTrendToConsole()
             break

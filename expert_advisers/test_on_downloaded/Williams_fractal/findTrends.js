@@ -81,7 +81,7 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
         // информация по цене младшего ТФ
         trend.idDownTrend = temp.id
         trend.downPriceTime = temp.candlesJunior.startTime
-        trend.downPriceTimeH = timestampToDateHuman(
+        trend.downPriceTimeHuman = timestampToDateHuman(
           temp.candlesJunior.startTime
         )
         trend.downPrice = temp.candlesJunior.low
@@ -104,7 +104,9 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
         // информация по цене младшего ТФ
         trend.idUptrend = temp.id
         trend.upPriceTime = temp.candlesJunior.startTime
-        trend.upPriceTimeH = timestampToDateHuman(temp.candlesJunior.startTime)
+        trend.upPriceTimeHuman = timestampToDateHuman(
+          temp.candlesJunior.startTime
+        )
         trend.upPrice = temp.candlesJunior.high
       }
     } // if (fractal_Bearish.isFractal && !trend.isUpTrend)
@@ -123,12 +125,12 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
           // информация для работы
           idStartTrend: trend.idDownTrend,
           trendStartTime: trend.downPriceTime,
-          trendStartTimeH: trend.downPriceTimeH,
+          trendStartTimeH: trend.downPriceTimeHuman,
           trendStartPrice: trend.downPrice,
 
           idEndTrend: trend.idUptrend,
           trendEndTime: trend.upPriceTime,
-          trendEndTimeH: trend.upPriceTimeH,
+          trendEndTimeH: trend.upPriceTimeHuman,
           trendEndPrice: trend.upPrice,
         }
         trend.resetDownTrend()
@@ -145,12 +147,12 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
           // информация для работы
           idStartTrend: trend.idUptrend,
           trendStartTime: trend.upPriceTime,
-          trendStartTimeH: trend.upPriceTimeH,
+          trendStartTimeH: trend.upPriceTimeHuman,
           trendStartPrice: trend.upPrice,
 
           idEndTrend: trend.idDownTrend,
           trendEndTime: trend.downPriceTime,
-          trendEndTimeH: trend.downPriceTimeH,
+          trendEndTimeH: trend.downPriceTimeHuman,
           trendEndPrice: trend.downPrice,
         }
         trend.resetUpTrend()
