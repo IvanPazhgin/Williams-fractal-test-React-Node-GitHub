@@ -110,6 +110,7 @@ async function alex412Main1h(
             if (!final) {
               item.findSygnal(lastCandle, timeFrameSenior)
               item.canShortPosition(lastCandle, timeFrames.timeFrame1m)
+              //console.log(`interval: ${interval}, close = ${lastCandle.close}`)
             } // if (!final)
             if (final) {
               // если не вошли в сделку, то для начала очищаем все параметры

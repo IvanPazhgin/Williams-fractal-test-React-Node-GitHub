@@ -173,26 +173,136 @@ function deals(trends, candlesJunior) {
     } // if (trend.trendName = 'DownTrend')
 
     if (trend.trendName == 'UpTrend') {
-      // code
+      deal.reset()
+      for (let j = trend.idStartTrend; j <= trend.idEndTrend; j++) {
+        // поиск фрактала
+        // код нового способа удален
+
+        // старый код поиска фрактала
+        if (
+          candlesJunior[j - 4].low > candlesJunior[j - 2].low &&
+          candlesJunior[j - 3].low > candlesJunior[j - 2].low &&
+          candlesJunior[j - 1].low > candlesJunior[j - 2].low &&
+          candlesJunior[j].low > candlesJunior[j - 2].low
+        ) {
+          deal.lowFbull = candlesJunior[j - 2].low
+          deal.lowFbullTime = timestampToDateHuman(
+            candlesJunior[j - 2].startTime
+          )
+          deal.islowFbull = true
+        }
+
+        if (
+          candlesJunior[j - 4].high < candlesJunior[j - 2].high &&
+          candlesJunior[j - 3].high < candlesJunior[j - 2].high &&
+          candlesJunior[j - 1].high < candlesJunior[j - 2].high &&
+          candlesJunior[j].high < candlesJunior[j - 2].high
+        ) {
+          deal.highFBear = candlesJunior[j - 2].high
+          deal.ishighFBear = true
+        }
+
+        // если есть фрактал, то ищем точку пересечения
+        //if (deal.islowFbull) {
+        // если не в сделке
+        if (!deal.inPosition && deal.ishighFBear) {
+          if (candlesJunior[j].high > deal.highFBear) {
+            // входим в сделку
+            deal.inPosition = true
+            deal.position = 'LONG'
+            deal.openPosition = deal.highFBear
+            //deal.openPosition = candlesJunior[j].low // проверка
+            deal.openTime = candlesJunior[j].startTime
+            deal.openTimeHuman = timestampToDateHuman(
+              candlesJunior[j].startTime
+            )
+            deal.amountOfPosition =
+              (deal.deposit / deal.openPosition) *
+              input_parameters.partOfDeposit *
+              input_parameters.multiplier
+            deal.stopLoss = deal.lowFbull
+          } // а ниже повтор кода, но не правильно
+
+          // если фрактал есть
+          /*
+          //if (fractal_Bullish.isFractal) {
+          if (deal.canShort) {
+            if (candlesJunior[i].low < fractal_Bullish.low) {
+              // входим в сделку
+              // оформить сохранение параметров через класс
+            }
+          }
+          */
+        } // if (!deal.inPosition)
+
+        // если в сделке
+        //else if (deal.inPosition && deal.ishighFBear) {
+        else if (deal.inPosition) {
+          if (deal.lowFbull > deal.stopLoss) {
+            deal.stopLoss = deal.lowFbull
+          }
+          if (candlesJunior[j].low < deal.stopLoss) {
+            // close deal
+            deal.outPosition = true
+            deal.closePosition = deal.stopLoss
+            //deal.closePosition = candlesJunior[j].high // проверка
+            deal.closeTime = candlesJunior[j].startTime
+            deal.closeTimeHuman = timestampToDateHuman(
+              candlesJunior[j].startTime
+            )
+            deal.profit =
+              (deal.stopLoss - deal.openPosition) * deal.amountOfPosition
+            deal.percent = (deal.profit / deal.openPosition) * 100
+          }
+        } // if (deal.inPosition)
+
+        // если сделка закрыта, до отправляем ее в общий массив
+        if (deal.outPosition) {
+          //console.log(deal)
+          deal2 = {
+            position: deal.position,
+            openTimeHuman: deal.openTimeHuman,
+            openPosition: deal.openPosition,
+            //openTime: deal.openTime,
+            amountOfPosition: +deal.amountOfPosition.toFixed(8),
+            closeTimeHuman: deal.closeTimeHuman,
+            closePosition: deal.closePosition,
+            //closeTime: deal.closeTime,
+            profit: +deal.profit.toFixed(2),
+            percent: +deal.percent.toFixed(2),
+          }
+          //console.table(deal2)
+          deals = deals.concat(deal2)
+          //deals.push(deal)
+          deal.reset()
+        }
+        //}
+      } // for (let j = trend.idStartTrend; j < trend.idEndTrend; j++)
     } // if (trend.trendName == 'UpTrend')
   }) // trends.forEach(function (trend, i, arg)
 
   console.log('\nвсе сделки:')
   console.log(deals)
+  console.log(`кол-во сделок: ${deals.length}`)
 
   // перенести в модуль statistics
   // Добавить расчет прибыли по месяцам, кол-во положительных и отрицательных сделок, кол-во последовательных подряд отрицательных сделок
   let summProfit = 0 // сумма прибыли всех сделок
   let summProfitShort = 0 // сумма прибыли только short сделок
+  let summProfitLong = 0 // сумма прибыли только long сделок
 
   deals.forEach(function (deal, i, arg) {
     summProfit += deal.profit
     if (deal.position == 'SHORT') {
       summProfitShort += deal.profit
     }
+    if (deal.position == 'LONG') {
+      summProfitLong += deal.profit
+    }
   })
-  console.log(`summProfit = ${summProfit} USD`)
-  console.log(`summProfitShort = ${summProfitShort} USD`)
+  console.log(`summProfit = ${+summProfit.toFixed(2)} USD`)
+  console.log(`summProfitShort = ${+summProfitShort.toFixed(2)} USD`)
+  console.log(`summProfitLong = ${+summProfitLong.toFixed(2)} USD`)
 
   // return deals
 

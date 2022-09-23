@@ -9,12 +9,14 @@ const timeFrames = {
   timeFrame1m: '1m',
 }
 
+const name = 'Test_4.1.2'
+
 // 19.09.2022
 const nameStrategy = {
-  notice4h41: `Test_4.1.2 на ${timeFrames.timeFrame4h}`,
-  notice1h41: `Test_4.1.2 на ${timeFrames.timeFrame1h}`,
-  notice30m41: `Test_4.1.2 на ${timeFrames.timeFrame30m}`,
-  notice5m41: `Test_4.1.2 на ${timeFrames.timeFrame5m}`,
+  notice4h41: `${name} на ${timeFrames.timeFrame4h}`,
+  notice1h41: `${name} на ${timeFrames.timeFrame1h}`,
+  notice30m41: `${name} на ${timeFrames.timeFrame30m}`,
+  notice5m41: `${name} на ${timeFrames.timeFrame5m}`,
 }
 
 const options = {
@@ -37,6 +39,7 @@ const options = {
 //const symbols4h41 = ['UNFIUSDT', 'XRPUSDT', 'BLZUSDT']
 
 const symbols4h41 = [
+  'BTCUSDT',
   'ATAUSDT',
   'ETHUSDT',
   'BNBUSDT',
