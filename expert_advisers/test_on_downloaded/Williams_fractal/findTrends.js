@@ -79,9 +79,12 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
           fractal_Bullish
         )
         // информация по цене младшего ТФ
-        trend.downPriceTime = temp.startTime
-        trend.downPriceTimeH = timestampToDateHuman(temp.startTime)
-        trend.downPrice = temp.low
+        trend.idDownTrend = temp.id
+        trend.downPriceTime = temp.candlesJunior.startTime
+        trend.downPriceTimeH = timestampToDateHuman(
+          temp.candlesJunior.startTime
+        )
+        trend.downPrice = temp.candlesJunior.low
       }
     } // if (fractal_Bullish.isFractal && !trend.isDownTrend)
 
@@ -99,9 +102,10 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
           fractal_Bearish
         )
         // информация по цене младшего ТФ
-        trend.upPriceTime = temp.startTime
-        trend.upPriceTimeH = timestampToDateHuman(temp.startTime)
-        trend.upPrice = temp.high
+        trend.idUptrend = temp.id
+        trend.upPriceTime = temp.candlesJunior.startTime
+        trend.upPriceTimeH = timestampToDateHuman(temp.candlesJunior.startTime)
+        trend.upPrice = temp.candlesJunior.high
       }
     } // if (fractal_Bearish.isFractal && !trend.isUpTrend)
 
@@ -117,10 +121,12 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
           fractalEndPrice: trend.fractalUpPrice,
 
           // информация для работы
+          idStartTrend: trend.idDownTrend,
           trendStartTime: trend.downPriceTime,
           trendStartTimeH: trend.downPriceTimeH,
           trendStartPrice: trend.downPrice,
 
+          idEndTrend: trend.idUptrend,
           trendEndTime: trend.upPriceTime,
           trendEndTimeH: trend.upPriceTimeH,
           trendEndPrice: trend.upPrice,
@@ -137,10 +143,12 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
           fractalEndPrice: trend.fractalsDownPrice,
 
           // информация для работы
+          idStartTrend: trend.idUptrend,
           trendStartTime: trend.upPriceTime,
           trendStartTimeH: trend.upPriceTimeH,
           trendStartPrice: trend.upPrice,
 
+          idEndTrend: trend.idDownTrend,
           trendEndTime: trend.downPriceTime,
           trendEndTimeH: trend.downPriceTimeH,
           trendEndPrice: trend.downPrice,
@@ -154,7 +162,7 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
     }
   } // for (let i = 4; i < candlesSenior.length; i++)
   console.log(trends)
-  // return trends
+  return { trends, candlesJunior }
 }
 
 module.exports = findTrends

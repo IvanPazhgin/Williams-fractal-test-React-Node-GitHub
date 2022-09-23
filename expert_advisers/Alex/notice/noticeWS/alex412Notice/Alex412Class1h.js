@@ -49,6 +49,8 @@ class Alex412Class1h {
     this.fractalBearish = {}
     this.bodyLength1g = 0 // длина тела 1й зеленой свечи
     this.bodyLength2g = 0 // длина тела 2й зеленой свечи
+    this.upperShadowRed = 0 // верхняя тень красной свечи
+    this.lowerShadowRed = 0 // верхняя тень красной свечи
 
     // для сделки
     this.sygnalSent = false
@@ -127,6 +129,12 @@ class Alex412Class1h {
       this.bodyLength2g =
         this.candlesForFractal[1].close / this.candlesForFractal[1].open - 1
 
+      // вычисляем тени на 4й красной свече
+      this.upperShadowRed =
+        this.candlesForFractal[3].high / this.candlesForFractal[3].open - 1
+      this.lowerShadowRed =
+        this.candlesForFractal[3].close / this.candlesForFractal[3].low - 1
+
       // ищем сигнал №1
       if (
         // три первых свечи - ЗЕЛЕНЫЕ
@@ -142,7 +150,8 @@ class Alex412Class1h {
         // если нашли фрактал
         this.fractalBearish.isFractal &&
         this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
-        this.candlesForFractal[3].open > this.candlesForFractal[3].close // и после него КРАСНАЯ свеча
+        this.candlesForFractal[3].open > this.candlesForFractal[3].close && // и после него КРАСНАЯ свеча
+        this.upperShadowRed >= this.lowerShadowRed // у которого верхняя тень равна либо больше по длине нижней тени
       ) {
         if (!this.sygnalSent) {
           this.whitchSignal = this.nameStrategy + ': сигнал №1'
@@ -160,7 +169,8 @@ class Alex412Class1h {
         // если нашли фрактал
         this.fractalBearish.isFractal &&
         this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
-        this.candlesForFractal[3].open > this.candlesForFractal[3].close // и после него КРАСНАЯ свеча
+        this.candlesForFractal[3].open > this.candlesForFractal[3].close && // и после него КРАСНАЯ свеча
+        this.upperShadowRed >= this.lowerShadowRed // у которого верхняя тень равна либо больше по длине нижней тени
       ) {
         if (!this.sygnalSent) {
           this.whitchSignal = this.nameStrategy + ': сигнал №2'
@@ -373,6 +383,7 @@ class Alex412Class1h {
   //// условия переноса Take Profit или Stop Loss
   changeTPSL(lastCandle, interval) {
     if (lastCandle.interval == interval) {
+      /*
       // 1. Если тело свечи открытия выше цены точки входа тогда тейк переносится на точку входа
       if (lastCandle.startTime == this.sygnalTime) {
         if (lastCandle.close > lastCandle.open) {
@@ -383,13 +394,19 @@ class Alex412Class1h {
           this.changeTPSL2(lastCandle.open)
         }
       }
+      */
 
       // 2. перенос TP SL: после закрытия второй свечи. (последняя свеча фрактала - первая, на которой зашли)
+      /*
       if (interval == '30m') {
         this.shiftTime = 1000 * 60 * 30 // сдвиг на одну 30m свечу
       }
+      */
 
-      if (lastCandle.startTime == this.sygnalTime + this.shiftTime) {
+      // if (lastCandle.startTime == this.sygnalTime + this.shiftTime) {
+      // перенос TP SL: после закрытия второй свечи.
+      if (lastCandle.startTime == this.sygnalTime) {
+        // перенос стопа или тейка после закрытия свечи открытия
         this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
       }
     }

@@ -11,13 +11,19 @@ function findTrends2Stage(candlesJunior, candleSenior, fractal) {
     ) {
       if (fractal.nameFracral == 'Bullish') {
         if (candlesJunior[i].low < fractal.low) {
-          return candlesJunior[i]
+          return {
+            candlesJunior: candlesJunior[i],
+            id: i,
+          }
         }
       } //if (fractal.nameFracral == 'Bullish')
 
       if (fractal.nameFracral == 'Bearish') {
         if (candlesJunior[i].high > fractal.high) {
-          return candlesJunior[i]
+          return {
+            candlesJunior: candlesJunior[i],
+            id: i,
+          }
         }
       } //if (fractal.nameFracral == 'Bullish')
     }

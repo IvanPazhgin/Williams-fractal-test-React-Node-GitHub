@@ -6,6 +6,7 @@ class Trend {
     this.resetDownTrend()
   }
   resetUpTrend() {
+    this.idUptrend = 0
     // информация по фракталу
     this.fractalUpTime = ''
     this.fractalUpPrice = 0
@@ -18,6 +19,7 @@ class Trend {
   }
 
   resetDownTrend() {
+    this.idDownTrend = 0
     this.fractalDownTime = ''
     this.fractalDownPrice = 0
 

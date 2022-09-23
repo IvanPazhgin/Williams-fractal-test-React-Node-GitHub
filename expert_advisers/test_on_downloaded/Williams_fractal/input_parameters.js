@@ -4,6 +4,8 @@ const input_parameters = {
   nameStrategy: 'Test_Williams',
   market: 'usdm',
   //market: 'spot',
+  partOfDeposit: 1,
+  multiplier: 1,
 }
 
 module.exports = input_parameters
