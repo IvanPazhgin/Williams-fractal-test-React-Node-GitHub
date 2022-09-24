@@ -123,11 +123,13 @@ class Alex412Class1h_mod {
       this.fractalShadowLength =
         this.candlesForFractal[2].high / this.candlesForFractal[2].close - 1
 
-      // вычисляем длину зеленых свечей
+      // вычисляем длину зеленых свечей (сигнал №1)
+      /*
       this.bodyLength1g =
         this.candlesForFractal[0].close / this.candlesForFractal[0].open - 1
       this.bodyLength2g =
         this.candlesForFractal[1].close / this.candlesForFractal[1].open - 1
+      */
 
       // вычисляем тени на 4й красной свече
       this.upperShadowRed =
@@ -136,6 +138,7 @@ class Alex412Class1h_mod {
         this.candlesForFractal[3].close / this.candlesForFractal[3].low - 1
 
       // ищем сигнал №1
+      /*
       if (
         // три первых свечи - ЗЕЛЕНЫЕ
         this.candlesForFractal[0].close > this.candlesForFractal[0].open && // первая свеча ЗЕЛЕНАЯ
@@ -160,6 +163,7 @@ class Alex412Class1h_mod {
 
         // console.table(this.fractalBearish)
       }
+      */
 
       // ищем сигнал №2
       if (

@@ -1,12 +1,12 @@
-const fractal_Bullish_for_Test = require('../../indicators/fractal_Bullish4W_T')
-const fractal_Bearish_for_Test = require('../../indicators/fractal_Bearish4W_T')
+//const fractal_Bullish_for_Test = require('../../indicators/fractal_Bullish4W_T')
+//const fractal_Bearish_for_Test = require('../../indicators/fractal_Bearish4W_T')
 const dealClass = require('./dealClass')
 const input_parameters = require('./input_parameters')
 const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 
 function deals(trends, candlesJunior) {
-  let fractal_Bullish = {}
-  let fractal_Bearish = {}
+  //let fractal_Bullish = {}
+  //let fractal_Bearish = {}
   let deal = new dealClass() // параметры по каждой сделке
   let deal2 = {}
   let deals = [] // массив всеъ сделок
@@ -159,7 +159,7 @@ function deals(trends, candlesJunior) {
             amountOfPosition: +deal.amountOfPosition.toFixed(8),
             closeTimeHuman: deal.closeTimeHuman,
             closePosition: deal.closePosition,
-            //closeTime: deal.closeTime,
+            closeTime: deal.closeTime, // для сортировки и сбора статистики
             profit: +deal.profit.toFixed(2),
             percent: +deal.percent.toFixed(2),
           }
@@ -267,7 +267,7 @@ function deals(trends, candlesJunior) {
             amountOfPosition: +deal.amountOfPosition.toFixed(8),
             closeTimeHuman: deal.closeTimeHuman,
             closePosition: deal.closePosition,
-            //closeTime: deal.closeTime,
+            closeTime: deal.closeTime, // для сортировки и сбора статистики
             profit: +deal.profit.toFixed(2),
             percent: +deal.percent.toFixed(2),
           }
@@ -280,6 +280,9 @@ function deals(trends, candlesJunior) {
       } // for (let j = trend.idStartTrend; j < trend.idEndTrend; j++)
     } // if (trend.trendName == 'UpTrend')
   }) // trends.forEach(function (trend, i, arg)
+
+  // сортировка массива со сделками - важная функция
+  deals.sort((a, b) => a.closeTime - b.closeTime)
 
   console.log('\nвсе сделки:')
   console.log(deals)
