@@ -51,6 +51,7 @@ class Alex412Class1h_mod {
     this.bodyLength2g = 0 // длина тела 2й зеленой свечи
     this.upperShadowRed = 0 // верхняя тень красной свечи
     this.lowerShadowRed = 0 // верхняя тень красной свечи
+    this.diffShadowRed = 0 // отношение теней на красной свечи
 
     // для сделки
     this.sygnalSent = false
@@ -137,7 +138,8 @@ class Alex412Class1h_mod {
         this.candlesForFractal[3].high / this.candlesForFractal[3].open - 1
       this.lowerShadowRed =
         this.candlesForFractal[3].close / this.candlesForFractal[3].low - 1
-
+      this.diffShadowRed = this.lowerShadowRed / this.upperShadowRed - 1
+      //console.log(`this.diffShadowRed: ${this.diffShadowRed}`)
       // ищем сигнал №1
       /*
       if (
@@ -175,7 +177,7 @@ class Alex412Class1h_mod {
         this.fractalBearish.isFractal &&
         this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
         this.candlesForFractal[3].open > this.candlesForFractal[3].close && // и после него КРАСНАЯ свеча
-        this.upperShadowRed >= this.lowerShadowRed // у которого верхняя тень равна либо больше по длине нижней тени
+        (this.upperShadowRed >= this.lowerShadowRed || this.diffShadowRed < 0.6) // у которого верхняя тень равна либо больше по длине нижней тени
       ) {
         if (!this.sygnalSent) {
           this.whitchSignal = this.nameStrategy + ': сигнал №2'

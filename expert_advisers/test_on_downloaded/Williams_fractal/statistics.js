@@ -67,7 +67,123 @@ function statistics(deals, optionsForSave) {
   //console.log(`countMax = ${countMax}`)
   console.log(`marginCall = ${marginCall}`)
   saveDeals(arrayNegativeDeals, optionsForSave)
+  //statisticsPerMonth(deals)
   return { summ, arrayNegativeDeals }
+}
+
+function statisticsPerMonth(deals) {
+  let month = 0
+  let summ = 0
+  let monthStat = {
+    month: '',
+    result: 0,
+  }
+  let yearStat = []
+  deals.forEach(function (deal, i, arg) {
+    month = new Date(deal.closeTime).getMonth()
+
+    /*
+    switch (month) {
+      case 0:
+        monthStat.month = 'Январь'
+        monthStat.result += deal.profit
+        break
+      case 1:
+        if (yearStat.length == 0) {
+          //yearStat = yearStat.concat(monthStat)
+          yearStat.push(monthStat)
+        }
+        monthStat.month = 'Февраль'
+        monthStat.result += deal.profit
+        break
+      case 2:
+        if (yearStat.length == 1) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Март'
+        monthStat.result += deal.profit
+        break
+      case 3:
+        if (yearStat.length == 2) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Апрель'
+        monthStat.result += deal.profit
+        break
+      case 4:
+        if (yearStat.length == 3) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Май'
+        monthStat.result += deal.profit
+        break
+      case 5:
+        if (yearStat.length == 4) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Июнь'
+        monthStat.result += deal.profit
+        break
+      case 6:
+        if (yearStat.length == 5) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Июль'
+        monthStat.result += deal.profit
+        break
+      case 7:
+        if (yearStat.length == 6) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Август'
+        monthStat.result += deal.profit
+        break
+      case 8:
+        if (yearStat.length == 7) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Сентябрь'
+        monthStat.result += deal.profit
+        break
+      case 9:
+        if (yearStat.length == 8) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Октярь'
+        monthStat.result += deal.profit
+        break
+      case 10:
+        if (yearStat.length == 9) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Ноябрь'
+        monthStat.result += deal.profit
+        break
+      case 11:
+        if (yearStat.length == 10) {
+          yearStat = yearStat.concat(monthStat)
+        }
+        monthStat.month = 'Декабрь'
+        monthStat.result += deal.profit
+        break
+      default:
+      //yearStat = yearStat.concat(monthStat)
+    }
+    */
+
+    if (month == 0) {
+      summ += deal.profit
+    }
+    monthStat.month = 'Январь'
+    monthStat.result = summ
+    yearStat.push(monthStat)
+
+    //monthStat.month = new Date(deal.closeTime).getMonth() + 1
+    //console.log(`month = ${month}`)
+  })
+  console.table(yearStat)
+  return yearStat
+  //const month = bbb.getMonth()
 }
 
 module.exports = statistics

@@ -104,7 +104,7 @@ const symbols4h41 = [
   'GALAUSDT',
   'GTCUSDT',
   'GMTUSDT',
-  'NEARUSDT',
+  //'NEARUSDT',
   'NEOUSDT',
   'NKNUSDT',
   'MATICUSDT',
