@@ -88,6 +88,7 @@ async function alex412Main1h_mod(
             if (!final) {
               // 1.1 для начала каждую секунду проверяем условие выхода из сделки по TP и SL
               item.closeShortPosition(lastCandle, timeFrameSenior)
+              item.findBrokenFractal(lastCandle)
 
               // если вышли из сделки, то обнуляем состояние сделки:
               if (!item.inPosition) {
@@ -109,6 +110,7 @@ async function alex412Main1h_mod(
             // 2.1 ждем цену на рынке для входа по сигналу
             if (!final) {
               item.findSygnal(lastCandle, timeFrameSenior)
+              item.findBrokenFractal(lastCandle)
               item.canShortPosition(lastCandle, timeFrameSenior)
               //console.log(`interval: ${interval}, close = ${lastCandle.close}`)
             } // if (!final)

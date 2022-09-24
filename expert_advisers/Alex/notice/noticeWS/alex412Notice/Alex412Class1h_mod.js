@@ -66,6 +66,7 @@ class Alex412Class1h_mod {
     this.stopLoss = 0
 
     this.middleShadow = 0
+    this.fractalHigh = 0 // хай фрактала для отмены сигнала
 
     return this
   }
@@ -190,6 +191,7 @@ class Alex412Class1h_mod {
 
   // функция openShortCommon с общими полями для входа в сделку
   openShortCommon() {
+    this.fractalHigh = fractalBearish.high
     this.sygnalSent = true
     this.canShort = true
     //this.openShort = this.candlesForFractal[3].open
@@ -257,6 +259,35 @@ class Alex412Class1h_mod {
     }
     return this
   } // canShortPosition(lastCandle, interval)
+
+  findBrokenFractal(lastCandle) {
+    if (this.canShort) {
+      if (lastCandle.close > this.fractalHigh) {
+        sendInfoToUser(
+          `${this.whitchSignal}\n\nМонета: ${
+            this.symbol
+          }\n\n--== Сломали фрактал ==--\nТекущая цена: ${
+            lastCandle.close
+          } USDT \nУровень фрактала: ${
+            this.fractalHigh
+          } USDT\n--== ОТМЕНА сигнала ==--\nВремя сигнала: ${timestampToDateHuman(
+            this.sygnalTime
+          )}`
+        )
+        this.reset()
+      }
+    }
+
+    if (this.inPosition) {
+      if (lastCandle.close > this.fractalHigh) {
+        sendInfoToUser(
+          `${this.whitchSignal}\n\nМонета: ${this.symbol}\n\n--== Сломали фрактал ==--\nТекущая цена: ${lastCandle.close} USDT \nУровень фрактала: ${this.fractalHigh} USDT\n--== Переноси TP в БУ ==--\nTake Profit = ${this.openShort}`
+        )
+        changeTPSLCommon(lastCandle)
+      }
+    }
+    return this
+  }
 
   ///////////////////////
   //// закрытие шорт позиции по Take Profit или Stop Loss
