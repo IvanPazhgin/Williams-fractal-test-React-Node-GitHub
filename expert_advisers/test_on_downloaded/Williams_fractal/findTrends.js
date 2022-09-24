@@ -2,8 +2,14 @@ const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 const readCandleFromJSON = require('../utils/readCandle')
 const findTrends2Stage = require('../../common.func/findTrends2Stage')
 const Trend = require('../../common.func/trendClass')
+const saveDeals = require('../utils/saveDeals')
 
-function findTrends(input_parameters, intervalSenior, intervalJunior) {
+function findTrends(
+  input_parameters,
+  intervalSenior,
+  intervalJunior,
+  optionsForSave
+) {
   // определяем шаблоны фракталов
   let fractal_Bearish = {
     isFractal: false,
@@ -163,7 +169,8 @@ function findTrends(input_parameters, intervalSenior, intervalJunior) {
       //fractal_Bullish.isFractal = false
     }
   } // for (let i = 4; i < candlesSenior.length; i++)
-  console.log(trends)
+  //console.log(trends)
+  saveDeals(trends, optionsForSave)
   return { trends, candlesJunior }
 }
 

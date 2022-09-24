@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { pathDirForDeals } = require('../../common.files/paths')
+const { pathDirForDeals } = require('../common.files/paths')
 
 function saveDeals(deals, options) {
   const fileName =

@@ -3,8 +3,10 @@
 const dealClass = require('./dealClass')
 const input_parameters = require('./input_parameters')
 const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
+const saveDeals = require('../utils/saveDeals')
+//const optionsForDeals = require('./misc/optionsForDeals')
 
-function deals(trends, candlesJunior) {
+function deals(trends, candlesJunior, optionsForSave) {
   //let fractal_Bullish = {}
   //let fractal_Bearish = {}
   let deal = new dealClass() // параметры по каждой сделке
@@ -284,30 +286,12 @@ function deals(trends, candlesJunior) {
   // сортировка массива со сделками - важная функция
   deals.sort((a, b) => a.closeTime - b.closeTime)
 
-  console.log('\nвсе сделки:')
-  console.log(deals)
+  //console.log('\nвсе сделки:')
+  //console.log(deals)
   console.log(`кол-во сделок: ${deals.length}`)
 
-  // перенести в модуль statistics
-  // Добавить расчет прибыли по месяцам, кол-во положительных и отрицательных сделок, кол-во последовательных подряд отрицательных сделок
-  let summProfit = 0 // сумма прибыли всех сделок
-  let summProfitShort = 0 // сумма прибыли только short сделок
-  let summProfitLong = 0 // сумма прибыли только long сделок
-
-  deals.forEach(function (deal, i, arg) {
-    summProfit += deal.profit
-    if (deal.position == 'SHORT') {
-      summProfitShort += deal.profit
-    }
-    if (deal.position == 'LONG') {
-      summProfitLong += deal.profit
-    }
-  })
-  console.log(`summProfit = ${+summProfit.toFixed(2)} USD`)
-  console.log(`summProfitShort = ${+summProfitShort.toFixed(2)} USD`)
-  console.log(`summProfitLong = ${+summProfitLong.toFixed(2)} USD`)
-
-  // return deals
+  saveDeals(deals, optionsForSave)
+  return deals
 
   // for (let i = 0; i < candlesJunior.length; i++) {} // for (let i = 0; i < candlesJunior.length; i++)
 } // function deals(trends, candlesJunior)
