@@ -110,7 +110,7 @@ async function alex412Main1h_mod(
             // 2.1 ждем цену на рынке для входа по сигналу
             if (!final) {
               item.findSygnal(lastCandle, timeFrameSenior)
-              item.findBrokenFractal(lastCandle)
+              //item.findBrokenFractal(lastCandle)
               item.canShortPosition(lastCandle, timeFrameSenior)
               //console.log(`interval: ${interval}, close = ${lastCandle.close}`)
             } // if (!final)
