@@ -191,7 +191,7 @@ class Alex412Class1h_mod {
 
   // функция openShortCommon с общими полями для входа в сделку
   openShortCommon() {
-    this.fractalHigh = fractalBearish.high
+    this.fractalHigh = this.fractalBearish.high
     this.sygnalSent = true
     this.canShort = true
     //this.openShort = this.candlesForFractal[3].open
