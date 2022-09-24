@@ -166,7 +166,7 @@ async function testWilliams() {
 }
 
 function testWilliamsOnDownload() {
-  const startWilliamsTest = require('./expert_advisers/test_on_downloaded/Williams_fractal/mainWilliamsTest')
+  const startWilliamsTest = require('./expert_advisers/test_on_downloaded/Williams_fractal2/mainWilliamsTest')
   startWilliamsTest()
 }
 

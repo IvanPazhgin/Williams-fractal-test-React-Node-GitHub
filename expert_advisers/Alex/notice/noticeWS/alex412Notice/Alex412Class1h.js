@@ -280,9 +280,9 @@ class Alex412Class1h {
           sendInfoToUser(
             `${this.whitchSignal}\n${timestampToDateHuman(
               this.closeTime
-            )}\n\nМонета: ${
-              this.symbol
-            }\n\n--== Close SHORT ==--\nwith Take Profit: ${
+            )}\n\nМонета ${this.symbol}: ${
+              lastCandle.close
+            } USDT\n\n--== Close SHORT ==--\nwith Take Profit: ${
               this.closeShort
             }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
           )

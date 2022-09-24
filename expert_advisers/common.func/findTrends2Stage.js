@@ -15,7 +15,7 @@ function findTrends2Stage(candlesJunior, candleSenior, fractal) {
             candlesJunior: candlesJunior[i],
             id: i,
           }
-        }
+        } else return { id: 0 }
       } //if (fractal.nameFracral == 'Bullish')
 
       if (fractal.nameFracral == 'Bearish') {
@@ -24,7 +24,7 @@ function findTrends2Stage(candlesJunior, candleSenior, fractal) {
             candlesJunior: candlesJunior[i],
             id: i,
           }
-        }
+        } else return { id: 0 }
       } //if (fractal.nameFracral == 'Bullish')
     }
   } // for (let i = 0; i < candlesJunior.length; i++)
