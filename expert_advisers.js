@@ -20,12 +20,12 @@ function workingFunctions() {
   // alex37tradeMain()
 
   // стратегия 3.7 оповещения на четырех монетах
-  //const alex37tradeMain4s = require('./expert_advisers/Alex/trade37WS(4symbols)/alex37tradeMain4s')
-  //alex37tradeMain4s()
+  const alex37tradeMain4s = require('./expert_advisers/Alex/notice/noticeWSarchive/trade37WS(4symbols)/alex37tradeMain4s')
+  alex37tradeMain4s()
 
   // стратегия 3.8 оповещения на восьми монетах
-  // const alex38notice8s = require('./expert_advisers/Alex/notice38WS(8s)/alex38notice8s')
-  // alex38notice8s()
+  const alex38notice8s = require('./expert_advisers/Alex/notice/noticeWSarchive/notice38WS(8s)/alex38notice8s')
+  alex38notice8s()
 
   // сообщения в tg
   const { tgBotExample } = require('./API/telegram/telegram.bot')
