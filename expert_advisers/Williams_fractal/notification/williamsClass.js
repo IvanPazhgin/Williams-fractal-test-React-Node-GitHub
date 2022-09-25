@@ -232,10 +232,10 @@ class williamsClass {
         this.candlesForFractalJunior[4].high <
           this.candlesForFractalJunior[2].high
       ) {
-        this.deal.fractalOfBearish.high = candlesForFractalJunior[j - 2].high
+        this.deal.fractalOfBearish.high = candlesForFractalJunior[2].high
         this.deal.fractalOfBearish.isFractal = true
         this.deal.fractalOfBearish.timeHuman = timestampToDateHuman(
-          candlesForFractalJunior[j - 2].startTime
+          candlesForFractalJunior[2].startTime
         )
 
         /*
@@ -262,10 +262,10 @@ class williamsClass {
         this.candlesForFractalJunior[4].low >
           this.candlesForFractalJunior[2].low
       ) {
-        this.deal.fractalOfBullish.low = candlesForFractalJunior[j - 2].low
+        this.deal.fractalOfBullish.low = candlesForFractalJunior[2].low
         this.deal.fractalOfBullish.isFractal = true
         this.deal.fractalOfBullish.timeHuman = timestampToDateHuman(
-          candlesForFractalJunior[j - 2].startTime
+          candlesForFractalJunior[2].startTime
         )
         /*
         this.fractalOfBullish = {
