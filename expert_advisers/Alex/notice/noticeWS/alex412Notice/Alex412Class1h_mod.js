@@ -285,7 +285,7 @@ class Alex412Class1h_mod {
         sendInfoToUser(
           `${this.whitchSignal}\n\nМонета: ${this.symbol}\n\n--== Сломали фрактал ==--\nТекущая цена: ${lastCandle.close} USDT \nУровень фрактала: ${this.fractalHigh} USDT\n--== Переноси TP в БУ ==--\nTake Profit = ${this.openShort}`
         )
-        changeTPSLCommon(lastCandle)
+        this.changeTPSLCommon(lastCandle)
       }
     }
     return this
