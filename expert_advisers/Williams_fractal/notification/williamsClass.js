@@ -57,7 +57,7 @@ class williamsClass {
     return candlesToObject(candles) // преобрзауем массив свечей в объект
   }
 
-  // --== (1) поиск трендов ==--
+  //---------------------------- --== (1) поиск трендов ==-- ----------------------------
   // 1. подготовка данных для поиска фракталов
   async prepairData(lastCandle, intervalSenior) {
     const limitOfCandle = 5 // кол-во свечей для поиска сигнала
@@ -157,7 +157,7 @@ class williamsClass {
           )
           this.trend.downPrice = lastCandle.low
 
-          this.sendMessageAboutDownTrendToConsole()
+          this.sendMessageAboutDownTrendToConsole('(2) Find Trend Online')
         } // if (this.candlesForFractal[i].low < this.fractalOfBullish.low)
       } // if (this.fractalOfBullish.isFractal && !this.trend.isDownTrend)
 
@@ -179,14 +179,14 @@ class williamsClass {
           )
           this.trend.upPrice = lastCandle.high
 
-          this.sendMessageAboutUpTrendToConsole()
+          this.sendMessageAboutUpTrendToConsole('(2) Find Trend Online')
         } //if (this.candlesForFractal[i].high > this.fractalOfBearish.high)
       } // if (this.fractalOfBearish.isFractal && !this.trend.isUpTrend)
     }
     return this
   }
 
-  // --== (2) торговля ==--
+  // ---------------------------- --== (2) торговля ==-- ----------------------------
   // 1. подготовка данных для поиска фракталов
   async prepairDataJunior(lastCandle, intervalJunior) {
     const limitOfCandle = 5 // кол-во свечей для поиска сигнала
@@ -224,70 +224,74 @@ class williamsClass {
       await this.prepairDataJunior(lastCandle, intervalJunior)
 
       // ищем Bearish (медвежий) Fractal. Факртал находится на позиции [i-2]
-      if (
-        this.candlesForFractalJunior[0].high <
-          this.candlesForFractalJunior[2].high &&
-        this.candlesForFractalJunior[1].high <
-          this.candlesForFractalJunior[2].high &&
-        this.candlesForFractalJunior[3].high <
-          this.candlesForFractalJunior[2].high &&
-        this.candlesForFractalJunior[4].high <
-          this.candlesForFractalJunior[2].high
-      ) {
-        this.deal.fractalOfBearish.high = this.candlesForFractalJunior[2].high
-        this.deal.fractalOfBearish.isFractal = true
-        this.deal.fractalOfBearish.timeHuman = timestampToDateHuman(
-          this.candlesForFractalJunior[2].startTime
-        )
-        this.messageFractalJuniorBear('(3) find Fractal Junior')
+      if (trend.isDownTrend) {
+        if (
+          this.candlesForFractalJunior[0].high <
+            this.candlesForFractalJunior[2].high &&
+          this.candlesForFractalJunior[1].high <
+            this.candlesForFractalJunior[2].high &&
+          this.candlesForFractalJunior[3].high <
+            this.candlesForFractalJunior[2].high &&
+          this.candlesForFractalJunior[4].high <
+            this.candlesForFractalJunior[2].high
+        ) {
+          this.deal.fractalOfBearish.high = this.candlesForFractalJunior[2].high
+          this.deal.fractalOfBearish.isFractal = true
+          this.deal.fractalOfBearish.timeHuman = timestampToDateHuman(
+            this.candlesForFractalJunior[2].startTime
+          )
+          this.messageFractalJuniorBear('(3) find Fractal Junior')
 
-        /*
-        this.fractalOfBearish = {
-          nameFracral: 'Bearish',
-          nameFracralRus: 'Медвежий фрактал',
-          isFractal: true,
-          high: this.candlesForFractal[2].high,
-          time: this.candlesForFractal[2].startTime,
-          // проверочная ифнормация
-          timeHuman: timestampToDateHuman(this.candlesForFractal[2].startTime),
+          /*
+          this.fractalOfBearish = {
+            nameFracral: 'Bearish',
+            nameFracralRus: 'Медвежий фрактал',
+            isFractal: true,
+            high: this.candlesForFractal[2].high,
+            time: this.candlesForFractal[2].startTime,
+            // проверочная ифнормация
+            timeHuman: timestampToDateHuman(this.candlesForFractal[2].startTime),
+          }
+          */
         }
-        */
       }
 
       // ищем Bullish (бычий) Fractal
-      if (
-        this.candlesForFractalJunior[0].low >
-          this.candlesForFractalJunior[2].low &&
-        this.candlesForFractalJunior[1].low >
-          this.candlesForFractalJunior[2].low &&
-        this.candlesForFractalJunior[3].low >
-          this.candlesForFractalJunior[2].low &&
-        this.candlesForFractalJunior[4].low >
-          this.candlesForFractalJunior[2].low
-      ) {
-        this.deal.fractalOfBullish.low = this.candlesForFractalJunior[2].low
-        this.deal.fractalOfBullish.isFractal = true
-        this.deal.fractalOfBullish.timeHuman = timestampToDateHuman(
-          this.candlesForFractalJunior[2].startTime
-        )
-        this.messageFractalJuniorBull('(3) find Fractal Junior')
-        /*
-        this.fractalOfBullish = {
-          nameFracral: 'Bullish',
-          nameFracralRus: 'Бычий фрактал',
-          isFractal: true,
-          low: this.candlesForFractal[2].low,
-          time: this.candlesForFractal[2].startTime,
-          // проверочная ифнормация
-          timeHuman: timestampToDateHuman(this.candlesForFractal[2].startTime),
+      if (item.trend.isUpTrend) {
+        if (
+          this.candlesForFractalJunior[0].low >
+            this.candlesForFractalJunior[2].low &&
+          this.candlesForFractalJunior[1].low >
+            this.candlesForFractalJunior[2].low &&
+          this.candlesForFractalJunior[3].low >
+            this.candlesForFractalJunior[2].low &&
+          this.candlesForFractalJunior[4].low >
+            this.candlesForFractalJunior[2].low
+        ) {
+          this.deal.fractalOfBullish.low = this.candlesForFractalJunior[2].low
+          this.deal.fractalOfBullish.isFractal = true
+          this.deal.fractalOfBullish.timeHuman = timestampToDateHuman(
+            this.candlesForFractalJunior[2].startTime
+          )
+          this.messageFractalJuniorBull('(3) find Fractal Junior')
+          /*
+          this.fractalOfBullish = {
+            nameFracral: 'Bullish',
+            nameFracralRus: 'Бычий фрактал',
+            isFractal: true,
+            low: this.candlesForFractal[2].low,
+            time: this.candlesForFractal[2].startTime,
+            // проверочная ифнормация
+            timeHuman: timestampToDateHuman(this.candlesForFractal[2].startTime),
+          }
+          */
         }
-        */
       }
       return this
     }
   } // findFractalJunior()
 
-  // 3. Поиск сделок (ПОКА ПУСТАЯ ФУНКЦИЯ)
+  // 3. Поиск сделок
   findDeal(lastCandle, intervalJunior) {
     // будет работать на младшем ТФ. Ищем точку пересечения фрактала ценой.
     if (lastCandle.interval == intervalJunior) {
@@ -376,7 +380,7 @@ class williamsClass {
       this.multiplier
 
     // ОТПРАВИТЬ СООБЩЕНИЕ В телеграм
-    const text = `-- вход в сделку ==--\n${this.symbol}\nOPEN ${this.deal.position} по ${this.deal.openPosition} USD\nStop Loss: ${this.deal.stopLoss}`
+    const text = `--== (4) вход в сделку ==--\n-= ${this.symbol} =-\n\n--хх OPEN ${this.deal.position} по ${this.deal.openPosition} USD хх--\nСтавь stop Loss: ${this.deal.stopLoss}`
     sendInfoToUserWilliams(text)
 
     return this
@@ -391,13 +395,33 @@ class williamsClass {
     this.deal.depositReal += this.deal.profitReal
 
     // ОТПРАВИТЬ СООБЩЕНИЕ В телеграм
-    const text = `-- выход из сделки ==--\n${this.symbol}\nCLOSE ${this.deal.position} по ${this.deal.closePosition} USD\nРезультат: ${this.deal.profitReal} USD (${this.deal.percentReal}%)\nДепозит: ${this.deal.depositReal} USD`
+    const text = `--== (5) выход из сделки ==--\n-= ${this.symbol} =-\n\n--хх CLOSE ${this.deal.position} по ${this.deal.closePosition} USD хх--\n\nРезультат: ${this.deal.profitReal} USD (${this.deal.percentReal}%)\nДепозит сейчас: ${this.deal.depositReal} USD`
     sendInfoToUserWilliams(text)
 
     return this
   }
 
-  // --== (0) при запуске приложения ==--
+  // медвежий фрактал interval Junior
+  messageFractalJuniorBear(nameFunc) {
+    if (this.deal.fractalOfBearish.isFractal) {
+      //console.table(this.fractalOfBearish)
+
+      const textBearishJunior = `--== ${this.symbol}==--\nТекущий тренд = ${this.trend.trendName}\n-- ${this.deal.fractalOfBearish.nameFracralRus} --\n\nСтавим ордер:\n--хх Long от ${this.deal.fractalOfBearish.high} USD х=--\n\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      sendInfoToUserWilliams(textBearishJunior)
+    }
+  }
+
+  // бычий фрактал interval Junior
+  messageFractalJuniorBull(nameFunc) {
+    if (this.deal.fractalOfBullish.isFractal) {
+      //console.table(this.fractalOfBullish)
+
+      const textBullishJunior = `--== ${this.symbol}==--\nТекущий тренд = ${this.trend.trendName}\n-- ${this.deal.fractalOfBullish.nameFracralRus} --\n\nСтавим ордер:\n--хх SHORT от ${this.deal.fractalOfBullish.low} USD хх--\n\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
+      sendInfoToUserWilliams(textBullishJunior)
+    }
+  }
+
+  // ---------------------------- --== (0) при запуске приложения ==-- ----------------------------
   // 1. готовим свечи и ищем фракталы
   async firstStart(intervalSenior, intervalJunior) {
     const limitOfCandleForStart = 50 // для поиска фрактала при первом запуске приложения
@@ -533,18 +557,18 @@ class williamsClass {
     return this
   }
 
-  // --== дополнительные функции к (1) ==--
+  // --== дополнительные функции к (0) и (1) ==--
   // отправка сообщений в консоль о найденном НИСХОДЯЩЕМ тренде
-  sendMessageAboutDownTrendToConsole() {
-    const text = `--- ${this.nameStrategy} ---\n--== ${this.symbol}==--\nТекущий тренд = ${this.trend.trendName}\nДата фрактала: ${this.trend.fractalDownTime}\nУровень фрактала: ${this.trend.fractalsDownPrice} USD\nДата пробития фрактала: ${this.trend.downPriceTimeHuman}\nЦена пробития: ${this.trend.downPrice} USD`
+  sendMessageAboutDownTrendToConsole(nameFunc) {
+    const text = `--- ${this.nameStrategy} ---\n--== ${this.symbol}==--\n--хх Текущий тренд = ${this.trend.trendName} хх--\n\nДата фрактала: ${this.trend.fractalDownTime}\nУровень фрактала: ${this.trend.fractalsDownPrice} USD\n\nДата пробития фрактала: ${this.trend.downPriceTimeHuman}\nЦена пробития: ${this.trend.downPrice} USD\nИсточник: ${nameFunc}`
 
     console.log('\n' + text)
     sendInfoToUserWilliams(text)
   }
 
   // отправка сообщений в консоль о найденном ВОСХОДЯЩЕМ тренде
-  sendMessageAboutUpTrendToConsole() {
-    const text = `--- ${this.nameStrategy} ---\n--== ${this.symbol}==--\nТекущий тренд = ${this.trend.trendName}\nДата фрактала: ${this.trend.fractalUpTime}\nУровень фрактала: ${this.trend.fractalUpPrice} USD\nДата пробития фрактала: ${this.trend.upPriceTimeHuman}\nЦена пробития: ${this.trend.upPrice} USD`
+  sendMessageAboutUpTrendToConsole(nameFunc) {
+    const text = `--- ${this.nameStrategy} ---\n--== ${this.symbol}==--\n--хх Текущий тренд = ${this.trend.trendName} хх--\n\nДата фрактала: ${this.trend.fractalUpTime}\nУровень фрактала: ${this.trend.fractalUpPrice} USD\n\nДата пробития фрактала: ${this.trend.upPriceTimeHuman}\nЦена пробития: ${this.trend.upPrice} USD\nИсточник: ${nameFunc}`
 
     console.log('\n' + text)
     sendInfoToUserWilliams(text)
@@ -564,7 +588,6 @@ class williamsClass {
     }
   }
 
-  // --== Senior ===--
   // бычий фрактал interval Senior
   messageFractalSeniorBull(nameFunc) {
     if (this.fractalOfBullish.isFractal) {
@@ -582,27 +605,6 @@ class williamsClass {
 
       const textBearishSenior = `--== ${this.symbol}==--\n-- ${this.fractalOfBearish.nameFracralRus} --\nHigh = ${this.fractalOfBearish.high} USD\ntime: ${this.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBearishSenior)
-    }
-  }
-
-  // --== Junior ===--
-  // медвежий фрактал interval Junior
-  messageFractalJuniorBear(nameFunc) {
-    if (this.deal.fractalOfBearish.isFractal) {
-      //console.table(this.fractalOfBearish)
-
-      const textBearishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBearish.nameFracralRus} --\n\n-х Long от ${this.deal.fractalOfBearish.high} USD х-\n\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
-      sendInfoToUserWilliams(textBearishJunior)
-    }
-  }
-
-  // бычий фрактал interval Junior
-  messageFractalJuniorBull(nameFunc) {
-    if (this.deal.fractalOfBullish.isFractal) {
-      //console.table(this.fractalOfBullish)
-
-      const textBullishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBullish.nameFracralRus} --\n\n-х SHORT от ${this.deal.fractalOfBullish.low} USD х-\n\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
-      sendInfoToUserWilliams(textBullishJunior)
     }
   }
 } // class williamsClass

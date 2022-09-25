@@ -22,11 +22,7 @@ function williamsMain() {
     nameStrategy.williams + intervalSenior + '_' + intervalJunior
 
   const williamsLogic = require('./williamsLogic')
-  williamsLogic(intervalSenior, intervalJunior)
-
-  // запускаем 3.8.2.5 на 15m
-  //const alex38Notice15m = require('./alex38Notice15m')
-  //alex38Notice15m()
+  williamsLogic(intervalSenior, intervalJunior, nameStrategy4h15m)
 
   // формирование сообщений в телеграм
   const message0 = `Приложение запущено в ${timestampToDateHuman(
@@ -38,16 +34,6 @@ function williamsMain() {
   } монетах: ${JSON.stringify(
     symbolsWilliams
   )}\nПоиск трендов на: ${intervalSenior}\nПоиск точки входа и выхода на: ${intervalJunior}`
-
-  /*
-  const message2 = `\n\n${nameStrategy.notice15m382}\nНа ${
-    symbols15m38.length
-  } монетах: ${JSON.stringify(
-    symbols15m38
-  )}\nПоиск сигнала и перенос TPSL на ТФ: ${
-    timeFrames.timeFrame15m
-  }\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame1m}`
-  */
 
   //sendInfoToUserWilliams(message0 + message1 + message2)
   sendInfoToUserWilliams(message0 + message1)

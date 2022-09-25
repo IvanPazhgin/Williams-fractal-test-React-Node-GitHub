@@ -2,15 +2,15 @@
 //const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const williamsClass = require('./williamsClass')
 const getLastCandle4s = require('../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
-const { symbolsWilliams, nameStrategy } = require('./input_parameters')
+const { symbolsWilliams } = require('./input_parameters')
 
-async function williamsLogic(intervalSenior, intervalJunior) {
+async function williamsLogic(intervalSenior, intervalJunior, nameStrategy) {
   const timeFrames2 = [intervalSenior, intervalJunior]
   let lastCandle // последняя свечка
   let symbolObj = [] // массив для хранения состояний сделок по каждой монете
 
   symbolsWilliams.forEach(function (item, i, arg) {
-    symbolObj[i] = new williamsClass(item, nameStrategy.williams)
+    symbolObj[i] = new williamsClass(item, nameStrategy)
   })
   //console.log('монеты для старта')
   //console.table(symbolObj)
