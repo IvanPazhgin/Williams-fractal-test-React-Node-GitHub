@@ -1,4 +1,4 @@
-const dealClass = require('./dealClass')
+const dealClass = require('../../common.func/dealClass')
 const { input_parameters } = require('./input_parameters')
 const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 const saveDeals = require('../utils/saveDeals')

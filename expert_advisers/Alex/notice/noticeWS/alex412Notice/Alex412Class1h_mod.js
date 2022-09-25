@@ -94,7 +94,7 @@ class Alex412Class1h_mod {
       //console.table(delLastCandle)
       //console.log(`кол-во свечей после удаления последней = ${this.candlesForFractal.length}`)
     } else {
-      console.log(`${this.symbol} время последних свечей НЕ совпадает`)
+      //console.log(`${this.symbol} время последних свечей НЕ совпадает`)
       const delFirstCandle = this.candlesForFractal.shift() // удаляем первую свечку
       //console.log(`кол-во свечей после удаления первой = ${this.candlesForFractal.length}`) // закомментировать
 

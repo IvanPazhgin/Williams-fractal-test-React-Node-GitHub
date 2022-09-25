@@ -1,11 +1,24 @@
 const { sendInfoToUserWilliams } = require('../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
-const { symbolsWilliams, timeFrames, nameStrategy } = require('./symbols')
+const {
+  symbolsWilliams,
+  timeFrames,
+  nameStrategy,
+} = require('./input_parameters')
 
 function williamsMain() {
-  // запускаем на 2h
+  // запускаем на 15m / 1m
+  const intervalSenior = timeFrames.timeFrame15m
+  const intervalJunior = timeFrames.timeFrame1m
+
+  // запускаем на 4h / 15m
+  //const intervalSenior = timeFrames.timeFrame4h
+  //const intervalJunior = timeFrames.timeFrame15m
+  const nameStrategy4h15m =
+    nameStrategy.williams + intervalSenior + '_' + intervalJunior
+
   const williamsLogic = require('./williamsLogic')
-  williamsLogic()
+  williamsLogic(intervalSenior, intervalJunior)
 
   // запускаем 3.8.2.5 на 15m
   //const alex38Notice15m = require('./alex38Notice15m')
@@ -16,13 +29,11 @@ function williamsMain() {
     new Date().getTime()
   )}`
 
-  const message1 = `\n\n---=== ${nameStrategy.williams} ===---\nНа ${
+  const message1 = `\n\n---=== ${nameStrategy4h15m} ===---\nНа ${
     symbolsWilliams.length
   } монетах: ${JSON.stringify(
     symbolsWilliams
-  )}\nПоиск сигнала и перенос TPSL на ТФ: ${
-    timeFrames.timeFrame2h
-  }\nПоиск точки входа и выхода на ТФ: ${timeFrames.timeFrame5m}`
+  )}\nПоиск трендов на: ${intervalSenior}\nПоиск точки входа и выхода на: ${intervalJunior}`
 
   /*
   const message2 = `\n\n${nameStrategy.notice15m382}\nНа ${

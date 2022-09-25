@@ -1,5 +1,5 @@
 const timeFrames = {
-  imeFrame4h: '4h',
+  timeFrame4h: '4h',
   timeFrame2h: '2h',
   //timeFrame2h: '15m', // для тестов
   timeFrame1h: '1h',
@@ -10,7 +10,8 @@ const timeFrames = {
 }
 
 const nameStrategy = {
-  williams: `Стратегия Билла Вильямса на ${timeFrames.timeFrame2h}`,
+  // williams: `Стратегия Билла Вильямса на ${timeFrames.timeFrame2h}`,
+  williams: `Стратегия Билла Вильямса на `,
 }
 
 const symbolsWilliams = ['BTCUSDT', 'ETHUSDT']

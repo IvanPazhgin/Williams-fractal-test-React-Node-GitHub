@@ -39,8 +39,22 @@ class dealClass {
     this.lowFbullTime = '' // для проверок
     this.islowFbull = false
 
+    this.fractalOfBullish = {
+      nameFracralRus: 'Бычий фрактал',
+      isFractal: false,
+      low: 0,
+      timeHuman: '',
+    }
+
     this.highFBear = 0 // fractal_Bearish.high
     this.ishighFBear = false
+
+    this.fractalOfBearish = {
+      nameFracralRus: 'Медвежий фрактал',
+      isFractal: false,
+      high: 0,
+      timeHuman: '',
+    }
   }
 } // class dealClass
 

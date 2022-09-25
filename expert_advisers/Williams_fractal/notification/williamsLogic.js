@@ -2,10 +2,10 @@
 //const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const williamsClass = require('./williamsClass')
 const getLastCandle4s = require('../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
-const { symbolsWilliams, timeFrames, nameStrategy } = require('./symbols')
+const { symbolsWilliams, nameStrategy } = require('./input_parameters')
 
-async function williamsLogic() {
-  const timeFrames2 = [timeFrames.timeFrame2h, timeFrames.timeFrame5m]
+async function williamsLogic(intervalSenior, intervalJunior) {
+  const timeFrames2 = [intervalSenior, intervalJunior]
   let lastCandle // последняя свечка
   let symbolObj = [] // массив для хранения состояний сделок по каждой монете
 
@@ -18,7 +18,7 @@ async function williamsLogic() {
   // ищем текущие последние фракталы
   symbolObj.forEach(function (symbol) {
     //symbol.reset()
-    symbol.firstStart(timeFrames.timeFrame2h, timeFrames.timeFrame5m)
+    symbol.firstStart(intervalSenior, intervalJunior)
   })
 
   /*
@@ -73,11 +73,26 @@ async function williamsLogic() {
         if (item.symbol.includes(lastCandle.symbol)) {
           // новая схема реализации логики
           if (!final) {
-            item.findTrendOnline(lastCandle, timeFrames.timeFrame5m)
+            // (2) определяем тренды на пересечении фрактала (1) и ценой intervalJunior
+            item.findTrendOnline(lastCandle, intervalJunior)
+
+            // (4) ищем точки входа на пересечении фрактала (3) и ценой intervalJunior
+            if (
+              item.deal.fractalOfBullish.isFractal ||
+              item.deal.fractalOfBearish.isFractal
+            ) {
+              item.findDeal(lastCandle, intervalJunior)
+            }
           } // if (!final)
 
           if (final) {
-            item.findFractalOnline(lastCandle, timeFrames.timeFrame2h)
+            // (1) ищем фракталы на intervalSenior
+            item.findFractalOnline(lastCandle, intervalSenior)
+
+            // (3) если есть тренд, то ищем фракталы внутри трендов
+            if (item.trend.isDownTrend || item.trend.isUpTrend) {
+              item.findFractalJunior(lastCandle, intervalJunior)
+            }
           } // if (final)
 
           // старая схема реализации логики
@@ -87,7 +102,7 @@ async function williamsLogic() {
           if (item.inPosition) {
             // 1.1 для начала каждую секунду проверяем условие выхода из сделки по TP и SL
             if (!final) {
-              item.closeShortPosition(lastCandle, timeFrames.timeFrame5m)
+              item.closeShortPosition(lastCandle, intervalJunior)
 
               // если вышли из сделки, то обнуляем состояние сделки:
               if (!item.inPosition) {
@@ -99,7 +114,7 @@ async function williamsLogic() {
 
             // 1.2 затем проверяем условие изменения TP и SL
             if (final) {
-              item.changeTPSL(lastCandle, timeFrames.timeFrame2h)
+              item.changeTPSL(lastCandle, intervalSenior)
             }
           } // if (item.inPosition)
           */
@@ -108,7 +123,7 @@ async function williamsLogic() {
           if (!item.inPosition) {
             // 2.1 ждем цену на рынке для входа по сигналу
             if (!final) {
-              //item.findTrendOnline(lastCandle, timeFrames.timeFrame5m) // перенес в новую схему
+              //item.findTrendOnline(lastCandle, intervalJunior) // перенес в новую схему
               // ищем точку входа
               // if (item.trend.isUpTrend)
               // if (item.trend.isDownTrend)
@@ -119,7 +134,7 @@ async function williamsLogic() {
               /*
               if (
                 item.canShort &&
-                lastCandle.interval == timeFrames.timeFrame2h
+                lastCandle.interval == intervalSenior
               ) {
                 // если до финальной свечки не вошли в сделку, то отменяем сигнал
                 sendInfoToUser(
@@ -136,8 +151,8 @@ async function williamsLogic() {
               } // обнуляем состояние сигнала
               */
               // 2.2 на финальной свечке запускаем поиск сигнала на вход
-              //await item.prepairData(lastCandle, timeFrames.timeFrame2h)
-              //item.findFractalOnline(lastCandle, timeFrames.timeFrame2h) // перенес в новую схему
+              //await item.prepairData(lastCandle, intervalSenior)
+              //item.findFractalOnline(lastCandle, intervalSenior) // перенес в новую схему
             } // if (final)
           } // if (item.inPosition)
         } // if (item.symbol.includes(lastCandle.symbol))
