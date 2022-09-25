@@ -587,7 +587,7 @@ class williamsClass {
     if (this.deal.fractalOfBearish.isFractal) {
       //console.table(this.fractalOfBearish)
 
-      const textBearishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBearish.nameFracralRus} --\Long = ${this.deal.fractalOfBearish.high} USD\ntime: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      const textBearishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBearish.nameFracralRus} --\nLong = ${this.deal.fractalOfBearish.high} USD\ntime: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBearishJunior)
     }
 

@@ -8,8 +8,12 @@ const {
 
 function williamsMain() {
   // запускаем на 15m / 1m
-  const intervalSenior = timeFrames.timeFrame15m
-  const intervalJunior = timeFrames.timeFrame1m
+  //const intervalSenior = timeFrames.timeFrame15m
+  //const intervalJunior = timeFrames.timeFrame1m
+
+  // запускаем на 1h / 5m
+  const intervalSenior = timeFrames.timeFrame1h
+  const intervalJunior = timeFrames.timeFrame5m
 
   // запускаем на 4h / 15m
   //const intervalSenior = timeFrames.timeFrame4h
