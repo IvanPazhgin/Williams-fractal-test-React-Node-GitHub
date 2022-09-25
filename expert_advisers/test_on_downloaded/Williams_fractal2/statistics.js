@@ -77,8 +77,6 @@ function statistics(deals, optionsForSave) {
 
   //console.table(summ)
   //console.log(arrayNegativeDeals)
-  //console.log(`countMax = ${countMax}`)
-  //console.log(`marginCall = ${marginCall}`)
   //saveDeals(arrayNegativeDeals, optionsForSave)
   //statisticsPerMonth(deals)
   return { summ, arrayNegativeDeals }

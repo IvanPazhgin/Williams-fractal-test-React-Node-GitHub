@@ -72,14 +72,6 @@ function findTrends(
     // PS в реальном времени необходимо сравнивать фрактал с текущей ценой на рынке
     if (fractal_Bullish.isFractal && !trend.isDownTrend) {
       if (candlesSenior[i].low < fractal_Bullish.low) {
-        /*
-        // новая версия и слишком сложная в реализации
-        trend.isDownTrend = true
-        // информация по фракталу
-        trend.fractalDownTime = fractal_Bullish.timeHuman
-        trend.fractalsDownPrice = fractal_Bullish.low
-        */
-
         // поиск точки пересечения фрактала ценой младшего ТФ для определения точного времени начала тренда
         temp = findTrends2Stage(
           candlesJunior,
@@ -100,26 +92,11 @@ function findTrends(
           )
           trend.downPrice = temp.candlesJunior.low
         }
-        /*
-        // информация по цене младшего ТФ
-        trend.idDownTrend = temp.id
-        trend.downPriceTime = temp.candlesJunior.startTime
-        trend.downPriceTimeHuman = timestampToDateHuman(
-          temp.candlesJunior.startTime
-        )
-        trend.downPrice = temp.candlesJunior.low
-        */
       }
     } // if (fractal_Bullish.isFractal && !trend.isDownTrend)
 
     if (fractal_Bearish.isFractal && !trend.isUpTrend) {
       if (candlesSenior[i].high > fractal_Bearish.high) {
-        /*
-        trend.isUpTrend = true
-        // информация по фракталу
-        trend.fractalUpTime = fractal_Bearish.timeHuman
-        trend.fractalUpPrice = fractal_Bearish.high
-        */
         // поиск точки пересечения фрактала ценой младшего ТФ для определения точного времени начала тренда
         temp = findTrends2Stage(
           candlesJunior,
@@ -140,15 +117,6 @@ function findTrends(
           )
           trend.upPrice = temp.candlesJunior.high
         }
-        /*
-        // информация по цене младшего ТФ
-        trend.idUptrend = temp.id
-        trend.upPriceTime = temp.candlesJunior.startTime
-        trend.upPriceTimeHuman = timestampToDateHuman(
-          temp.candlesJunior.startTime
-        )
-        trend.upPrice = temp.candlesJunior.high
-        */
       }
     } // if (fractal_Bearish.isFractal && !trend.isUpTrend)
 
