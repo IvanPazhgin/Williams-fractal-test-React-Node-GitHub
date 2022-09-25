@@ -109,6 +109,7 @@ class williamsClass {
           // проверочная ифнормация
           timeHuman: timestampToDateHuman(this.candlesForFractal[2].startTime),
         }
+        this.messageFractalSeniorBear('(1) find Fractal Online')
       }
 
       // ищем Bullish (бычий) Fractal
@@ -127,9 +128,10 @@ class williamsClass {
           // проверочная ифнормация
           timeHuman: timestampToDateHuman(this.candlesForFractal[2].startTime),
         }
+        this.messageFractalSeniorBull('(1) find Fractal Online')
       }
 
-      this.sendMessageAboutFractalToConsole('(1) find Fractal Online')
+      //this.sendMessageAboutFractalToConsole('(1) find Fractal Online')
       return this
     }
   } // findFractalOnline()
@@ -215,7 +217,7 @@ class williamsClass {
     //} // if (lastCandle.interval == intervalJunior)
   }
 
-  // 2. поиск фракталов (ЗАКОНЧИЛ ЗДЕСЬ)
+  // 2. поиск фракталов
   async findFractalJunior(lastCandle, intervalJunior) {
     if (lastCandle.interval == intervalJunior) {
       // подготовка данных для поиска фракталов
@@ -237,6 +239,7 @@ class williamsClass {
         this.deal.fractalOfBearish.timeHuman = timestampToDateHuman(
           this.candlesForFractalJunior[2].startTime
         )
+        this.messageFractalJuniorBear('(3) find Fractal Junior')
 
         /*
         this.fractalOfBearish = {
@@ -267,6 +270,7 @@ class williamsClass {
         this.deal.fractalOfBullish.timeHuman = timestampToDateHuman(
           this.candlesForFractalJunior[2].startTime
         )
+        this.messageFractalJuniorBull('(3) find Fractal Junior')
         /*
         this.fractalOfBullish = {
           nameFracral: 'Bullish',
@@ -279,8 +283,6 @@ class williamsClass {
         }
         */
       }
-
-      this.sendMessageAboutFractalJuniorToConsole('(3) find Fractal Junior')
       return this
     }
   } // findFractalJunior()
@@ -426,6 +428,7 @@ class williamsClass {
             this.candlesForFractal[i - 2].startTime
           ),
         }
+        this.messageFractalSeniorBear('(0) First start')
       }
 
       // ищем Bullish (бычий) Fractal
@@ -447,6 +450,7 @@ class williamsClass {
             this.candlesForFractal[i - 2].startTime
           ),
         }
+        this.messageFractalSeniorBull('(0) First start')
       }
 
       if (this.fractalOfBearish.isFractal && this.fractalOfBullish.isFractal) {
@@ -454,7 +458,7 @@ class williamsClass {
       }
     } // for (let i = this.candlesForFractal.length - 1; i >= 0; i--)
 
-    this.sendMessageAboutFractalToConsole('(0) first Start')
+    //this.sendMessageAboutFractalToConsole('(0) first Start')
 
     this.findTrendStart(intervalJunior)
     return this
@@ -551,23 +555,6 @@ class williamsClass {
     console.log(
       `\n${new Date()}\n${this.symbol}: ПОИСК ФРАКТАЛОВ (${nameFunc})`
     )
-
-    // медвежий фрактал intervalSenior
-    if (this.fractalOfBearish.isFractal) {
-      console.table(this.fractalOfBearish)
-
-      const textBearishSenior = `--== ${this.symbol}==--\n-- ${this.fractalOfBearish.nameFracralRus} --\nHigh = ${this.fractalOfBearish.high} USD\ntime: ${this.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
-      sendInfoToUserWilliams(textBearishSenior)
-    }
-
-    // бычий фрактал intervalSenior
-    if (this.fractalOfBullish.isFractal) {
-      console.table(this.fractalOfBullish)
-
-      const textBullishSenior = `--== ${this.symbol}==--\n-- ${this.fractalOfBullish.nameFracralRus} --\nLow = ${this.fractalOfBullish.low} USD\ntime: ${this.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
-      sendInfoToUserWilliams(textBullishSenior)
-    }
-
     // вопрос: как быть с двухфрактальными свечами?
     if (this.fractalOfBearish.time == this.fractalOfBullish.time) {
       console.log(`${this.symbol}: Двухфрактальная свеча (${nameFunc})`)
@@ -577,37 +564,46 @@ class williamsClass {
     }
   }
 
-  // отправка сообщений в консоль о найденных фракталах intervalJunior
-  sendMessageAboutFractalJuniorToConsole(nameFunc) {
-    console.log(
-      `\n${new Date()}\n${this.symbol}: ПОИСК ФРАКТАЛОВ (${nameFunc})`
-    )
+  // --== Senior ===--
+  // бычий фрактал interval Senior
+  messageFractalSeniorBull(nameFunc) {
+    if (this.fractalOfBullish.isFractal) {
+      //console.table(this.fractalOfBullish)
 
-    // медвежий фрактал intervalJunior
+      const textBullishSenior = `--== ${this.symbol}==--\n-- ${this.fractalOfBullish.nameFracralRus} --\nLow = ${this.fractalOfBullish.low} USD\ntime: ${this.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
+      sendInfoToUserWilliams(textBullishSenior)
+    }
+  }
+
+  // медвежий фрактал interval Senior
+  messageFractalSeniorBear(nameFunc) {
+    if (this.fractalOfBearish.isFractal) {
+      //console.table(this.fractalOfBearish)
+
+      const textBearishSenior = `--== ${this.symbol}==--\n-- ${this.fractalOfBearish.nameFracralRus} --\nHigh = ${this.fractalOfBearish.high} USD\ntime: ${this.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      sendInfoToUserWilliams(textBearishSenior)
+    }
+  }
+
+  // --== Junior ===--
+  // медвежий фрактал interval Junior
+  messageFractalJuniorBear(nameFunc) {
     if (this.deal.fractalOfBearish.isFractal) {
       //console.table(this.fractalOfBearish)
 
-      const textBearishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBearish.nameFracralRus} --\nLong = ${this.deal.fractalOfBearish.high} USD\ntime: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      const textBearishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBearish.nameFracralRus} --\n\n-х Long от ${this.deal.fractalOfBearish.high} USD х-\n\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBearishJunior)
     }
+  }
 
-    // бычий фрактал intervalJunior
+  // бычий фрактал interval Junior
+  messageFractalJuniorBull(nameFunc) {
     if (this.deal.fractalOfBullish.isFractal) {
       //console.table(this.fractalOfBullish)
 
-      const textBullishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBullish.nameFracralRus} --\nSHORT = ${this.deal.fractalOfBullish.low} USD\ntime: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
+      const textBullishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBullish.nameFracralRus} --\n\n-х SHORT от ${this.deal.fractalOfBullish.low} USD х-\n\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBullishJunior)
     }
-
-    // вопрос: как быть с двухфрактальными свечами?
-    /*
-    if (this.fractalOfBearish.time == this.fractalOfBullish.time) {
-      console.log(`${this.symbol}: Двухфрактальная свеча (${nameFunc})`)
-
-      const text = `--== ${this.symbol}==--\n-- Двухфрактальная свеча --\nHigh = ${this.fractalOfBearish.high} USD\nLow = ${this.fractalOfBullish.low} USD\ntime: ${this.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
-      sendInfoToUserWilliams(text)
-    }
-    */
   }
 } // class williamsClass
 
