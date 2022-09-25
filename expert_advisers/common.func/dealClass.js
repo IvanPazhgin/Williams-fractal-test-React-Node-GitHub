@@ -40,7 +40,7 @@ class dealClass {
     this.islowFbull = false
 
     this.fractalOfBullish = {
-      nameFracralRus: 'Бычий фрактал',
+      nameFracralRus: 'Бычий фрактал Junior',
       isFractal: false,
       low: 0,
       timeHuman: '',
@@ -50,7 +50,7 @@ class dealClass {
     this.ishighFBear = false
 
     this.fractalOfBearish = {
-      nameFracralRus: 'Медвежий фрактал',
+      nameFracralRus: 'Медвежий фрактал Junior',
       isFractal: false,
       high: 0,
       timeHuman: '',

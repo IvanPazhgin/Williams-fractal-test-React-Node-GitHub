@@ -102,7 +102,7 @@ class williamsClass {
       ) {
         this.fractalOfBearish = {
           nameFracral: 'Bearish',
-          nameFracralRus: 'Медвежий фрактал',
+          nameFracralRus: 'Медвежий фрактал Senior',
           isFractal: true,
           high: this.candlesForFractal[2].high,
           time: this.candlesForFractal[2].startTime,
@@ -120,7 +120,7 @@ class williamsClass {
       ) {
         this.fractalOfBullish = {
           nameFracral: 'Bullish',
-          nameFracralRus: 'Бычий фрактал',
+          nameFracralRus: 'Бычий фрактал Senior',
           isFractal: true,
           low: this.candlesForFractal[2].low,
           time: this.candlesForFractal[2].startTime,
@@ -232,10 +232,10 @@ class williamsClass {
         this.candlesForFractalJunior[4].high <
           this.candlesForFractalJunior[2].high
       ) {
-        this.deal.fractalOfBearish.high = candlesForFractalJunior[2].high
+        this.deal.fractalOfBearish.high = this.candlesForFractalJunior[2].high
         this.deal.fractalOfBearish.isFractal = true
         this.deal.fractalOfBearish.timeHuman = timestampToDateHuman(
-          candlesForFractalJunior[2].startTime
+          this.candlesForFractalJunior[2].startTime
         )
 
         /*
@@ -262,10 +262,10 @@ class williamsClass {
         this.candlesForFractalJunior[4].low >
           this.candlesForFractalJunior[2].low
       ) {
-        this.deal.fractalOfBullish.low = candlesForFractalJunior[2].low
+        this.deal.fractalOfBullish.low = this.candlesForFractalJunior[2].low
         this.deal.fractalOfBullish.isFractal = true
         this.deal.fractalOfBullish.timeHuman = timestampToDateHuman(
-          candlesForFractalJunior[2].startTime
+          this.candlesForFractalJunior[2].startTime
         )
         /*
         this.fractalOfBullish = {
@@ -280,7 +280,7 @@ class williamsClass {
         */
       }
 
-      this.sendMessageAboutFractalToConsole('(3) find Fractal Junior')
+      this.sendMessageAboutFractalJuniorToConsole('(3) find Fractal Junior')
       return this
     }
   } // findFractalJunior()
@@ -417,7 +417,7 @@ class williamsClass {
       ) {
         this.fractalOfBearish = {
           nameFracral: 'Bearish',
-          nameFracralRus: 'Медвежий фрактал',
+          nameFracralRus: 'Медвежий фрактал Senior',
           isFractal: true,
           high: this.candlesForFractal[i - 2].high,
           time: this.candlesForFractal[i - 2].startTime,
@@ -438,7 +438,7 @@ class williamsClass {
       ) {
         this.fractalOfBullish = {
           nameFracral: 'Bullish',
-          nameFracralRus: 'Бычий фрактал',
+          nameFracralRus: 'Бычий фрактал Senior',
           isFractal: true,
           low: this.candlesForFractal[i - 2].low,
           time: this.candlesForFractal[i - 2].startTime,
@@ -546,7 +546,7 @@ class williamsClass {
     sendInfoToUserWilliams(text)
   }
 
-  // отправка сообщений в консоль о найденных фракталах
+  // отправка сообщений в консоль о найденных фракталах intervalSenior
   sendMessageAboutFractalToConsole(nameFunc) {
     console.log(
       `\n${new Date()}\n${this.symbol}: ПОИСК ФРАКТАЛОВ (${nameFunc})`
@@ -560,20 +560,35 @@ class williamsClass {
       sendInfoToUserWilliams(textBearishSenior)
     }
 
-    // медвежий фрактал intervalJunior
-    if (this.deal.fractalOfBearish.isFractal) {
-      //console.table(this.fractalOfBearish)
-
-      const textBearishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBearish.nameFracralRus} --\Long = ${this.deal.fractalOfBearish.high} USD\ntime: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
-      sendInfoToUserWilliams(textBearishJunior)
-    }
-
     // бычий фрактал intervalSenior
     if (this.fractalOfBullish.isFractal) {
       console.table(this.fractalOfBullish)
 
       const textBullishSenior = `--== ${this.symbol}==--\n-- ${this.fractalOfBullish.nameFracralRus} --\nLow = ${this.fractalOfBullish.low} USD\ntime: ${this.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBullishSenior)
+    }
+
+    // вопрос: как быть с двухфрактальными свечами?
+    if (this.fractalOfBearish.time == this.fractalOfBullish.time) {
+      console.log(`${this.symbol}: Двухфрактальная свеча (${nameFunc})`)
+
+      const text = `--== ${this.symbol}==--\n-- Двухфрактальная свеча --\nHigh = ${this.fractalOfBearish.high} USD\nLow = ${this.fractalOfBullish.low} USD\ntime: ${this.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      sendInfoToUserWilliams(text)
+    }
+  }
+
+  // отправка сообщений в консоль о найденных фракталах intervalJunior
+  sendMessageAboutFractalJuniorToConsole(nameFunc) {
+    console.log(
+      `\n${new Date()}\n${this.symbol}: ПОИСК ФРАКТАЛОВ (${nameFunc})`
+    )
+
+    // медвежий фрактал intervalJunior
+    if (this.deal.fractalOfBearish.isFractal) {
+      //console.table(this.fractalOfBearish)
+
+      const textBearishJunior = `--== ${this.symbol}==--\n-- ${this.deal.fractalOfBearish.nameFracralRus} --\Long = ${this.deal.fractalOfBearish.high} USD\ntime: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      sendInfoToUserWilliams(textBearishJunior)
     }
 
     // бычий фрактал intervalJunior
@@ -585,12 +600,14 @@ class williamsClass {
     }
 
     // вопрос: как быть с двухфрактальными свечами?
+    /*
     if (this.fractalOfBearish.time == this.fractalOfBullish.time) {
       console.log(`${this.symbol}: Двухфрактальная свеча (${nameFunc})`)
 
       const text = `--== ${this.symbol}==--\n-- Двухфрактальная свеча --\nHigh = ${this.fractalOfBearish.high} USD\nLow = ${this.fractalOfBullish.low} USD\ntime: ${this.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(text)
     }
+    */
   }
 } // class williamsClass
 
