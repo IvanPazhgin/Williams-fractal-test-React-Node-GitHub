@@ -205,7 +205,7 @@ function findTrends(
     }
   } // for (let i = 4; i < candlesSenior.length; i++)
   //console.log(trends)
-  saveDeals(trends, optionsForSave)
+  //saveDeals(trends, optionsForSave)
   return { trends, candlesJunior }
 }
 

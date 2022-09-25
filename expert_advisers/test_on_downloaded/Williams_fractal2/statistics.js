@@ -1,10 +1,12 @@
 const saveDeals = require('../utils/saveDeals')
+const { input_parameters } = require('./input_parameters')
 
 function statistics(deals, optionsForSave) {
   // Добавить расчет прибыли по месяцам
   let summ = {
     interval: optionsForSave.interval,
     summProfitAll: 0, // сумма прибыли всех сделок
+    summProfitReal: 0, // сумма прибыли всех сделок по депозиту с памятью
     summProfitShort: 0, // сумма прибыли только short сделок
     summProfitLong: 0, // сумма прибыли только long сделок
     countAllDeals: deals.length,
@@ -16,6 +18,11 @@ function statistics(deals, optionsForSave) {
   let marginCall = '' // Дата слива депозита
 
   deals.forEach(function (deal, i, arg) {
+    // сумма прибыли всех сделок с реальным депозитом
+    summ.summProfitReal += deal.profitReal
+    if (deal.depositReal < 50) {
+      marginCall = deal.closeTimeHuman
+    }
     // сумма прибыли всех сделок
     summ.summProfitAll += deal.profit
     if (summ.summProfitAll < -1000) {
@@ -63,12 +70,16 @@ function statistics(deals, optionsForSave) {
     }
   }
   summ.negativeDealChain = countMax
+  summ.depositReal = deals[deals.length - 1].depositReal
+  summ.partOfDeposit = input_parameters.partOfDeposit
+  summ.multiplier = input_parameters.multiplier
+  summ.marginCall = marginCall
 
   //console.table(summ)
   //console.log(arrayNegativeDeals)
   //console.log(`countMax = ${countMax}`)
-  console.log(`marginCall = ${marginCall}`)
-  saveDeals(arrayNegativeDeals, optionsForSave)
+  //console.log(`marginCall = ${marginCall}`)
+  //saveDeals(arrayNegativeDeals, optionsForSave)
   //statisticsPerMonth(deals)
   return { summ, arrayNegativeDeals }
 }

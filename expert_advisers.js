@@ -40,8 +40,8 @@ function workingFunctions() {
   // alexNoticeMain() // оповещения 3.8 и 3.8 hard 31.08.2022
 
   // оповещения 3.8.2 (05.09.2022)
-  const alexNoticeMain382 = require('./expert_advisers/Alex/notice/noticeWS/alex382Notice/alexNoticeMain382')
-  alexNoticeMain382()
+  // const alexNoticeMain382 = require('./expert_advisers/Alex/notice/noticeWS/alex382Notice/alexNoticeMain382')
+  // alexNoticeMain382()
 
   // оповещения 3.8.4 (06.09.2022)
   // const alexNoticeMain384 = require('./expert_advisers/Alex/notice/noticeWS/alex384Notice/alexNotMain384')
@@ -60,8 +60,8 @@ function workingFunctions() {
   // alexNoticeMain3824()
 
   // оповещения 3.8.2.5 (11.09.2022)
-  const alexNoticeMain3825 = require('./expert_advisers/Alex/notice/noticeWS/alex382Notice5/alexNoticeMain3825')
-  alexNoticeMain3825()
+  // const alexNoticeMain3825 = require('./expert_advisers/Alex/notice/noticeWS/alex382Notice5/alexNoticeMain3825')
+  // alexNoticeMain3825()
 
   // оповещения 4.1 на 4h (17.09.2022)
   //const alex41Main = require('./expert_advisers/Alex/notice/noticeWS/alex4Notice/alex41Main')

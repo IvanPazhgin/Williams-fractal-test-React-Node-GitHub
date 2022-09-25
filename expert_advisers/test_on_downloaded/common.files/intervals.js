@@ -1,6 +1,7 @@
-const intervalArray = ['4h', '2h', '1h', '30m', '15m', '5m', '1m']
+const intervalArray = ['1d', '4h', '2h', '1h', '30m', '15m', '5m', '1m']
 
 const intervalObject = {
+  timeFrame1d: '1d',
   timeFrame4h: '4h',
   timeFrame2h: '2h',
   timeFrame1h: '1h',

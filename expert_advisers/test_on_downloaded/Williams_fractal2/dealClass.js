@@ -1,7 +1,9 @@
 class dealClass {
   constructor() {
     this.deposit = 1000
-    //
+
+    this.depositReal = 1000 // накопленный результат
+
     this.reset()
   }
 
@@ -26,6 +28,11 @@ class dealClass {
     this.closeTimeHuman = ''
     this.profit = 0
     this.percent = 0
+
+    // накопленный результат
+    this.profitReal = 0
+    this.percentReal = 0
+    this.amountReal = 0
 
     // информация о фракталах
     this.lowFbull = 0 // fractal_Bullish.low

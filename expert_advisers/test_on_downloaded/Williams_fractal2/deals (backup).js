@@ -42,28 +42,25 @@ function deals(trends, candlesJunior, optionsForSave) {
         if (!deal.inPosition && deal.islowFbull) {
           if (candlesJunior[j].low < deal.lowFbull) {
             // входим в сделку
-            //deal.inPosition = true
+            deal.inPosition = true
             deal.position = 'SHORT'
             deal.openPosition = deal.lowFbull
             //deal.openPosition = candlesJunior[j].low // проверка
-            /*
             deal.openTime = candlesJunior[j].startTime
-            deal.openTimeHuman = timestampToDateHuman(candlesJunior[j].startTime)
+            deal.openTimeHuman = timestampToDateHuman(
+              candlesJunior[j].startTime
+            )
             deal.amountOfPosition =
               (deal.deposit / deal.openPosition) *
               input_parameters.partOfDeposit *
               input_parameters.multiplier
-            */
             deal.stopLoss = deal.highFBear
 
             // накопленный результат
-            /*
             deal.amountReal =
               (deal.depositReal / deal.openPosition) *
               input_parameters.partOfDeposit *
               input_parameters.multiplier
-            */
-            deal = enterDeal(deal, candlesJunior[j])
           }
         } // if (!deal.inPosition)
 
@@ -74,22 +71,22 @@ function deals(trends, candlesJunior, optionsForSave) {
           }
           if (candlesJunior[j].high > deal.stopLoss && deal.stopLoss > 0) {
             // close deal
-            //deal.outPosition = true
+            deal.outPosition = true
             deal.closePosition = deal.stopLoss
             //deal.closePosition = candlesJunior[j].high // проверка
-            //deal.closeTime = candlesJunior[j].startTime
-            //deal.closeTimeHuman = timestampToDateHuman(candlesJunior[j].startTime)
+            deal.closeTime = candlesJunior[j].startTime
+            deal.closeTimeHuman = timestampToDateHuman(
+              candlesJunior[j].startTime
+            )
             deal.profit =
               (deal.openPosition - deal.stopLoss) * deal.amountOfPosition
-            //  deal.percent = (deal.profit / deal.openPosition) * 100
+            deal.percent = (deal.profit / deal.openPosition) * 100
 
             // накопленный результат
             deal.profitReal =
               (deal.openPosition - deal.stopLoss) * deal.amountReal
-            //deal.percentReal = (deal.profitReal / deal.openPosition) * 100
-            //deal.depositReal += deal.profitReal
-
-            deal = closeDeal(deal, candlesJunior[j])
+            deal.percentReal = (deal.profitReal / deal.openPosition) * 100
+            deal.depositReal += deal.profitReal
           }
         } // if (deal.inPosition)
 
@@ -151,28 +148,25 @@ function deals(trends, candlesJunior, optionsForSave) {
         if (!deal.inPosition && deal.ishighFBear) {
           if (candlesJunior[j].high > deal.highFBear) {
             // входим в сделку
-            //deal.inPosition = true
+            deal.inPosition = true
             deal.position = 'LONG'
             deal.openPosition = deal.highFBear
             //deal.openPosition = candlesJunior[j].low // проверка
-            /*
             deal.openTime = candlesJunior[j].startTime
-            deal.openTimeHuman = timestampToDateHuman(candlesJunior[j].startTime)
+            deal.openTimeHuman = timestampToDateHuman(
+              candlesJunior[j].startTime
+            )
             deal.amountOfPosition =
               (deal.deposit / deal.openPosition) *
               input_parameters.partOfDeposit *
               input_parameters.multiplier
-            */
             deal.stopLoss = deal.lowFbull
 
-            /*
             // накопленный результат
             deal.amountReal =
               (deal.depositReal / deal.openPosition) *
               input_parameters.partOfDeposit *
               input_parameters.multiplier
-            */
-            deal = enterDeal(deal, candlesJunior[j])
           }
         } // if (!deal.inPosition)
 
@@ -183,23 +177,22 @@ function deals(trends, candlesJunior, optionsForSave) {
           }
           if (candlesJunior[j].low < deal.stopLoss) {
             // close deal
-            // deal.outPosition = true
+            deal.outPosition = true
             deal.closePosition = deal.stopLoss
             //deal.closePosition = candlesJunior[j].high // проверка
-            /*
             deal.closeTime = candlesJunior[j].startTime
-            deal.closeTimeHuman = timestampToDateHuman(candlesJunior[j].startTime)
-            */
+            deal.closeTimeHuman = timestampToDateHuman(
+              candlesJunior[j].startTime
+            )
             deal.profit =
               (deal.stopLoss - deal.openPosition) * deal.amountOfPosition
-            //deal.percent = (deal.profit / deal.openPosition) * 100
+            deal.percent = (deal.profit / deal.openPosition) * 100
 
             // накопленный результат
             deal.profitReal =
-              (deal.stopLoss - deal.openPosition) * deal.amountReal
-            //deal.percentReal = (deal.profitReal / deal.openPosition) * 100
-            //deal.depositReal += deal.profitReal
-            deal = closeDeal(deal, candlesJunior[j])
+              (deal.openPosition - deal.stopLoss) * deal.amountReal
+            deal.percentReal = (deal.profitReal / deal.openPosition) * 100
+            deal.depositReal += deal.profitReal
           }
         } // if (deal.inPosition)
 
@@ -236,42 +229,5 @@ function deals(trends, candlesJunior, optionsForSave) {
   //saveDeals(deals, optionsForSave)
   return deals
 } // function deals(trends, candlesJunior)
-
-function enterDeal(deal, candleJunior) {
-  deal.inPosition = true
-  deal.openTime = candleJunior.startTime
-  deal.openTimeHuman = timestampToDateHuman(candleJunior.startTime)
-
-  deal.amountOfPosition =
-    (deal.deposit / deal.openPosition) *
-    input_parameters.partOfDeposit *
-    input_parameters.multiplier
-
-  // накопленный результат
-  deal.amountReal =
-    (deal.depositReal / deal.openPosition) *
-    input_parameters.partOfDeposit *
-    input_parameters.multiplier
-
-  return deal
-  // вызов: deal = enterDeal(deal, candlesJunior[j])
-}
-
-function closeDeal(deal, candleJunior) {
-  deal.outPosition = true
-  deal.closeTime = candleJunior.startTime
-  deal.closeTimeHuman = timestampToDateHuman(candleJunior.startTime)
-
-  //deal.profit = (deal.openPosition - deal.stopLoss) * deal.amountOfPosition
-  deal.percent = (deal.profit / deal.openPosition) * 100
-
-  // накопленный результат
-  //deal.profitReal = (deal.openPosition - deal.stopLoss) * deal.amountReal
-  deal.percentReal = (deal.profitReal / deal.openPosition) * 100
-  deal.depositReal += deal.profitReal
-
-  return deal
-  // вызов: deal = closeDeal(deal, candlesJunior[j])
-}
 
 module.exports = deals
