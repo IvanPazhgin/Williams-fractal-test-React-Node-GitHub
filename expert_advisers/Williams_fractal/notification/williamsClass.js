@@ -224,7 +224,7 @@ class williamsClass {
       await this.prepairDataJunior(lastCandle, intervalJunior)
 
       // ищем Bearish (медвежий) Fractal. Факртал находится на позиции [i-2]
-      if (trend.isDownTrend) {
+      if (this.trend.isDownTrend) {
         if (
           this.candlesForFractalJunior[0].high <
             this.candlesForFractalJunior[2].high &&
@@ -257,7 +257,7 @@ class williamsClass {
       }
 
       // ищем Bullish (бычий) Fractal
-      if (item.trend.isUpTrend) {
+      if (this.trend.isUpTrend) {
         if (
           this.candlesForFractalJunior[0].low >
             this.candlesForFractalJunior[2].low &&
@@ -517,7 +517,7 @@ class williamsClass {
               )
               this.trend.downPrice = temp.candlesJunior.low
 
-              this.sendMessageAboutDownTrendToConsole()
+              this.sendMessageAboutDownTrendToConsole('(0) Find Trend at Start')
               break
             } // if (temp.id != 0)
           } // if (this.candlesForFractal[i].low < this.fractalOfBullish.low)
@@ -547,7 +547,7 @@ class williamsClass {
               )
               this.trend.upPrice = temp.candlesJunior.high
 
-              this.sendMessageAboutUpTrendToConsole()
+              this.sendMessageAboutUpTrendToConsole('(0) Find Trend at Start')
               break
             } // if (temp.id != 0)
           } //if (this.candlesForFractal[i].high > this.fractalOfBearish.high)

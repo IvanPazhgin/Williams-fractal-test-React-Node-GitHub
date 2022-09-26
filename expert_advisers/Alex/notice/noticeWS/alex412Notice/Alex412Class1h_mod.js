@@ -55,6 +55,7 @@ class Alex412Class1h_mod {
 
     // для сделки
     this.sygnalSent = false
+    this.aboutBrokenFractal = false
     this.canShort = false
     this.inPosition = false
     this.deposit = 1000
@@ -280,12 +281,13 @@ class Alex412Class1h_mod {
       }
     }
 
-    if (this.inPosition) {
+    if (this.inPosition && !this.aboutBrokenFractal) {
       if (lastCandle.close > this.fractalHigh) {
         sendInfoToUser(
           `${this.whitchSignal}\n\nМонета: ${this.symbol}\n\n--== Сломали фрактал ==--\nТекущая цена: ${lastCandle.close} USDT \nУровень фрактала: ${this.fractalHigh} USDT\n--== Переноси TP в БУ ==--\nTake Profit = ${this.openShort}`
         )
         this.changeTPSLCommon(lastCandle)
+        this.aboutBrokenFractal = true
       }
     }
     return this

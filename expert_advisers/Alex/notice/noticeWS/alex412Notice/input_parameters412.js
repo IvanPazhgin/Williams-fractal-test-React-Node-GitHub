@@ -145,6 +145,7 @@ const symbols4h41 = [
   'UNIUSDT',
   'UNFIUSDT',
   'WAVESUSDT',
+  'FOOTBALLUSDT',
 ]
 
 // набор монет (< 100) для мониторинга через web socket двух ТФ
