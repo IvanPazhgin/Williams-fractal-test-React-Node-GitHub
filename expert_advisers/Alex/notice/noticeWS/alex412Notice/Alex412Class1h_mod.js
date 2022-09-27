@@ -181,11 +181,34 @@ class Alex412Class1h_mod {
         (this.upperShadowRed >= this.lowerShadowRed || this.diffShadowRed < 0.6) // у которого верхняя тень равна либо больше по длине нижней тени
       ) {
         if (!this.sygnalSent) {
-          this.whitchSignal = this.nameStrategy + ': сигнал №2'
+          this.whitchSignal = this.nameStrategy + ': свеча фрактала ЗЕЛЕНАЯ'
+          this.middleShadow =
+            (this.candlesForFractal[3].open + this.candlesForFractal[3].high) /
+            2 // середина верхней тени красной свечи
           this.openShortCommon()
         }
 
         // console.table(this.fractalBearish)
+      }
+
+      // ищем сигнал №3
+      if (
+        // свеча до фрактала - красная
+        this.candlesForFractal[1].open > this.candlesForFractal[1].close && // вторая свеча КРАСНАЯ
+        this.candlesForFractal[2].open > this.candlesForFractal[2].close && // свеча фрактала КРАСНАЯ
+        // если нашли фрактал
+        this.fractalBearish.isFractal &&
+        this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
+        this.candlesForFractal[3].open > this.candlesForFractal[3].close && // и после него КРАСНАЯ свеча
+        (this.upperShadowRed >= this.lowerShadowRed || this.diffShadowRed < 0.6) // у которого верхняя тень равна либо больше по длине нижней тени
+      ) {
+        if (!this.sygnalSent) {
+          this.whitchSignal = this.nameStrategy + ': свеча фрактала КРАСНАЯ'
+          this.middleShadow =
+            (this.candlesForFractal[2].open + this.candlesForFractal[2].high) /
+            2 // середина верхней тени фрактала
+          this.openShortCommon()
+        }
       }
       //console.table(this.fractalBearish)
       return this
@@ -198,8 +221,7 @@ class Alex412Class1h_mod {
     this.sygnalSent = true
     this.canShort = true
     //this.openShort = this.candlesForFractal[3].open
-    this.middleShadow =
-      (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2 // середина верхней тени
+    //this.middleShadow = (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2 // середина верхней тени
     this.openShort = this.middleShadow
     this.sygnalTime = this.candlesForFractal[4].startTime
 
