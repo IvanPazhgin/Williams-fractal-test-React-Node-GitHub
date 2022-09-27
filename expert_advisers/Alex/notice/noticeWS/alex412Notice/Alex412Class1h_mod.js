@@ -79,6 +79,7 @@ class Alex412Class1h_mod {
     const candles = await getCandles(this.symbol, interval, limitOfCandle) // получаем первые n свечей
     this.candlesForFractal = candlesToObject(candles) // преобрзауем массив свечей в объект
     //console.table(this.candlesForFractal)
+    //console.log(`alex412: prepair5Candles(): прилетело ${this.candlesForFractal.length} свечей`) // удалить
     return this
   } // async prepair5Candles(interval
 
