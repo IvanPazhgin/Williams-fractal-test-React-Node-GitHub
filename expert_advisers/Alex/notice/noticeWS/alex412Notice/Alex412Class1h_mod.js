@@ -194,14 +194,17 @@ class Alex412Class1h_mod {
 
       // ищем сигнал №3
       if (
-        // свеча до фрактала - красная
-        this.candlesForFractal[1].open > this.candlesForFractal[1].close && // вторая свеча КРАСНАЯ
+        // вариант №1
+        ((this.candlesForFractal[0].open > this.candlesForFractal[0].close && // первая свеча - красная
+          this.candlesForFractal[1].close > this.candlesForFractal[1].open) || // вторая свеча - зеленая
+          // вариант №2: свеча до фрактала - красная
+          this.candlesForFractal[1].open > this.candlesForFractal[1].close) && // вторая свеча КРАСНАЯ
         this.candlesForFractal[2].open > this.candlesForFractal[2].close && // свеча фрактала КРАСНАЯ
         // если нашли фрактал
         this.fractalBearish.isFractal &&
-        this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
-        this.candlesForFractal[3].open > this.candlesForFractal[3].close && // и после него КРАСНАЯ свеча
-        (this.upperShadowRed >= this.lowerShadowRed || this.diffShadowRed < 0.6) // у которого верхняя тень равна либо больше по длине нижней тени
+        //this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
+        this.candlesForFractal[3].open > this.candlesForFractal[3].close // и после него КРАСНАЯ свеча
+        //(this.upperShadowRed >= this.lowerShadowRed || this.diffShadowRed < 0.6) // у которого верхняя тень равна либо больше по длине нижней тени
       ) {
         if (!this.sygnalSent) {
           this.whitchSignal = this.nameStrategy + ': свеча фрактала КРАСНАЯ'
@@ -274,7 +277,9 @@ class Alex412Class1h_mod {
               this.symbol
             }\n\n--== Вошли в SHORT ==--\nпо цене: ${
               this.openShort
-            } USDT \n\nВремя сигнала: ${timestampToDateHuman(
+            } USDT\nТекущая close цена: ${
+              lastCandle.close
+            } USD\n\nВремя сигнала: ${timestampToDateHuman(
               this.sygnalTime
             )}\nВремя входа: ${timestampToDateHuman(
               this.positionTime
@@ -342,9 +347,9 @@ class Alex412Class1h_mod {
           sendInfoToUser(
             `${this.whitchSignal}\n${timestampToDateHuman(
               this.closeTime
-            )}\n\nМонета: ${
-              this.symbol
-            }\n\n--== Close SHORT ==--\nwith Take Profit: ${
+            )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
+              lastCandle.close
+            } USD\n\n--== Close SHORT ==--\nwith Take Profit: ${
               this.closeShort
             }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
           )
@@ -369,9 +374,9 @@ class Alex412Class1h_mod {
           sendInfoToUser(
             `${this.whitchSignal}\n${timestampToDateHuman(
               this.closeTime
-            )}\n\nМонета: ${
-              this.symbol
-            }\n\n--== Close SHORT ==--\nwith Stop Loss: ${
+            )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
+              lastCandle.close
+            } USD\n\n--== Close SHORT ==--\nwith Stop Loss: ${
               this.closeShort
             }\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
           )
