@@ -95,6 +95,7 @@ const symbols4h41 = [
   'LINAUSDT',
   'QTUMUSDT',
   'HNTUSDT',
+  // разделить
   'HBARUSDT',
   'KAVAUSDT',
   'KNCUSDT',

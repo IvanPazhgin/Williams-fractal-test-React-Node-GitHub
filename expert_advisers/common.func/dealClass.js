@@ -9,6 +9,8 @@ class dealClass {
 
   reset() {
     //this.canShort = false
+    this.inOrder = false // выставлен ли ордер на бирже или нет
+    this.orderPrice = 0 // цена выставленного ордера
 
     //this.takeProfit = 0
     this.stopLoss = 0

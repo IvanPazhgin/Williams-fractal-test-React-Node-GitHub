@@ -245,26 +245,6 @@ class williamsClass {
           this.candlesForFractalJunior[2].startTime
         )
 
-        // Ставим ордер или меняем цену входа
-        if (this.trend.isUpTrend && !this.deal.inPosition) {
-          this.messageFractalJuniorBear('(3.1) find Fractal Junior')
-        }
-
-        // Двигаем Stop Loss
-        if (
-          this.trend.isDownTrend &&
-          this.deal.inPosition &&
-          this.deal.stopLoss > this.deal.fractalOfBearish.high
-        ) {
-          this.deal.stopLoss = this.deal.fractalOfBearish.high
-          this.messageFractalJuniorBear_SL('(5) трейлинг Stop Loss')
-
-          //if (this.trend.trendName == 'UP_TREND') {
-          //this.messageFractalJuniorBear('(3.2) трейлинг Take Profit')
-          //}
-          //if (this.trend.trendName == 'DOWN_TREND') {}
-        }
-
         /*
           this.fractalOfBearish = {
             nameFracral: 'Bearish',
@@ -275,7 +255,46 @@ class williamsClass {
             // проверочная ифнормация
             timeHuman: timestampToDateHuman(this.candlesForFractal[2].startTime),
           }
-          */
+        */
+
+        // если ордер не выставлен
+        if (this.trend.isUpTrend && !this.deal.inOrder) {
+          this.deal.inOrder = true
+          this.orderPrice = this.deal.fractalOfBearish.high
+          this.setLongOrder('(3.1) Find Fractal Junior')
+        }
+
+        // если ордер выставлен, то меняем цену входа
+        if (
+          this.trend.isUpTrend &&
+          !this.deal.inPosition &&
+          this.deal.fractalOfBearish.high < this.orderPrice
+        ) {
+          this.orderPrice = this.deal.fractalOfBearish.high
+          this.changeLongOrderPrice('(3.2) Find New Fractal Junior')
+        }
+
+        /*
+        // Ставим ордер или меняем цену входа
+        if (this.trend.isUpTrend && !this.deal.inPosition) {
+          this.setLongOrder('(3.1) find Fractal Junior')
+        }
+        */
+
+        // Двигаем Stop Loss для SHORT позиции
+        if (
+          this.trend.isDownTrend &&
+          this.deal.inPosition &&
+          this.deal.stopLoss > this.deal.fractalOfBearish.high
+        ) {
+          this.deal.stopLoss = this.deal.fractalOfBearish.high
+          this.changeSLforSHORT('(5) трейлинг Stop Loss')
+
+          //if (this.trend.trendName == 'UP_TREND') {
+          //this.setLongOrder('(3.2) трейлинг Take Profit')
+          //}
+          //if (this.trend.trendName == 'DOWN_TREND') {}
+        }
       }
       //} //if (this.trend.isUpTrend)
 
@@ -297,21 +316,6 @@ class williamsClass {
           this.candlesForFractalJunior[2].startTime
         )
 
-        // Ставим ордер или меняем цену входа
-        if (this.trend.isDownTrend && !this.deal.inPosition) {
-          this.messageFractalJuniorBull('(3.1) find Fractal Junior')
-        }
-
-        // Двигаем Stop Loss
-        if (
-          this.trend.isUpTrend &&
-          this.deal.inPosition &&
-          this.deal.stopLoss < this.deal.fractalOfBullish.low
-        ) {
-          this.deal.stopLoss = this.deal.fractalOfBullish.low
-          this.messageFractalJuniorBull_SL('(5) трейлинг Stop Loss')
-        }
-
         /*
           this.fractalOfBullish = {
             nameFracral: 'Bullish',
@@ -322,7 +326,42 @@ class williamsClass {
             // проверочная ифнормация
             timeHuman: timestampToDateHuman(this.candlesForFractal[2].startTime),
           }
-          */
+        */
+
+        // если ордер не выставлен
+        if (this.trend.isDownTrend && !this.deal.inOrder) {
+          this.deal.inOrder = true
+          this.orderPrice = this.deal.fractalOfBullish.low
+          this.setShortOrder('(3.1) Find Fractal Junior')
+        }
+
+        // если ордер выставлен, то меняем цену входа
+        if (
+          this.trend.isDownTrend &&
+          !this.deal.inPosition &&
+          this.deal.fractalOfBullish.low > this.orderPrice
+        ) {
+          this.orderPrice = this.deal.fractalOfBullish.low
+          this.changeShortOrderPrice('(3.2) Find New Fractal Junior')
+        }
+
+        /*
+        // Ставим ордер или меняем цену входа
+        if (this.trend.isDownTrend && !this.deal.inPosition) {
+          this.setShortOrder('(3.1) find Fractal Junior')
+        }
+        */
+
+        // Двигаем Stop Loss для LONG позиции
+        if (
+          this.trend.isUpTrend &&
+          this.deal.inPosition &&
+          this.deal.stopLoss < this.deal.fractalOfBullish.low
+        ) {
+          this.deal.stopLoss = this.deal.fractalOfBullish.low
+          this.changeSLforLONG('(5) трейлинг Stop Loss')
+        }
+
         //} // if (this.trend.isDownTrend)
       }
       return this
@@ -419,10 +458,11 @@ class williamsClass {
     this.deal.openTime = candleJunior.startTime
     this.deal.openTimeHuman = timestampToDateHuman(candleJunior.startTime)
 
-    this.deal.amountReal =
+    this.deal.amountReal = +(
       (this.deal.depositReal / this.deal.openPosition) *
       this.partOfDeposit *
       this.multiplier
+    ).toFixed(8)
 
     // ОТПРАВИТЬ СООБЩЕНИЕ В телеграм
     // подготовка концовок про Stop Loss
@@ -460,43 +500,66 @@ class williamsClass {
     return this
   }
 
-  // медвежий фрактал interval Junior - Ставим ордер или меняем цену входа
-  messageFractalJuniorBear(nameFunc) {
+  // --== сообщения о фракталах interval Junior ==--
+  // -= для LONG позиции =-
+  // медвежий фрактал interval Junior - Ставим ордер
+  setLongOrder(nameFunc) {
     if (this.deal.fractalOfBearish.isFractal) {
       //console.table(this.fractalOfBearish)
 
-      const textBearishJunior = `--== ${this.symbol}==--\n-- Текущий тренд: ${this.trend.trendName} --\n${this.deal.fractalOfBearish.nameFracralRus}\n\nСтавим/меняем ордер:\n--==[ Long от ${this.deal.fractalOfBearish.high} USD ]==--\n\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      const textBearishJunior = `--== ${this.symbol}==--\n-- Текущий тренд: ${this.trend.trendName} --\n${this.deal.fractalOfBearish.nameFracralRus}\n\nСтавим ордер:\n--==[ Long от ${this.deal.fractalOfBearish.high} USD ]==--\n\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBearishJunior)
     }
   }
 
-  // медвежий фрактал interval Junior - Двигаем Stop Loss
-  messageFractalJuniorBear_SL(nameFunc) {
+  // медвежий фрактал interval Junior - Меняем цену входа
+  changeLongOrderPrice(nameFunc) {
     if (this.deal.fractalOfBearish.isFractal) {
       //console.table(this.fractalOfBearish)
 
-      const textBearishJunior = `--== ${this.symbol}==--\n-- Текущий тренд: ${this.trend.trendName} --\n${this.deal.fractalOfBearish.nameFracralRus}\n\n--==[ Двигаем Stop Loss на ${this.deal.fractalOfBearish.high} USD ]==--\n\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      const textBearishJunior = `--== ${this.symbol}==--\n-- Текущий тренд: ${this.trend.trendName} --\n${this.deal.fractalOfBearish.nameFracralRus}\n\nСнижаем цену входа:\n--==[ Long от ${this.deal.fractalOfBearish.high} USD ]==--\n\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBearishJunior)
     }
   }
 
-  // бычий фрактал interval Junior - Ставим ордер или меняем цену входа
-  messageFractalJuniorBull(nameFunc) {
+  // бычий фрактал interval Junior - Двигаем Stop Loss для LONG позиции
+  changeSLforLONG(nameFunc) {
     if (this.deal.fractalOfBullish.isFractal) {
       //console.table(this.fractalOfBullish)
 
-      const textBullishJunior = `--== ${this.symbol}==--\n-- Текущий тренд: ${this.trend.trendName} --\n${this.deal.fractalOfBullish.nameFracralRus}\n\nСтавим/меняем ордер:\n--==[ SHORT от ${this.deal.fractalOfBullish.low} USD ]==--\n\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
+      const textBullishJunior = `--== ${this.symbol}==--\nТекущий тренд: ${this.trend.trendName}\n\n--==[ Двигаем Stop Loss на ${this.deal.fractalOfBullish.low} USD ]==--\n\n${this.deal.fractalOfBullish.nameFracralRus}\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBullishJunior)
     }
   }
 
-  // бычий фрактал interval Junior - Двигаем Stop Loss
-  messageFractalJuniorBull_SL(nameFunc) {
+  // -= для SHORT позиции =-
+  // бычий фрактал interval Junior - Ставим ордер
+  setShortOrder(nameFunc) {
     if (this.deal.fractalOfBullish.isFractal) {
       //console.table(this.fractalOfBullish)
 
-      const textBullishJunior = `--== ${this.symbol}==--\n-- Текущий тренд: ${this.trend.trendName} --\n${this.deal.fractalOfBullish.nameFracralRus}\n\n--==[ Двигаем Stop Loss на ${this.deal.fractalOfBullish.low} USD ]==--\n\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
+      const textBullishJunior = `--== ${this.symbol}==--\n-- Текущий тренд: ${this.trend.trendName} --\n${this.deal.fractalOfBullish.nameFracralRus}\n\nСтавим ордер:\n--==[ SHORT от ${this.deal.fractalOfBullish.low} USD ]==--\n\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBullishJunior)
+    }
+  }
+
+  // бычий фрактал interval Junior - Меняем цену входа
+  changeShortOrderPrice(nameFunc) {
+    if (this.deal.fractalOfBullish.isFractal) {
+      //console.table(this.fractalOfBullish)
+
+      const textBullishJunior = `--== ${this.symbol}==--\n-- Текущий тренд: ${this.trend.trendName} --\n${this.deal.fractalOfBullish.nameFracralRus}\n\nПовышаем цену входа:\n--==[ SHORT от ${this.deal.fractalOfBullish.low} USD ]==--\n\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
+      sendInfoToUserWilliams(textBullishJunior)
+    }
+  }
+
+  // медвежий фрактал interval Junior - Двигаем Stop Loss для SHORT позиции
+  changeSLforSHORT(nameFunc) {
+    if (this.deal.fractalOfBearish.isFractal) {
+      //console.table(this.fractalOfBearish)
+
+      const textBearishJunior = `--== ${this.symbol}==--\nТекущий тренд: ${this.trend.trendName}\n\n--==[ Двигаем Stop Loss на ${this.deal.fractalOfBearish.high} USD ]==--\n\n${this.deal.fractalOfBearish.nameFracralRus}\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      sendInfoToUserWilliams(textBearishJunior)
     }
   }
 
@@ -639,17 +702,17 @@ class williamsClass {
   // --== дополнительные функции к (0) и (1) ==--
   // отправка сообщений в консоль о найденном НИСХОДЯЩЕМ тренде
   sendMessageAboutDownTrendToConsole(nameFunc) {
-    const text = `--- ${this.nameStrategy} ---\n--== ${this.symbol}==--\n--==[ Текущий тренд: ${this.trend.trendName} ]==--\n\nДата фрактала: ${this.trend.fractalDownTime}\nУровень фрактала: ${this.trend.fractalsDownPrice} USD\n\nДата пробития фрактала: ${this.trend.downPriceTimeHuman}\nЦена пробития: ${this.trend.downPrice} USD\nИсточник: ${nameFunc}`
+    const text = `--- ${this.nameStrategy} ---\n--== ${this.symbol}==--\n--==[ Новый: ${this.trend.trendName} ]==--\n\nПробили: ${this.fractalOfBullish.nameFracralRus}\nДата фрактала: ${this.trend.fractalDownTime}\nУровень фрактала: ${this.trend.fractalsDownPrice} USD\n\nДата пробития фрактала: ${this.trend.downPriceTimeHuman}\nЦена пробития: ${this.trend.downPrice} USD\nИсточник: ${nameFunc}`
 
-    console.log('\n' + text)
+    //console.log('\n' + text)
     sendInfoToUserWilliams(text)
   }
 
   // отправка сообщений в консоль о найденном ВОСХОДЯЩЕМ тренде
   sendMessageAboutUpTrendToConsole(nameFunc) {
-    const text = `--- ${this.nameStrategy} ---\n--== ${this.symbol}==--\n--==[ Текущий тренд: ${this.trend.trendName} ]==--\n\nДата фрактала: ${this.trend.fractalUpTime}\nУровень фрактала: ${this.trend.fractalUpPrice} USD\n\nДата пробития фрактала: ${this.trend.upPriceTimeHuman}\nЦена пробития: ${this.trend.upPrice} USD\nИсточник: ${nameFunc}`
+    const text = `--- ${this.nameStrategy} ---\n--== ${this.symbol}==--\n--==[ Новый: ${this.trend.trendName} ]==--\n\nПробили: ${this.fractalOfBearish.nameFracralRus}\nДата фрактала: ${this.trend.fractalUpTime}\nУровень фрактала: ${this.trend.fractalUpPrice} USD\n\nДата пробития фрактала: ${this.trend.upPriceTimeHuman}\nЦена пробития: ${this.trend.upPrice} USD\nИсточник: ${nameFunc}`
 
-    console.log('\n' + text)
+    //console.log('\n' + text)
     sendInfoToUserWilliams(text)
   }
 
