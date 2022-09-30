@@ -25,7 +25,7 @@ const timestampToDateHuman = require('../../../../common.func/timestampToDateHum
 пункты 1 и 2 прописать отдельными функциями в файле Class
 */
 
-class Alex412Class1h_mod {
+class Alex412Class1h_mod2 {
   constructor(symbol, nameStrategy, takeProfitConst, stopLossConst, shiftTime) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
@@ -172,6 +172,8 @@ class Alex412Class1h_mod {
 
       // ищем сигнал №2: свеча фрактала ЗЕЛЕНАЯ
       if (
+        // 30.09.2022: убираем зеленый фрактал на 30m, оставляем на 1h
+        interval == '1h' &&
         // свеча до фрактала - красная
         this.candlesForFractal[1].open > this.candlesForFractal[1].close && // вторая свеча КРАСНАЯ
         this.candlesForFractal[2].close > this.candlesForFractal[2].open && // свеча фрактала ЗЕЛЕНАЯ
@@ -312,7 +314,7 @@ class Alex412Class1h_mod {
     if (this.inPosition && !this.aboutBrokenFractal) {
       if (lastCandle.close > this.fractalHigh) {
         sendInfoToUser(
-          `${this.whitchSignal}\n\nМонета: ${this.symbol}\n\n--== Сломали фрактал ==--\nТекущая цена: ${lastCandle.close} USDT \nУровень фрактала: ${this.fractalHigh} USDT\n\n--== Переноси TP в БУ ==--\nTake Profit = ${this.openShort}`
+          `${this.whitchSignal}\n\nМонета: ${this.symbol}\n\n--== Сломали фрактал ==--\nТекущая цена: ${lastCandle.close} USDT \nУровень фрактала: ${this.fractalHigh} USDT\n\n--== Переноси Take Profit в БУ ==--\nTake Profit = ${this.openShort}`
         )
         this.changeTPSLCommon(lastCandle)
         this.aboutBrokenFractal = true
@@ -463,17 +465,18 @@ class Alex412Class1h_mod {
       }
       */
 
-      // 2. перенос TP SL: после закрытия второй свечи. (последняя свеча фрактала - первая, на которой зашли)
-      /*
-      if (interval == '30m') {
-        this.shiftTime = 1000 * 60 * 30 // сдвиг на одну 30m свечу
-      }
-      */
-
-      // if (lastCandle.startTime == this.sygnalTime + this.shiftTime) {
-      // перенос TP SL: после закрытия второй свечи.
-      if (lastCandle.startTime == this.sygnalTime) {
+      // 30.09.2022
+      // (1) Если свеча открытия зеленая, тогда перенос после закрытия свечи входа в позицию
+      if (
+        lastCandle.startTime == this.sygnalTime &&
+        lastCandle.close > lastCandle.open
+      ) {
         // перенос стопа или тейка после закрытия свечи открытия
+        this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
+      }
+
+      // (2) иначе перенос TPSL после закрытия второй свечи
+      if (lastCandle.startTime == this.sygnalTime + this.shiftTime) {
         this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
       }
     }
@@ -501,4 +504,4 @@ class Alex412Class1h_mod {
     }
   }
 }
-module.exports = Alex412Class1h_mod
+module.exports = Alex412Class1h_mod2

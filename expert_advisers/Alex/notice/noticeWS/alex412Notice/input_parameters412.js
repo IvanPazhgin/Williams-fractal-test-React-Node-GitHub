@@ -26,12 +26,12 @@ const options = {
   shiftTime4h: 1000 * 60 * 60 * 4, // сдвиг на одну 4h свечу
 
   // 1h
-  takeProfitConst1h: 0.015,
+  takeProfitConst1h: 0.01,
   stopLossConst1h: 0.01,
   shiftTime1h: 1000 * 60 * 60, // сдвиг на одну 1h свечу
 
   // 30m
-  takeProfitConst30m: 0.015,
+  takeProfitConst30m: 0.01,
   stopLossConst30m: 0.01,
   shiftTime30m: 1000 * 60 * 30, // сдвиг на одну 30m свечу
 }

@@ -11,7 +11,7 @@
 */
 
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
-const Alex412Class1h_mod = require('./Alex412Class1h_mod')
+const Alex412Class1h_mod2 = require('./Alex412Class1h_mod2')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 
@@ -31,7 +31,7 @@ async function alex412Main1h_mod(
   let symbolObj = []
 
   symbolsForTrade.forEach(function (item, i, arg) {
-    symbolObj[i] = new Alex412Class1h_mod(
+    symbolObj[i] = new Alex412Class1h_mod2(
       item,
       nameStrategy,
       takeProfitConst,
