@@ -258,7 +258,12 @@ class williamsClass {
         */
 
         // если ордер не выставлен
-        if (this.trend.isUpTrend && !this.deal.inOrder) {
+        // if (this.trend.isUpTrend && !this.deal.inOrder) { // ошибка: когда мы в сделке при смене тренда, то прилетает сигнал на постановку ордера
+        if (
+          this.trend.isUpTrend &&
+          !this.deal.inOrder &&
+          !this.deal.inPosition
+        ) {
           this.deal.inOrder = true
           this.orderPrice = this.deal.fractalOfBearish.high
           this.setLongOrder('(3.1) Find Fractal Junior')
@@ -329,7 +334,12 @@ class williamsClass {
         */
 
         // если ордер не выставлен
-        if (this.trend.isDownTrend && !this.deal.inOrder) {
+        //if (this.trend.isDownTrend && !this.deal.inOrder) { // ошибка: когда мы в сделке при смене тренда, то прилетает сигнал на постановку ордера
+        if (
+          this.trend.isDownTrend &&
+          !this.deal.inOrder &&
+          !this.deal.inPosition
+        ) {
           this.deal.inOrder = true
           this.orderPrice = this.deal.fractalOfBullish.low
           this.setShortOrder('(3.1) Find Fractal Junior')
@@ -339,7 +349,7 @@ class williamsClass {
         if (
           this.trend.isDownTrend &&
           !this.deal.inPosition &&
-          this.deal.fractalOfBullish.low > this.orderPrice
+          this.deal.fractalOfBullish.low > this.orderPrice // убрать условие и отправлять эти значения в TG для теста (тоже самое в LONG)
         ) {
           this.orderPrice = this.deal.fractalOfBullish.low
           this.changeShortOrderPrice('(3.2) Find New Fractal Junior')

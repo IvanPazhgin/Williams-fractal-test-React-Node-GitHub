@@ -4,6 +4,23 @@ class dealClass {
 
     this.depositReal = 1000 // накопленный результат
 
+    this.fractalOfBullish = {
+      nameFracralRus: 'Бычий фрактал Junior',
+      isFractal: false,
+      low: 0,
+      timeHuman: '',
+    }
+
+    this.highFBear = 0 // fractal_Bearish.high
+    this.ishighFBear = false
+
+    this.fractalOfBearish = {
+      nameFracralRus: 'Медвежий фрактал Junior',
+      isFractal: false,
+      high: 0,
+      timeHuman: '',
+    }
+
     this.reset()
   }
 
@@ -40,23 +57,6 @@ class dealClass {
     this.lowFbull = 0 // fractal_Bullish.low
     this.lowFbullTime = '' // для проверок
     this.islowFbull = false
-
-    this.fractalOfBullish = {
-      nameFracralRus: 'Бычий фрактал Junior',
-      isFractal: false,
-      low: 0,
-      timeHuman: '',
-    }
-
-    this.highFBear = 0 // fractal_Bearish.high
-    this.ishighFBear = false
-
-    this.fractalOfBearish = {
-      nameFracralRus: 'Медвежий фрактал Junior',
-      isFractal: false,
-      high: 0,
-      timeHuman: '',
-    }
   }
 } // class dealClass
 
