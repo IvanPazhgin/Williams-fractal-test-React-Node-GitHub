@@ -82,6 +82,10 @@ function workingFunctions() {
   //const alex413Launch = require('./expert_advisers/Alex/notice/noticeWS/alex413Notice/alex413Launch')
   //alex413Launch()
 
+  // оповещения 3.8.2.6 2h на 105 монетах (02.10.2022)
+  const alexNoticeMain3826 = require('./expert_advisers/Alex/notice/noticeWS/alex3826Notice/alexNoticeMain3826')
+  alexNoticeMain3826()
+
   // оповещения по стратегии Билла Вильямса
   const williamsMain = require('./expert_advisers/Williams_fractal/notification/williamsMain')
   williamsMain()
