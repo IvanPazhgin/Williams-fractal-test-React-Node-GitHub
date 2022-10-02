@@ -14,7 +14,7 @@ const {
   sendInfo382ToUser,
 } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
-const AlexNotice3826Class2h = require('./AlexNotice3826Class2h')
+const AlexNotice3826Class2h = require('./alexNot3826Class2h')
 const { timeFrames, nameStrategy } = require('./input_parameters3826')
 
 async function alex3826Notice2h(symbols2h38) {
