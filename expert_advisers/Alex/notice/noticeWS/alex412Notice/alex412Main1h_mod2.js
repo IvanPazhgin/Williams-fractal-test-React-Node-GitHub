@@ -89,6 +89,7 @@ async function alex412Main1h_mod(
               // 1.1 для начала каждую секунду проверяем условие выхода из сделки по TP и SL
               item.closeShortPosition(lastCandle, timeFrameSenior)
               item.findBrokenFractal(lastCandle)
+              item.changeTPSLOnMarket(lastCandle, timeFrameSenior)
 
               // если вышли из сделки, то обнуляем состояние сделки:
               if (!item.inPosition) {
