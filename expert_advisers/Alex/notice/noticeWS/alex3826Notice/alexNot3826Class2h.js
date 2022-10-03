@@ -180,9 +180,7 @@ class AlexNotice3826Class2h {
 
         // отправляем сообщение в tg о найденном сигнале
         if (this.canShort) {
-          console.log(
-            `${this.symbol}: Нашли сигнал для Open SHORT: ${this.whitchSignal}`
-          )
+          // console.log(`${this.symbol}: Нашли сигнал для Open SHORT: ${this.whitchSignal}`)
 
           sendInfo382ToUser(
             `---=== НОВЫЙ СИГНАЛ ===---\n${this.whitchSignal}\n\nМонета: ${
@@ -207,9 +205,7 @@ class AlexNotice3826Class2h {
           )
           //sendInfo382ToUser(JSON.stringify(this))
         } else {
-          console.log(
-            `${this.symbol}: Сигнала на вход не было. Ждем следующую свечу (${this.nameStrategy})`
-          )
+          // console.log(`${this.symbol}: Сигнала на вход не было. Ждем следующую свечу (${this.nameStrategy})`)
           // sendInfo382ToUser(`Сигнала на вход не было. \nЖдем следующую свечу`)
         } // if (canShort)
       } // if (!inShortPosition)

@@ -94,9 +94,7 @@ async function alex3826Notice2h(symbols2h38) {
               if (!item.inPosition) {
                 // можно считать что сделка закрыта
                 item.reset()
-                console.log(
-                  `${item.symbol}: Закрыли short. Очистили параметры сделки`
-                )
+                // console.log(`${item.symbol}: Закрыли short. Очистили параметры сделки`)
               } // обнуляем состояние сделки до первоначального состояния
             } else {
               // if(final)
@@ -126,9 +124,7 @@ async function alex3826Notice2h(symbols2h38) {
                   )}\nУДАЛИ ордер на бирже\n\nЖдем следющего сигнала...`
                 )
                 item.reset()
-                console.log(
-                  `${item.symbol}: Отменили сигнал. Очистили параметры сделки`
-                )
+                //console.log(`${item.symbol}: Отменили сигнал. Очистили параметры сделки`)
               } // обнуляем состояние сигнала
 
               // 2.2 на финальной свечке запускаем поиск сигнала на вход

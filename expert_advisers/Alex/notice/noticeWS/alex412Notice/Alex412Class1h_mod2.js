@@ -203,6 +203,7 @@ class Alex412Class1h_mod2 {
       }
 
       // ищем сигнал №2: свеча фрактала ЗЕЛЕНАЯ
+      /*
       if (
         // 03.10.2022: отношение между high и low фрактальной свечи должно быть меньше 5%
         this.fractalLengthCalc < this.fractalLength &&
@@ -227,6 +228,7 @@ class Alex412Class1h_mod2 {
 
         // console.table(this.fractalBearish)
       }
+      */
 
       // ищем сигнал №3: свеча фрактала КРАСНАЯ
       if (
@@ -234,7 +236,9 @@ class Alex412Class1h_mod2 {
         this.fractalLengthCalc < this.fractalLength &&
         // вариант №1
         ((this.candlesForFractal[0].open > this.candlesForFractal[0].close && // первая свеча - красная
-          this.candlesForFractal[1].close > this.candlesForFractal[1].open) || // вторая свеча - зеленая
+          this.candlesForFractal[1].close > this.candlesForFractal[1].open && // вторая свеча - зеленая
+          this.candlesForFractal[1].volume >
+            this.candlesForFractal[3].volume) || // vol 2й зеленой > vol 4й красной
           // вариант №2: свеча до фрактала - красная
           this.candlesForFractal[1].open > this.candlesForFractal[1].close) && // вторая свеча КРАСНАЯ
         this.candlesForFractal[2].open > this.candlesForFractal[2].close && // свеча фрактала КРАСНАЯ
@@ -389,23 +393,21 @@ class Alex412Class1h_mod2 {
             this.countOfZero++
           }
 
+          // отправка сообщения
           // console.log(`Close SHORT with takeProfit: ${this.closeShort}`)
-          sendInfoToUser(
-            `${this.whitchSignal}\n${timestampToDateHuman(
-              this.closeTime
-            )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
-              lastCandle.close
-            } USD\n\n--== Close SHORT ==--\nwith Take Profit: ${
-              this.closeShort
-            }\nПрибыль = ${this.profit} USDT (${
-              this.percent
-            }% от депозита)\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${
-              this.countAllDeals
-            }\nПоложительных: ${this.countOfPositive}\nНулевых: ${
-              this.countOfZero
-            }`
-          )
+          const message1 = `${this.whitchSignal}\n${timestampToDateHuman(
+            this.closeTime
+          )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
+            lastCandle.close
+          } USD\n\n--== Close SHORT ==--\nwith Take Profit: ${
+            this.closeShort
+          }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
+
+          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+
+          sendInfoToUser(message1 + message2)
         } // условия выхода из сделки по TP
+
         // условия выхода из сделки по SL
         else if (lastCandle.close >= this.stopLoss) {
           //this.closeShort = lastCandle.high
@@ -430,22 +432,19 @@ class Alex412Class1h_mod2 {
             this.countOfZero++
           }
 
+          // отправка сообщения
           //console.log(`Close SHORT with stopLoss: ${this.closeShort}`)
-          sendInfoToUser(
-            `${this.whitchSignal}\n${timestampToDateHuman(
-              this.closeTime
-            )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
-              lastCandle.close
-            } USD\n\n--== Close SHORT ==--\nwith Stop Loss: ${
-              this.closeShort
-            }\nУбыток = ${this.profit} USDT (${
-              this.percent
-            }% от депозита)\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${
-              this.countAllDeals
-            }\nОтрицательных: ${this.countOfNegative}\nНулевых: ${
-              this.countOfZero
-            }`
-          )
+          const message1 = `${this.whitchSignal}\n${timestampToDateHuman(
+            this.closeTime
+          )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
+            lastCandle.close
+          } USD\n\n--== Close SHORT ==--\nwith Stop Loss: ${
+            this.closeShort
+          }\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
+
+          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+
+          sendInfoToUser(message1 + message2)
         } // отработка выхода из сделки по SL
       } // if (lastCandle.interval == interval)
     } // if (this.inPosition)
