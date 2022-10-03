@@ -9,6 +9,7 @@ class AlexNotice3826Class2h {
   constructor(symbol, nameStrategy) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
+    this.fractalLength = 5 // отношение между high и low фрактальной свечи должно быть меньше 5%
     this.reset()
   }
 
@@ -41,6 +42,7 @@ class AlexNotice3826Class2h {
 
     this.shiftTime = 1000 * 60 * 60 * 2 // сдвиг на одну 2h свечу
     // this.signalSendingTime = new Date().getTime() // время отправки сигнала
+    this.fractalLengthCalc = 0 // для расчета отношения между high и low на фрактальной свече
     return this
   }
   // подготовка данных для поиска сигнала
@@ -101,8 +103,18 @@ class AlexNotice3826Class2h {
     // если входим, то inPosition = true
     for (let i = 3; i < array.length; i++) {
       if (!this.inPosition) {
+        // расчет отношения между high и low на фрактальной свече
+        this.fractalLengthCalc =
+          (this.candlesForFractal[i - 1].high /
+            this.candlesForFractal[i - 1].low -
+            1) *
+          100
+
         // сигнал №1
         if (
+          // 03.10.2022: отношение между high и low фрактальной свечи должно быть меньше 5%
+          this.fractalLengthCalc < this.fractalLength &&
+          // старые условия
           array[i - 2].close > array[i - 2].open && // 1 свеча зелёная
           array[i - 1].close > array[i - 1].open && // 2 свеча зелёная
           array[i].open > array[i].close && // 3 свеча красная
