@@ -105,10 +105,7 @@ class AlexNotice3826Class2h {
       if (!this.inPosition) {
         // расчет отношения между high и low на фрактальной свече
         this.fractalLengthCalc =
-          (this.candlesForFractal[i - 1].high /
-            this.candlesForFractal[i - 1].low -
-            1) *
-          100
+          (array[i - 1].high / array[i - 1].low - 1) * 100
 
         // сигнал №1
         if (
