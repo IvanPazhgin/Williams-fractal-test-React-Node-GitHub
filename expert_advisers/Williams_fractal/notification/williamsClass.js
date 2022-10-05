@@ -386,7 +386,7 @@ class williamsClass {
       if (this.trend.isDownTrend) {
         //if (this.trend.trendName == 'DOWN_TREND') {
         if (!this.deal.inPosition && this.deal.fractalOfBullish.isFractal) {
-          if (lastCandle.low < this.deal.fractalOfBullish.low) {
+          if (lastCandle.close < this.deal.fractalOfBullish.low) {
             // входим в сделку
             this.deal.position = 'SHORT'
             this.deal.openPosition = this.deal.fractalOfBullish.low
@@ -401,7 +401,7 @@ class williamsClass {
           if (this.deal.fractalOfBearish.high < this.deal.stopLoss) {
             this.deal.stopLoss = this.deal.fractalOfBearish.high
           }
-          if (lastCandle.high > this.deal.stopLoss && this.deal.stopLoss > 0) {
+          if (lastCandle.close > this.deal.stopLoss && this.deal.stopLoss > 0) {
             // закрываем сделку
             this.deal.closePosition = this.deal.stopLoss
             this.deal.profitReal = +(
@@ -424,7 +424,7 @@ class williamsClass {
         //if (this.trend.trendName == 'UP_TREND') {
         // если не в сделке
         if (!this.deal.inPosition && this.deal.fractalOfBearish.isFractal) {
-          if (lastCandle.high > this.deal.fractalOfBearish.high) {
+          if (lastCandle.close > this.deal.fractalOfBearish.high) {
             // входим в сделку
             this.deal.position = 'LONG'
             this.deal.openPosition = this.deal.fractalOfBearish.high
@@ -439,7 +439,7 @@ class williamsClass {
           if (this.deal.fractalOfBullish.low > this.deal.stopLoss) {
             this.deal.stopLoss = this.deal.fractalOfBullish.low
           }
-          if (lastCandle.low < this.deal.stopLoss) {
+          if (lastCandle.close < this.deal.stopLoss) {
             // закрываем сделку
             this.deal.closePosition = this.deal.stopLoss
             this.deal.profitReal = +(
@@ -463,7 +463,6 @@ class williamsClass {
 
   // --== дополнительные функции к (2) ==--
   enterDeal(candleJunior) {
-    let messageSL = ''
     this.deal.inPosition = true
     this.deal.openTime = candleJunior.startTime
     this.deal.openTimeHuman = timestampToDateHuman(candleJunior.startTime)
@@ -476,6 +475,7 @@ class williamsClass {
 
     // ОТПРАВИТЬ СООБЩЕНИЕ В телеграм
     // подготовка концовок про Stop Loss
+    let messageSL = ''
     if (this.deal.position == 'LONG') {
       messageSL = `\n${this.deal.fractalOfBullish.nameFracralRus}\nЕго время: ${this.deal.fractalOfBullish.timeHuman}`
     }
@@ -485,10 +485,8 @@ class williamsClass {
     }
 
     // основное сообщение
-    const text =
-      `--== (4) вход в сделку ==--\n-= ${this.symbol} =-\n--==[ open ${this.deal.position} по ${this.deal.openPosition} USD ]==--\nКол-во монет: ${this.deal.amountReal}\n\nСтавь stop Loss: ${this.deal.stopLoss}` +
-      messageSL
-    sendInfoToUserWilliams(text)
+    const text = `--== (4) вход в сделку ==--\n-= ${this.symbol} =-\n--==[ open ${this.deal.position} по ${this.deal.openPosition} USD ]==--\nКол-во монет: ${this.deal.amountReal}\n\nСтавь stop Loss: ${this.deal.stopLoss}`
+    sendInfoToUserWilliams(text + messageSL)
 
     return this
   }

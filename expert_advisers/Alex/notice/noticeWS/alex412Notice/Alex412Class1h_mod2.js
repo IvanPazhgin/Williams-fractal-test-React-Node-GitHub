@@ -236,9 +236,9 @@ class Alex412Class1h_mod2 {
         this.fractalLengthCalc < this.fractalLength &&
         // вариант №1
         ((this.candlesForFractal[0].open > this.candlesForFractal[0].close && // первая свеча - красная
-          this.candlesForFractal[1].close > this.candlesForFractal[1].open && // вторая свеча - зеленая
-          this.candlesForFractal[1].volume >
-            this.candlesForFractal[3].volume) || // vol 2й зеленой > vol 4й красной
+          this.candlesForFractal[1].close >
+            this.candlesForFractal[1].open) /*&& // вторая свеча - зеленая
+          this.candlesForFractal[1].volume > this.candlesForFractal[3].volume*/ || // vol 2й зеленой > vol 4й красной
           // вариант №2: свеча до фрактала - красная
           this.candlesForFractal[1].open > this.candlesForFractal[1].close) && // вторая свеча КРАСНАЯ
         this.candlesForFractal[2].open > this.candlesForFractal[2].close && // свеча фрактала КРАСНАЯ
