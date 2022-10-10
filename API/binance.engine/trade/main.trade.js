@@ -1,0 +1,22 @@
+const submittingCloseOrder = require('./submittingCloseOrder')
+const submittingEnterOrder = require('./submittingEnterOrder')
+
+function openDeal(api_option, symbol, side) {
+  // вход в сделку
+  const enterOrderResult = submittingEnterOrder(api_option, symbol, side)
+}
+
+function closeDeal(api_option, symbol, side) {
+  // найти функцию, которая находит кол-во монет на балансе
+  // выход из сделки
+  const { response } = require('./api_options')
+  const closeOrderResult = submittingCloseOrder(
+    api_option,
+    symbol,
+    side,
+    //enterOrderResult,
+    response
+  )
+}
+
+module.exports = { openDeal, closeDeal }

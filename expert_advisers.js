@@ -88,15 +88,32 @@ function workingFunctions() {
 
   // оповещения по стратегии Билла Вильямса
   const williamsMain = require('./expert_advisers/Williams_fractal/notification/williamsMain')
-  williamsMain()
+  //williamsMain()
 }
 
 function testBinanceTrade() {
   // эксперименты с торговыми функциями binance
   // SyntaxError: Cannot use import statement outside a module
   // Толя предложил: ищи видос вебпак+тайпскрипт
-  const spotTrade = require(`./binance_Engine/tests_Ivan/spot-trade.ts`)
-  spotTrade()
+  // const {spotTrade,getAvailableBalance} = require(`./binance_Engine/tests_Ivan/spot-trade.ts`)
+  //spotTrade()
+
+  // тесты готового модуля трейд
+  //const { getAvailableBalance, getLastAssetPrice, submittingEnterOrder, submittingCloseOrder } = require('./binance_Engine/tests_Ivan/spot-trade-mod')
+  //getAvailableBalance() // (1) получаем доступный баланс
+  //const symbol = 'BELUSDT'
+  //getLastAssetPrice(symbol) // (2) получаем текущую цену на рынке
+  //const { apiOptionsIvan, response } = require('./API/binance.engine/trade/api_options')
+  //submittingEnterOrder(symbol, 'BUY', apiOptionsIvan) // (3) монета, вид приказа: BUY, SELL
+  //submittingCloseOrder(symbol, 'SELL', apiOptionsIvan, response) // (4)
+
+  // тест разнесенных торговых функций по файлам
+  const {
+    openDeal,
+    closeDeal,
+  } = require('./API/binance.engine/trade/main.trade')
+  //openDeal(apiOptionsIvan, symbol, 'BUY') // покупка
+  closeDeal(apiOptionsIvan, symbol, 'SELL') // продажа
 }
 
 function saveCandle() {

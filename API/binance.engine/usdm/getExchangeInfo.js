@@ -13,10 +13,30 @@ async function getExchangeInfo() {
   try {
     const exchangeInfo = await client.getExchangeInfo()
     console.log('получили результат работы функции getExchangeInfo')
-    // console.log('getExchangeInfo result: ', exchangeInfo)
-    // !!!! добавить функцию foreach для объекта !!!! чтобы отфильтровать например ETH
+    //console.log('getExchangeInfo result: ', exchangeInfo)
+    const symbol = 'ETHUSDT'
 
-    //console.log(`тип exchangeInfo = ${typeof exchangeInfo}, длина = ${exchangeInfo.lenght}`)
+    /*
+    for (let element of exchangeInfo) {
+      if (element.symbol == symbol) {
+        console.log(element.symbol)
+      }
+    }
+    */
+
+    /*
+    exchangeInfo.symbols.forEach((element) => {
+      if (element.symbol == symbol) {
+        pricePrecision = element.pricePrecision
+      }
+    })
+    */
+
+    const pricePrecision = exchangeInfo.symbols.find(
+      (element) => element.symbol === symbol
+    ).pricePrecision
+
+    console.log(`pricePrecision of ${symbol} = ${pricePrecision}`)
     return exchangeInfo
   } catch (err) {
     console.error('get Account Trade List error: ', err)
