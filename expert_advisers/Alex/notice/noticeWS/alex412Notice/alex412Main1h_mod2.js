@@ -88,7 +88,7 @@ async function alex412Main1h_mod(
             if (!final) {
               // 1.1 для начала каждую секунду проверяем условие выхода из сделки по TP и SL
               item.closeShortPosition(lastCandle, timeFrameSenior)
-              item.findBrokenFractal(lastCandle)
+              item.findBrokenFractal(lastCandle) // отключил из-за большого кол-ва служебных сообщений
               item.changeTPSLOnMarket(lastCandle, timeFrameSenior)
 
               // если вышли из сделки, то обнуляем состояние сделки:
@@ -120,13 +120,13 @@ async function alex412Main1h_mod(
 
               if (item.canShort && lastCandle.interval == timeFrameSenior) {
                 // если до финальной свечки не вошли в сделку, то отменяем сигнал
-                sendInfoToUser(
-                  `${item.whitchSignal}\n\nМонета: ${
-                    item.symbol
-                  }\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${timestampToDateHuman(
-                    item.sygnalTime
-                  )}\nУДАЛИ ордер на бирже\n\nЖдем следющего сигнала...`
-                )
+                const message = `${item.whitchSignal}\n\nМонета: ${
+                  item.symbol
+                }\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${timestampToDateHuman(
+                  item.sygnalTime
+                )}\nУДАЛИ ордер на бирже\n\nЖдем следющего сигнала...`
+
+                //sendInfoToUser(message)
                 item.reset()
                 // console.log(`${item.symbol}: Отменили сигнал. Очистили параметры сделки`)
               } // обнуляем состояние сигнала

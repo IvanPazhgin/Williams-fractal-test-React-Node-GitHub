@@ -284,23 +284,23 @@ class Alex412Class1h_mod2 {
       this.multiplier
     ).toFixed(8)
 
-    sendInfoToUser(
-      `---=== НОВЫЙ СИГНАЛ ===---\n${this.whitchSignal}\nМонета: ${
-        this.symbol
-      }\n\nНЕ подтвержденный ${this.fractalBearish.nameFracralRus}\nДата: ${
-        this.fractalBearish.timeH
-      }\nHigh: ${this.fractalBearish.high}\n\nЦена для входа в SHORT: ${
-        this.openShort
-      }\n\nКол-во монет: ${this.amountOfPosition}\nВзяли ${
-        this.partOfDeposit * 100
-      }% c плечом ${this.multiplier}x от депозита = ${
-        this.deposit
-      } USDT\n\nПоставь:\nTake Profit: ${this.takeProfit} (${
-        this.takeProfitConst * 100
-      }%)\nStop Loss: ${this.stopLoss} (${
-        this.stopLossConst * 100
-      }%)\n\nЖдем цену на рынке для входа в SHORT...`
-    )
+    const message = `---=== НОВЫЙ СИГНАЛ ===---\n${
+      this.whitchSignal
+    }\nМонета: ${this.symbol}\n\nНЕ подтвержденный ${
+      this.fractalBearish.nameFracralRus
+    }\nДата: ${this.fractalBearish.timeH}\nHigh: ${
+      this.fractalBearish.high
+    }\n\nЦена для входа в SHORT: ${this.openShort}\n\nКол-во монет: ${
+      this.amountOfPosition
+    }\nВзяли ${this.partOfDeposit * 100}% c плечом ${
+      this.multiplier
+    }x от депозита = ${this.deposit} USDT\n\nПоставь:\nTake Profit: ${
+      this.takeProfit
+    } (${this.takeProfitConst * 100}%)\nStop Loss: ${this.stopLoss} (${
+      this.stopLossConst * 100
+    }%)\n\nЖдем цену на рынке для входа в SHORT...`
+
+    //sendInfoToUser(message)
     return this
   } // openShortCommon(arrayOpenTime
 
@@ -336,17 +336,17 @@ class Alex412Class1h_mod2 {
   findBrokenFractal(lastCandle) {
     if (this.canShort) {
       if (lastCandle.close > this.fractalHigh) {
-        sendInfoToUser(
-          `${this.whitchSignal}\n\nМонета: ${
-            this.symbol
-          }\n\n--== Сломали фрактал ==--\nТекущая цена: ${
-            lastCandle.close
-          } USDT \nУровень фрактала: ${
-            this.fractalHigh
-          } USDT\n--== ОТМЕНА сигнала ==--\nВремя сигнала: ${timestampToDateHuman(
-            this.sygnalTime
-          )}`
-        )
+        const message = `${this.whitchSignal}\n\nМонета: ${
+          this.symbol
+        }\n\n--== Сломали фрактал ==--\nТекущая цена: ${
+          lastCandle.close
+        } USDT \nУровень фрактала: ${
+          this.fractalHigh
+        } USDT\n--== ОТМЕНА сигнала ==--\nВремя сигнала: ${timestampToDateHuman(
+          this.sygnalTime
+        )}`
+
+        sendInfoToUser(message)
         this.reset()
       }
     }
