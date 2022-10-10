@@ -5,7 +5,7 @@ function candlesToObject(arg) {
   arg.forEach(function (item, i, arg) {
     target[i] = {
       startTime: item[0],
-      //openTimeH: timestampToDateHuman(item[0]),
+      //startTimeHuman: timestampToDateHuman(item[0]),
       open: Number(item[1]),
       high: Number(item[2]),
       low: Number(item[3]),
