@@ -105,9 +105,12 @@ function testBinanceTrade() {
   // тесты готового модуля трейд
   //const { getAvailableBalance, getLastAssetPrice, submittingEnterOrder, submittingCloseOrder } = require('./binance_Engine/tests_Ivan/spot-trade-mod')
   //getAvailableBalance() // (1) получаем доступный баланс
-  //const symbol = 'BELUSDT'
+  const symbol = 'CHRUSDT'
   //getLastAssetPrice(symbol) // (2) получаем текущую цену на рынке
-  //const { apiOptionsIvan, response } = require('./API/binance.engine/trade/api_options')
+  const {
+    apiOptionsIvan,
+    response,
+  } = require('./API/binance.engine/trade/api_options')
   //submittingEnterOrder(symbol, 'BUY', apiOptionsIvan) // (3) монета, вид приказа: BUY, SELL
   //submittingCloseOrder(symbol, 'SELL', apiOptionsIvan, response) // (4)
 

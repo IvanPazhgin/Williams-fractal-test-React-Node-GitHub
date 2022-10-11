@@ -1,10 +1,10 @@
 const optionsOfTrade = {
   entryAmountPercent: 50, // trigger trade with 50%
-  multiplier: 1, // плечо
+  multiplier: 10, // плечо
 }
 
 const apiOptionsIvan = {
-  name: 'ivan',
+  name: 'Ivan',
   api_key: '2MqDbjP8Y8dmTd8BzZeXRenyucmuSvZk5C18OJM4AqjYRcv2uUEUo5BJO83EqaPP',
   api_secret:
     'FfWpiqyy3E1Ok3dwBjTWtI1PHS2yqHyelTDmdqdRqWZSs4egnlnmmnFk4H0us3v3',
@@ -13,13 +13,13 @@ const apiOptionsIvan = {
 const apiOptionsAlex = { name: 'Alex' }
 
 const response = {
-  orderId: 3331521586,
-  symbol: 'BELUSDT',
+  orderId: 3045188770,
+  symbol: 'CHRUSDT',
   status: 'NEW',
-  clientOrderId: 'x-15PC4ZJyUKl-74Vw4CCYR2g5Y1qC0keGu',
+  clientOrderId: 'x-15PC4ZJyGvXoZF5Ry5OpxCmmDDZoGxmCc',
   price: 0,
-  avgPrice: '0.00000',
-  origQty: 13,
+  avgPrice: '0.0000',
+  origQty: 1100,
   executedQty: 0,
   cumQty: '0',
   cumQuote: '0',
@@ -33,8 +33,8 @@ const response = {
   workingType: 'CONTRACT_PRICE',
   priceProtect: false,
   origType: 'MARKET',
-  updateTime: 1665379098303,
-  name: 'ivan',
+  updateTime: 1665518161798,
+  name: 'Ivan',
 }
 
 module.exports = { optionsOfTrade, apiOptionsIvan, apiOptionsAlex, response }

@@ -26,12 +26,12 @@ async function submittingEnterOrder(api_option, symbol, side) {
        */
       newOrderRespType: 'FULL',
     }
-    console.log(`Submitting ${side} order: `, orderRequest)
+    console.log(`${api_option.name}: Submitting ${side} order: `, orderRequest)
 
     // отправка ордера
     const orderResult = await client.submitNewOrder(orderRequest)
     orderResult.name = api_option.name
-    console.log(side + ' Order Result:', orderResult)
+    console.log(`${api_option.name}: ${side} Order Result:`, orderResult)
     return orderResult
   } catch (e) {
     console.error('Error: request failed: ', e)

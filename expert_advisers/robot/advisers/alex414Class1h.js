@@ -26,18 +26,24 @@ const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 */
 
 class Alex414Class1h {
-  constructor(symbol, nameStrategy, takeProfitConst, stopLossConst, shiftTime) {
+  constructor(
+    symbol,
+    nameStrategy,
+    takeProfitFloating,
+    takeProfitConst,
+    stopLossConst,
+    shiftTime
+  ) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
 
+    this.takeProfitFloating = takeProfitFloating // плавающий TP
     this.takeProfitConst = takeProfitConst
     this.stopLossConst = stopLossConst
     this.shiftTime = shiftTime // сдвиг на одну свечу любого ТФ
 
     this.partOfDeposit = 0.25 // доля депозита на одну сделку
     this.multiplier = 10 // плечо
-
-    this.fractalLength = 5 // отношение между high и low фрактальной свечи должно быть меньше 5%
 
     this.candlesForFractal = [] // свечи для поиска фрактала
 
@@ -52,28 +58,28 @@ class Alex414Class1h {
 
   reset() {
     // для сигнала
-    //this.unconfirmedFractal = false // наличие неподтвержденного фрактала
     this.brokenFractal = false // наличие сломанного фрактала
+    this.searchFractal = false
 
     this.fractalBodyLength = 0 // длина тела фрактальной свечи
-    this.fractalShadowLength = 0 // длина верхней тени фрактальной свечи
+    //this.fractalShadowLength = 0 // длина верхней тени фрактальной свечи
     this.fractalBearish = {
       isFractal: false,
     }
     this.bodyLength1g = 0 // длина тела 1й зеленой свечи
     this.bodyLength2g = 0 // длина тела 2й зеленой свечи
-    this.upperShadowRed = 0 // верхняя тень красной свечи
-    this.lowerShadowRed = 0 // верхняя тень красной свечи
-    this.diffShadowRed = 0 // отношение теней на красной свечи
-    this.fractalLengthCalc = 0 // для расчета отношения между high и low на фрактальной свече
+    //this.upperShadowRed = 0 // верхняя тень красной свечи
+    //this.lowerShadowRed = 0 // верхняя тень красной свечи
+    //this.diffShadowRed = 0 // отношение теней на красной свечи
+    //this.fractalLengthCalc = 0 // для расчета отношения между high и low на фрактальной свече
 
     // для сигнала №2
     this.bodyLength5g = 0 // длина тела 5й зеленой свечи
     this.upperShadow5g = 0 // верхняя тень 5й зеленой свечи
 
     // для сделки
-    this.sygnalSent = false
-    this.aboutBrokenFractal = false
+    //this.sygnalSent = false
+    //this.aboutBrokenFractal = false
     this.canShort = false
     this.inPosition = false
     this.deposit = 1000
@@ -86,15 +92,15 @@ class Alex414Class1h {
     this.stopLoss = 0
 
     this.middleShadow = 0
-    this.fractalHigh = 0 // хай фрактала для отмены сигнала
+    //this.fractalHigh = 0 // хай фрактала для отмены сигнала
 
     // для TP SL
-    this.openCandleIsGreen = false // свеча, на которой вошли в сделку, оказалась зеленой
+    //this.openCandleIsGreen = false // свеча, на которой вошли в сделку, оказалась зеленой
 
     return this
   }
 
-  // подготовка данных для поиска фрактала
+  // (0) подготовка данных для поиска фрактала
   async Alex4prepair5Candles(interval) {
     const limitOfCandle = 5 // кол-во свечей для поиска фрактала
     const candles = await getCandles(this.symbol, interval, limitOfCandle) // получаем первые n свечей
@@ -111,15 +117,15 @@ class Alex414Class1h {
         .map(({ startTime }) => startTime)
         .includes(lastCandle.startTime)
     ) {
-      //console.log('время последних свечей совпадает') // закомментировать
+      //console.log(`${this.symbol}: время последних свечей совпадает`) // закомментировать
       const delLastCandle = this.candlesForFractal.pop() // для начала удаляем незавршенную свечку
-      //console.log('убираем последнюю свечку')
+      //console.log(`${this.symbol}: убираем последнюю свечку`)
       //console.table(delLastCandle)
-      //console.log(`кол-во свечей после удаления последней = ${this.candlesForFractal.length}`)
+      //console.log(`${this.symbol}: кол-во свечей после удаления последней = ${this.candlesForFractal.length}`)
     } else {
-      //console.log(`${this.symbol} время последних свечей НЕ совпадает`)
+      //console.log(`${this.symbol}: время последних свечей НЕ совпадает`)
       const delFirstCandle = this.candlesForFractal.shift() // удаляем первую свечку
-      //console.log(`кол-во свечей после удаления первой = ${this.candlesForFractal.length}`) // закомментировать
+      //console.log(`${this.symbol}: кол-во свечей после удаления первой = ${this.candlesForFractal.length}`) // закомментировать
 
       // выводим проверки
       //console.table(this.candlesForFractal)
@@ -128,30 +134,50 @@ class Alex414Class1h {
 
     // далее добавляем последнюю свечку из WS
     this.candlesForFractal = this.candlesForFractal.concat(lastCandle)
+    //console.log(`${this.symbol}: после замены свечек`)
     //console.table(this.candlesForFractal)
-    //console.log(`итого кол-во свечей = ${this.candlesForFractal.length}`) // закомментировать
+    //console.log(`${this.symbol}: итого кол-во свечей = ${this.candlesForFractal.length}`) // закомментировать
 
     return this
   } //prepairDataforFindFractal(lastCandle
 
-  alex4FindUnconfirmedFractal(lastCandle, interval) {
+  // (1) ищем неподтвержденный фрактал
+  async alex4FindUnconfirmedFractal(lastCandle, interval) {
     if (lastCandle.interval == interval) {
+      await this.Alex4prepair5Candles(interval) // заново запрашиваем свечки
+      //console.log(`\n---=== ${new Date()} ===---`)
+      //console.log(`${this.symbol}: первоначальные свечи для поиска фрактала`)
+      //console.table(this.candlesForFractal)
+
       this.prepairDataforFindFractal(lastCandle) // подготавливаем данные для поиска фрактала
+      //console.log(`${this.symbol}: вторичные свечи для поиска фрактала`)
+      //console.table(this.candlesForFractal)
+
       this.fractalBearish = fractal_Bearish(this.candlesForFractal) // ищем фрактал
-      const message = `\n${this.symbol}: нашли неподтвержденный фрактал = ${this.fractalBearish.high} в ${this.fractalBearish.timeH}`
-      console.log(message)
+      //console.log(this.symbol + ': фрактал ', this.fractalBearish)
+      if (this.fractalBearish.isFractal) {
+        console.log(`\n---=== ${new Date()} ===---`)
+        const message = `${this.nameStrategy}, ${this.symbol}: нашли неподтвержденный фрактал = ${this.fractalBearish.high} USD, его время: ${this.fractalBearish.timeH}`
+        console.log(message)
+      }
+      this.searchFractal = true // ждем закрытие свечи для поиска следующего фрактала
       return this
     }
   } // alex4FindUnconfirmedFractal(lastCandle, interval)
 
+  // (2) ждем когда рынок сломает неподтвержденный фрактал
   alex4FindBrokenFractal(lastCandle) {
     if (this.fractalBearish.isFractal) {
-      if (lastCandle.close > this.fractalHigh) {
-        this.whitchSignal = this.nameStrategy + ': 1 зелёная, 2 красных'
+      if (lastCandle.close > this.fractalBearish.high) {
+        this.whitchSignal = this.nameStrategy // + ': 1 зелёная, 2 красных'
         this.brokenFractal = true
         //this.fractalOfBearish.isFractal = false
 
-        const message = `\n${this.whitchSignal}\nМонета: ${this.symbol}\n--== Сломали фрактал ==--\nТекущая цена: ${lastCandle.close} USDT \nУровень фрактала: ${this.fractalHigh} USDT`
+        const message = `\n${new Date()}\n${this.whitchSignal}\nМонета: ${
+          this.symbol
+        }\n--== Сломали фрактал ==--\nТекущая цена: ${
+          lastCandle.close
+        } USDT \nУровень фрактала: ${this.fractalBearish.high} USDT`
         // sendInfoToUser(message)
         console.log(message)
         //this.reset()
@@ -159,6 +185,7 @@ class Alex414Class1h {
       }
     }
 
+    /*
     if (this.inPosition && !this.aboutBrokenFractal) {
       if (lastCandle.close > this.fractalHigh) {
         sendInfoToUser(
@@ -169,17 +196,18 @@ class Alex414Class1h {
       }
     }
     return this
+    */
   }
 
-  // ищем сигнал №3: 1 зелёная, 2 красных
-  alex4FindSygnalRedFractal() {
-    // code
-  } // alex4FindSygnalRedFractal()
-
-  Alex4FindSygnal(lastCandle, interval) {
+  async alex4FindSygnal(lastCandle, interval) {
     if (lastCandle.interval == interval) {
+      // подготавливаем данные для проверки условий
+      await this.Alex4prepair5Candles(interval)
+      //console.log(`\n---=== ${new Date()}: новые свечи для поиска сигнала ===---`)
+      //console.table(this.candlesForFractal)
+
       // подготавливаем данные для поиска фрактала
-      //this.prepairDataforFindFractal(lastCandle)
+      // this.prepairDataforFindFractal(lastCandle)
 
       // ищем фрактал
       // this.fractalBearish = fractal_Bearish(this.candlesForFractal)
@@ -205,20 +233,18 @@ class Alex414Class1h {
       //console.log(`this.diffShadowRed: ${this.diffShadowRed}`)
 
       // готовим свечки для анализа
-      this.Alex4prepair5Candles(interval)
+      //this.Alex4prepair5Candles(interval)
       //console.log(`\nAlex4FindSygnal: свечи для поиска фрактала`)
       //console.table(this.candlesForFractal)
-      this.fractalBearish = fractal_Bearish(this.candlesForFractal) // ищем фрактал
+      //this.fractalBearish = fractal_Bearish(this.candlesForFractal) // ищем фрактал
 
-      if (this.fractalBearish.isFractal) {
-        // ищем сигнал №1: 3 зелёных
+      if (this.brokenFractal) {
+        // ищем сигнал №1: 3 зелёных, 1 красная
         // середина верхней тени 4й красной свечи
         this.middleShadow =
           (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2
 
         if (
-          // 03.10.2022: отношение между high и low фрактальной свечи должно быть меньше 5%
-          // this.fractalLengthCalc < this.fractalLength &&
           // три первых свечи - ЗЕЛЕНЫЕ
           this.candlesForFractal[0].close > this.candlesForFractal[0].open && // 1я свеча ЗЕЛЕНАЯ
           this.candlesForFractal[1].close > this.candlesForFractal[1].open && // 2я свеча ЗЕЛЕНАЯ
@@ -229,20 +255,17 @@ class Alex414Class1h {
           // тело каждой след-й зеленой больше предыдущей
           this.bodyLength1g < this.bodyLength2g &&
           this.bodyLength2g < this.fractalBodyLength &&
-          // если нашли фрактал
-          //this.fractalBearish.isFractal &&
-          //this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
+          // далее
           this.candlesForFractal[3].open > this.candlesForFractal[3].close && // 4я свеча КРАСНАЯ
-          //this.upperShadowRed >= this.lowerShadowRed // у которого верхняя тень равна либо больше по длине нижней тени
           this.candlesForFractal[4].close > this.candlesForFractal[4].open && // 5 свеча зелёная
           this.candlesForFractal[4].close >= this.middleShadow // и закрылась выше либо на середине тени 4й свечи
         ) {
-          if (!this.sygnalSent) {
-            this.whitchSignal = this.nameStrategy + ': 3 зеленых'
-            this.openShortCommon()
-          }
+          //if (!this.sygnalSent) {
+          this.whitchSignal = this.nameStrategy + ': 3 зеленых и 1 красная'
+          this.openShortCommon()
+          //}
           // console.table(this.fractalBearish)
-        }
+        } // else this.brokenFractal = false
 
         // ищем сигнал №2: 1 зелёная 2 красных
         // середина верхней тени фрактала
@@ -258,25 +281,19 @@ class Alex414Class1h {
           this.candlesForFractal[4].high / this.candlesForFractal[4].close - 1
 
         if (
-          // 03.10.2022: отношение между high и low фрактальной свечи должно быть меньше 5%
-          //this.fractalLengthCalc < this.fractalLength &&
           this.candlesForFractal[0].open > this.candlesForFractal[0].close && // первая свеча - красная
           this.candlesForFractal[1].close > this.candlesForFractal[1].open && // вторая свеча - зеленая
           this.candlesForFractal[2].open > this.candlesForFractal[2].close && // свеча фрактала КРАСНАЯ
-          // если нашли фрактал
-          //this.fractalBearish.isFractal &&
-          //this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
           this.candlesForFractal[3].open > this.candlesForFractal[3].close && // 4я свеча КРАСНАЯ
           this.candlesForFractal[4].close > this.candlesForFractal[4].open && // 5я свеча зеленая
-          //(this.upperShadowRed >= this.lowerShadowRed || this.diffShadowRed < 0.6) // у которого верхняя тень равна либо больше по длине нижней тени
           this.candlesForFractal[4].close >= this.middleShadow && // и закрылась выше либо на середине тени 3й свечи
           this.upperShadow5g < this.bodyLength5g
         ) {
-          if (!this.sygnalSent) {
-            this.whitchSignal = this.nameStrategy + ': 1 зелёная 2 красных'
-            this.openShortCommon()
-          }
-        }
+          //if (!this.sygnalSent) {
+          this.whitchSignal = this.nameStrategy + ': 1 зелёная и 2 красных'
+          this.openShortCommon()
+          //}
+        } // else this.brokenFractal = false
       } // if (this.fractalBearish.isFractal)
 
       //console.table(this.fractalBearish)
@@ -286,10 +303,10 @@ class Alex414Class1h {
 
   // функция openShortCommon с общими полями для входа в сделку
   openShortCommon() {
-    this.fractalHigh = this.fractalBearish.high
-    this.fractalBearish.isFractal = false
-    this.sygnalSent = true
-    this.canShort = true
+    //this.fractalHigh = this.fractalBearish.high
+    //this.fractalBearish.isFractal = false
+    //this.sygnalSent = true
+    this.canShort = true // !!!! закоментировать это
     this.openShort = this.candlesForFractal[4].close
     //this.middleShadow = (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2 // середина верхней тени
     //this.openShort = this.middleShadow
@@ -323,19 +340,20 @@ class Alex414Class1h {
     }%)\n\nЖдем цену на рынке для входа в SHORT...`
 
     sendInfoToUser(message)
-    //this.reset() // временная затычка для поиска новых сигналов в цикле
+
+    // !!! отправляем в общий класс информацию о: монете, длине 5й свечи, цене входа. Будем сравнивать по длине 5й свечи
     return this
   } // openShortCommon(arrayOpenTime
 
-  canShortPosition(lastCandle, interval) {
+  alex4CanShortPosition(lastCandle, interval) {
     if (this.canShort) {
       if (lastCandle.interval == interval) {
-        //if (lastCandle.high > this.openShort) {
         if (lastCandle.close > this.openShort) {
-          this.canShort = false
+          //this.canShort = false
           this.inPosition = true
-          //this.positionTime = lastCandle.startTime
           this.positionTime = new Date().getTime()
+
+          // !!! отправляем ордер на биржу. Если в ответе есть кол-во монет, тогда отправляем следующее сообщение
 
           sendInfoToUser(
             `${this.whitchSignal}\n\nМонета: ${
@@ -358,7 +376,7 @@ class Alex414Class1h {
 
   ///////////////////////
   //// закрытие шорт позиции по Take Profit или Stop Loss
-  closeShortPosition(lastCandle, interval) {
+  alex4CloseShortPosition(lastCandle, interval) {
     if (this.inPosition) {
       // условия выхода из сделки по TP
       if (lastCandle.interval == interval) {
@@ -376,7 +394,7 @@ class Alex414Class1h {
 
           this.percent = +((this.profit / this.deposit) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
 
-          this.inPosition = false
+          // this.inPosition = false
 
           // статистика
           this.countAllDeals++
@@ -399,6 +417,7 @@ class Alex414Class1h {
           const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
           sendInfoToUser(message1 + message2)
+          this.reset()
         } // условия выхода из сделки по TP
 
         // условия выхода из сделки по SL
@@ -415,7 +434,7 @@ class Alex414Class1h {
 
           this.percent = +((this.profit / this.deposit) * 100).toFixed(2) // считаем процент прибыли по отношению к депозиту до сделки
 
-          this.inPosition = false
+          //this.inPosition = false
 
           // статистика
           this.countAllDeals++
@@ -438,6 +457,7 @@ class Alex414Class1h {
           const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
           sendInfoToUser(message1 + message2)
+          this.reset()
         } // отработка выхода из сделки по SL
       } // if (lastCandle.interval == interval)
     } // if (this.inPosition)
@@ -486,7 +506,7 @@ class Alex414Class1h {
     } else {
       if (!this.changedSL) {
         // изменение SL: если мы в прибыли
-        this.stopLoss = this.openShort
+        this.stopLoss = this.openShort * (1 - 0.001)
         // dateChangeSL = array[i].startTime
         this.changedSL = true
         sendInfoToUser(
@@ -496,7 +516,7 @@ class Alex414Class1h {
             this.sygnalTime
           )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
             this.positionTime
-          )}\n\n--= Мы в вариативной прибыли ==--\nМеняем stop loss на точку входа: ${
+          )}\n\n--= Мы в вариативной прибыли ==--\nМеняем stop loss на (точку входа - 0.1%): ${
             this.stopLoss
           }`
         )
@@ -506,7 +526,7 @@ class Alex414Class1h {
     return this
   }
   //// условия переноса Take Profit или Stop Loss
-  changeTPSL(lastCandle, interval) {
+  alex4ChangeTPSL(lastCandle, interval) {
     if (lastCandle.interval == interval) {
       /*
       // 1. Если тело свечи открытия выше цены точки входа тогда тейк переносится на точку входа
@@ -523,7 +543,6 @@ class Alex414Class1h {
 
       // 30.09.2022
       // (1) Если свеча открытия зеленая, тогда перенос после закрытия свечи входа в позицию
-      /*
       if (
         lastCandle.startTime == this.sygnalTime &&
         lastCandle.close > lastCandle.open
@@ -532,13 +551,13 @@ class Alex414Class1h {
         this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
       }
 
-      // (2) иначе перенос TPSL после закрытия второй свечи
-      if (lastCandle.startTime == this.sygnalTime + this.shiftTime) {
+      // (2) иначе перенос TPSL после закрытия третьей свечи
+      if (lastCandle.startTime == this.sygnalTime + this.shiftTime * 2) {
         this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
       }
-      */
 
       // 03.10.2022
+      /*
       // (1) Если свеча открытия зеленая и следующая свеча зеленая, то TP переносится БУ
       if (
         lastCandle.startTime == this.sygnalTime &&
@@ -558,14 +577,15 @@ class Alex414Class1h {
       if (lastCandle.startTime == this.sygnalTime + this.shiftTime * 4) {
         this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
       }
+      */
     }
     return this
   }
 
-  changeTPSLOnMarket(lastCandle, interval) {
+  alex4ChangeTPSLOnMarket(lastCandle, interval) {
     if (lastCandle.interval == interval) {
-      // при достижении профита 0.8% стоп переносим в б.у.
-      if (lastCandle.close < this.openShort * (1 - 0.008)) {
+      // при достижении профита 1.5% стоп переносим в б.у.
+      if (lastCandle.close < this.openShort * (1 - this.takeProfitFloating)) {
         if (!this.changedSL) {
           // изменение SL: если мы в прибыли
           this.stopLoss = this.openShort
@@ -577,14 +597,15 @@ class Alex414Class1h {
               this.sygnalTime
             )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
               this.positionTime
-            )}\n\n--= Мы в вариативной прибыли > 0.8% ==--\nМеняем Stop Loss на точку входа: ${
-              this.stopLoss
-            }`
+            )}\n\n--= Мы в вариативной прибыли > ${
+              this.takeProfitFloating * 100
+            }% ==--\nМеняем Stop Loss на точку входа: ${this.stopLoss}`
           )
         } // if (!this.changedSL)
       } // if (lastCandle.close < this.openShort * (1-0.008))
 
       // Если от точки входа -0.5% тейк переносится в БУ
+      /*
       if (lastCandle.close > this.openShort * (1 + 0.005)) {
         if (!this.changedTP) {
           this.takeProfit = this.openShort
@@ -602,10 +623,12 @@ class Alex414Class1h {
           )
         } // if (!this.changedTP)
       } // if (lastCandle.close > this.openShort * (1 + 0.005))
+      */
     } // if (lastCandle.interval == interval)
     return this
   } // changeTPSLOnMarket()
 
+  /*
   changeTPSL2(price) {
     if (this.openShort < price) {
       if (!this.changedTP) {
@@ -626,5 +649,6 @@ class Alex414Class1h {
       }
     }
   }
+  */
 }
 module.exports = Alex414Class1h

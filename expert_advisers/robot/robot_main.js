@@ -6,6 +6,7 @@ async function robotMain(
   symbols, // array
   timeFrameSenior, // array
   nameStrategy,
+  takeProfitFloating,
   takeProfitConst,
   stopLossConst,
   shiftTime
@@ -20,15 +21,17 @@ async function robotMain(
     symbolObj[i] = new Alex414Class1h(
       item,
       nameStrategy,
+      takeProfitFloating,
       takeProfitConst,
       stopLossConst,
       shiftTime
     )
   })
 
-  // для стратегии Алекса
+  // для стратегии Алекса 4.1.4
+  // (0) подготовка свечек для поиска фрактала
   symbolObj.forEach(async (item) => {
-    await item.Alex4prepair5Candles(timeFrameSenior)
+    //await item.Alex4prepair5Candles(timeFrameSenior)
   })
 
   await getLastCandle4s(
@@ -65,14 +68,26 @@ async function robotMain(
       symbolObj.forEach(async (item) => {
         if (item.symbol.includes(lastCandle.symbol)) {
           if (!final) {
-            // стратегия Алекса 4
-            if (nameStrategy == nameAlex && !item.canShort) {
-              if (!item.fractalOfBearish.isFractal) {
-                item.alex4FindUnconfirmedFractal(lastCandle, timeFrameSenior) // ищем фрактал
+            // стратегия Алекса 4.1.4
+            if (nameStrategy.includes(nameAlex) && !item.canShort) {
+              // (1) ищем фрактал
+              if (!item.fractalBearish.isFractal && !item.searchFractal) {
+                item.alex4FindUnconfirmedFractal(lastCandle, timeFrameSenior)
               }
-              if (!item.brokenFractal && item.fractalOfBearish.isFractal) {
+              // (2) ждем когда рынок сломает неподтвержденный фрактал
+              if (!item.brokenFractal && item.fractalBearish.isFractal) {
                 item.alex4FindBrokenFractal(lastCandle)
               }
+            }
+
+            // (4) отправляем ордер на биржу
+            if (item.canShort) {
+              item.alex4CanShortPosition(lastCandle, timeFrameSenior)
+            }
+
+            if (item.inPosition) {
+              item.alex4ChangeTPSLOnMarket(lastCandle, timeFrameSenior)
+              item.alex4CloseShortPosition(lastCandle, timeFrameSenior)
             }
 
             // стратегия Билла Вильямса
@@ -91,9 +106,23 @@ async function robotMain(
           } // if (!final)
 
           if (final) {
-            if (!item.canShort) {
-              item.Alex4FindSygnal(lastCandle, timeFrameSenior)
-            }
+            if (nameStrategy.includes(nameAlex)) {
+              // (3) ищем сигнал
+              if (!item.canShort && item.brokenFractal) {
+                item.alex4FindSygnal(lastCandle, timeFrameSenior)
+              }
+
+              // прописать условие по сбросу флагов
+              if (!item.canShort) {
+                item.reset()
+                // item.searchFractal = false
+                // item.brokenFractal = false
+              }
+
+              if (item.inPosition) {
+                item.alex4ChangeTPSL(lastCandle, timeFrameSenior)
+              }
+            } // if (nameStrategy.includes(nameAlex))
 
             // стратегия Билла Вильямса
             // (1) ищем фракталы на intervalSenior
