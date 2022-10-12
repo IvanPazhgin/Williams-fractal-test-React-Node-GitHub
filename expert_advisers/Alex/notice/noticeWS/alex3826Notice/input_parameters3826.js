@@ -78,7 +78,7 @@ const symbols2h38Part2 = [
   'GALAUSDT',
   'GTCUSDT',
   'GMTUSDT',
-  //'NEARUSDT',
+  'NEARUSDT',
   'NEOUSDT',
   'NKNUSDT',
   'MATICUSDT',

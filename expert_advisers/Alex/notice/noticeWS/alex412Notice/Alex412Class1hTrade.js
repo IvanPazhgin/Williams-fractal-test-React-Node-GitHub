@@ -7,6 +7,11 @@
 */
 //////////////////////////////
 
+const {
+  apiOptionsIvan,
+} = require('../../../../../API/binance.engine/trade/api_options')
+const submittingCloseOrder = require('../../../../../API/binance.engine/trade/submittingCloseOrder')
+const submittingEnterOrder = require('../../../../../API/binance.engine/trade/submittingEnterOrder')
 const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
@@ -39,7 +44,7 @@ const timestampToDateHuman = require('../../../../common.func/timestampToDateHum
   7) Если от точки входа -0.5% тейк переносится в б.у.
 */
 
-class Alex412Class1h_mod2 {
+class Alex412Class1hTrade {
   constructor(symbol, nameStrategy, takeProfitConst, stopLossConst, shiftTime) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
@@ -95,6 +100,10 @@ class Alex412Class1h_mod2 {
 
     // для TP SL
     this.openCandleIsGreen = false // свеча, на которой вошли в сделку, оказалась зеленой
+
+    // для торговли
+    this.enterOrderResult = {} // результат входа в сделку
+    this.closeOrderResult = {} // результат выхода из сделки
 
     return this
   }
@@ -327,6 +336,8 @@ class Alex412Class1h_mod2 {
               this.positionTime
             )}\n\nЖдем цену на рынке для выхода из сделки...`
           )
+
+          this.openDeal() // вход в сделку
         }
       }
     }
@@ -406,6 +417,8 @@ class Alex412Class1h_mod2 {
           const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
           sendInfoToUser(message1 + message2)
+
+          this.closeDeal()
         } // условия выхода из сделки по TP
 
         // условия выхода из сделки по SL
@@ -445,6 +458,8 @@ class Alex412Class1h_mod2 {
           const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
           sendInfoToUser(message1 + message2)
+
+          this.closeDeal()
         } // отработка выхода из сделки по SL
       } // if (lastCandle.interval == interval)
     } // if (this.inPosition)
@@ -452,6 +467,40 @@ class Alex412Class1h_mod2 {
     return this
   } // closeShortPosition(lastCandle, interval)
 
+  // вход в сделку
+  openDeal() {
+    this.enterOrderResult = submittingEnterOrder(
+      apiOptionsIvan,
+      this.symbol,
+      'SELL'
+    )
+    if (this.enterOrderResult.origQty > 0) {
+      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Шортанул ${this.enterOrderResult.origQty} монет ==--`
+      sendInfoToUser(message)
+    }
+    return this
+  }
+
+  // выход из сделки
+  closeDeal() {
+    this.closeOrderResult = submittingCloseOrder(
+      apiOptionsIvan,
+      this.symbol,
+      'BUY',
+      this.enterOrderResult
+    )
+    if (this.closeOrderResult.origQty > 0) {
+      // временный расчет прибыли. По хорошему: надо сохранять фактические цены входа и выхода
+      const profit = +(
+        (this.openShort - this.closeShort) *
+        this.closeOrderResult.origQty
+      ).toFixed(2)
+
+      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Откупил ${this.enterOrderResult.origQty} монет ==--\nИтог: ${profit} USD`
+      sendInfoToUser(message)
+    }
+    return this
+  }
   ///////////////////////////
   //// общие функции для условия переноса Take Profit или Stop Loss
   changeTPSLCommon(lastCandle) {
@@ -634,4 +683,4 @@ class Alex412Class1h_mod2 {
     }
   }
 }
-module.exports = Alex412Class1h_mod2
+module.exports = Alex412Class1hTrade

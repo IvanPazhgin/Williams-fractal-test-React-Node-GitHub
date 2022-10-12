@@ -203,8 +203,12 @@ class Alex414Class1h {
     if (lastCandle.interval == interval) {
       // подготавливаем данные для проверки условий
       await this.Alex4prepair5Candles(interval)
-      //console.log(`\n---=== ${new Date()}: новые свечи для поиска сигнала ===---`)
-      //console.table(this.candlesForFractal)
+      console.log(
+        `\n---=== ${new Date()}: [${
+          this.symbol
+        }] новые свечи для поиска сигнала ===---`
+      )
+      console.table(this.candlesForFractal)
 
       // подготавливаем данные для поиска фрактала
       // this.prepairDataforFindFractal(lastCandle)
@@ -266,6 +270,11 @@ class Alex414Class1h {
           //}
           // console.table(this.fractalBearish)
         } // else this.brokenFractal = false
+        else {
+          console.log(
+            `\n${this.nameStrategy}: [${this.symbol}]: сигнал отсутствует: 3 зеленых и 1 красная`
+          )
+        }
 
         // ищем сигнал №2: 1 зелёная 2 красных
         // середина верхней тени фрактала
@@ -294,6 +303,11 @@ class Alex414Class1h {
           this.openShortCommon()
           //}
         } // else this.brokenFractal = false
+        else {
+          console.log(
+            `\n${this.nameStrategy}: [${this.symbol}]: сигнал отсутствует: 1 зелёная и 2 красных`
+          )
+        }
       } // if (this.fractalBearish.isFractal)
 
       //console.table(this.fractalBearish)

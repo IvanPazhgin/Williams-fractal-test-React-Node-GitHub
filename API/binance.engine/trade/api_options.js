@@ -1,5 +1,5 @@
 const optionsOfTrade = {
-  entryAmountPercent: 50, // trigger trade with 50%
+  entryAmountPercent: 25, // trigger trade with 25%
   multiplier: 10, // плечо
 }
 
@@ -13,13 +13,13 @@ const apiOptionsIvan = {
 const apiOptionsAlex = { name: 'Alex' }
 
 const response = {
-  orderId: 3045188770,
+  orderId: 3046860969,
   symbol: 'CHRUSDT',
   status: 'NEW',
-  clientOrderId: 'x-15PC4ZJyGvXoZF5Ry5OpxCmmDDZoGxmCc',
+  clientOrderId: 'x-15PC4ZJyMkh4psYPUXlf-3r_DlsEtGRF2',
   price: 0,
   avgPrice: '0.0000',
-  origQty: 1100,
+  origQty: 540,
   executedQty: 0,
   cumQty: '0',
   cumQuote: '0',
@@ -33,7 +33,7 @@ const response = {
   workingType: 'CONTRACT_PRICE',
   priceProtect: false,
   origType: 'MARKET',
-  updateTime: 1665518161798,
+  updateTime: 1665564682635,
   name: 'Ivan',
 }
 
