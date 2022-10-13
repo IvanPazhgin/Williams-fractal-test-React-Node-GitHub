@@ -11,30 +11,42 @@ async function submittingEnterOrder(api_option, symbol, side) {
     side
   )
 
-  try {
-    // подготовка ордера
-    const orderRequest = {
-      symbol: symbol,
-      //quantity: buyAmountBtc,
-      quantity: quantity,
-      side: side,
-      type: 'MARKET',
-      /**
-       * ACK = confirmation of order acceptance (no placement/fill information) -> OrderResponseACK
-       * RESULT = fill state -> OrderResponseResult
-       * FULL = fill state + detail on fills and other detail -> OrderResponseFull
-       */
-      newOrderRespType: 'FULL',
-    }
-    console.log(`${api_option.name}: Submitting ${side} order: `, orderRequest)
+  if (quantity > 0) {
+    try {
+      // подготовка ордера
+      const orderRequest = {
+        symbol: symbol,
+        //quantity: amountForDeal, // не учитывает плечо
+        quantity: quantity,
+        side: side,
+        type: 'MARKET',
+        /**
+         * ACK = confirmation of order acceptance (no placement/fill information) -> OrderResponseACK
+         * RESULT = fill state -> OrderResponseResult
+         * FULL = fill state + detail on fills and other detail -> OrderResponseFull
+         */
+        newOrderRespType: 'FULL',
+      }
+      console.log(
+        `${api_option.name}: Submitting ${side} order: `,
+        orderRequest
+      )
 
-    // отправка ордера
-    const orderResult = await client.submitNewOrder(orderRequest)
-    // orderResult.name = api_option.name
-    console.log(`${api_option.name}: ${side} Order Result:`, orderResult)
-    return orderResult
-  } catch (e) {
-    console.error('Error: request failed: ', e)
+      // отправка ордера
+      const orderResult = await client.submitNewOrder(orderRequest)
+      // orderResult.name = api_option.name
+      console.log(`${api_option.name}: ${side} Order Result:`, orderResult)
+      return orderResult
+    } catch (e) {
+      console.error('Error: request failed: ', e)
+    }
+  } else {
+    const message = `Недостаточно средств для входа в сделку. Куплено: ${quantity} монет`
+    console.log(message)
+    return {
+      symbol: symbol,
+      origQty: 0,
+    }
   }
 }
 

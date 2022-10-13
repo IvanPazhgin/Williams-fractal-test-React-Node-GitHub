@@ -1,9 +1,10 @@
 const submittingCloseOrder = require('./submittingCloseOrder')
 const submittingEnterOrder = require('./submittingEnterOrder')
 
-function openDeal(api_option, symbol, side) {
+async function openDeal(api_option, symbol, side) {
   // вход в сделку
-  const enterOrderResult = submittingEnterOrder(api_option, symbol, side)
+  const enterOrderResult = await submittingEnterOrder(api_option, symbol, side)
+  console.log('enterOrderResult:', enterOrderResult)
 }
 
 function closeDeal(api_option, symbol, side) {

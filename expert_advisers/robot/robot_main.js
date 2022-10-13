@@ -82,7 +82,10 @@ async function robotMain(
 
             // (4) отправляем ордер на биржу
             if (item.canShort) {
-              item.alex4CanShortPosition(lastCandle, timeFrameSenior)
+              const symbolToShort = item.inOneDeal.symbolSelection()
+              if (symbolToShort == item.symbol) {
+                item.alex4CanShortPosition(lastCandle, timeFrameSenior)
+              }
             }
 
             if (item.inPosition) {
@@ -109,14 +112,15 @@ async function robotMain(
             if (nameStrategy.includes(nameAlex)) {
               // (3) ищем сигнал
               if (!item.canShort && item.brokenFractal) {
+                // await item.alex4FindSygnal(lastCandle, timeFrameSenior) // рабочий вариант №1
                 item.alex4FindSygnal(lastCandle, timeFrameSenior)
               }
 
               // прописать условие по сбросу флагов
               if (!item.canShort) {
-                item.reset()
-                // item.searchFractal = false
-                // item.brokenFractal = false
+                // item.reset() // рабочий вариант №1
+                // item.searchFractal = false // удалить
+                // item.brokenFractal = false // удалить
               }
 
               if (item.inPosition) {

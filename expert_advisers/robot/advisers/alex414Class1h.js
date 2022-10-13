@@ -12,6 +12,7 @@ const { sendInfoToUser } = require('../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../common.func/candlesToObject')
 const fractal_Bearish = require('../../common.func/fractal_Bearish')
 const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
+const choiceSymbol = require('../choiceSymbol')
 
 /*
 в начале запуска приложения:
@@ -52,6 +53,8 @@ class Alex414Class1h {
     this.countOfPositive = 0 // кол-во положительных сделок
     this.countOfNegative = 0 // кол-во отрицательных сделок
     this.countOfZero = 0 // кол-во нулевых сделок
+
+    this.inOneDeal = new choiceSymbol()
 
     this.reset()
   }
@@ -276,12 +279,12 @@ class Alex414Class1h {
         } // else this.brokenFractal = false
         else {
           console.log(
-            `\n${this.nameStrategy}: [${this.symbol}]: сигнал отсутствует: 3 зеленых и 1 красная`
+            `${this.nameStrategy}: [${this.symbol}]: сигнал №1 отсутствует: 3 зеленых и 1 красная`
           )
         }
 
         // ищем сигнал №2: 1 зелёная 2 красных
-        console.log(`ищем сигнал №2: 1 зелёная 2 красных:`)
+        console.log(`\nищем сигнал №2: 1 зелёная 2 красных:`)
         // середина верхней тени фрактала
         this.middleShadow =
           (this.candlesForFractal[2].open + this.candlesForFractal[2].high) / 2
@@ -310,11 +313,15 @@ class Alex414Class1h {
         } // else this.brokenFractal = false
         else {
           console.log(
-            `\n${this.nameStrategy}: [${this.symbol}]: сигнал отсутствует: 1 зелёная и 2 красных`
+            `${this.nameStrategy}: [${this.symbol}]: сигнал №2 отсутствует: 1 зелёная и 2 красных`
           )
         }
-      } // if (this.fractalBearish.isFractal)
+      } // if (this.brokenFractal)
 
+      // если сигналов не было, то можно сбросить флаги this.brokenFractal и по фракталу
+      if (!this.canShort) {
+        this.reset()
+      }
       //console.table(this.fractalBearish)
       return this
     }
@@ -362,6 +369,7 @@ class Alex414Class1h {
     console.log(message)
 
     // !!! отправляем в общий класс информацию о: монете, длине 5й свечи, цене входа. Будем сравнивать по длине 5й свечи
+    this.inOneDeal.symbolAdd(this.symbol, this.openShort, this.bodyLength5g)
     return this
   } // openShortCommon(arrayOpenTime
 
@@ -438,6 +446,7 @@ class Alex414Class1h {
 
           sendInfoToUser(message1 + message2)
           this.reset()
+          this.inOneDeal.reset414()
         } // условия выхода из сделки по TP
 
         // условия выхода из сделки по SL

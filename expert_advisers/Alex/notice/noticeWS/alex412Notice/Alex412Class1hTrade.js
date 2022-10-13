@@ -17,6 +17,7 @@ const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 const fractal_Bearish = require('../../../../common.func/fractal_Bearish')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
+const choiceSymbol = require('../../../../robot/choiceSymbol')
 
 /*
 в начале запуска приложения:
@@ -65,6 +66,8 @@ class Alex412Class1hTrade {
     this.countOfPositive = 0 // кол-во положительных сделок
     this.countOfNegative = 0 // кол-во отрицательных сделок
     this.countOfZero = 0 // кол-во нулевых сделок
+
+    this.inOneDeal = new choiceSymbol()
 
     this.reset()
   }
@@ -337,7 +340,9 @@ class Alex412Class1hTrade {
             )}\n\nЖдем цену на рынке для выхода из сделки...`
           )
 
-          this.openDeal() // вход в сделку
+          if (!this.inOneDeal.inDeal412) {
+            this.openDeal() // вход в сделку
+          }
         }
       }
     }
@@ -477,18 +482,26 @@ class Alex412Class1hTrade {
     if (this.enterOrderResult.origQty > 0) {
       const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Шортанул ${this.enterOrderResult.origQty} монет ==--`
       sendInfoToUser(message)
+      this.inOneDeal.enterToDeal412() // фиксируем что мы в сделке
+    } else {
+      console.log(
+        `недостаточно средств для входа в сделку. Куплено: ${this.enterOrderResult.origQty} монет`
+      )
     }
     return this
   }
 
   // выход из сделки
   async closeDeal() {
-    this.closeOrderResult = await submittingCloseOrder(
-      apiOptionsIvan,
-      this.symbol,
-      'BUY',
-      this.enterOrderResult
-    )
+    if (this.enterOrderResult.origQty > 0) {
+      this.closeOrderResult = await submittingCloseOrder(
+        apiOptionsIvan,
+        this.symbol,
+        'BUY',
+        this.enterOrderResult
+      )
+    }
+
     if (this.closeOrderResult.origQty > 0) {
       // временный расчет прибыли. По хорошему: надо сохранять фактические цены входа и выхода
       const profit = +(
@@ -498,6 +511,7 @@ class Alex412Class1hTrade {
 
       const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Откупил ${this.enterOrderResult.origQty} монет ==--\nИтог: ${profit} USD`
       sendInfoToUser(message)
+      this.inOneDeal.reset412() // фиксируем что мы вышли из сделки
     }
     return this
   }
@@ -556,6 +570,7 @@ class Alex412Class1hTrade {
             this.stopLoss
           }`
         )
+        this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
       }
     }
     //} // if (lastCandle.startTime >= this.startTime + shiftTime)
@@ -637,6 +652,7 @@ class Alex412Class1hTrade {
               this.stopLoss
             }`
           )
+          this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
         } // if (!this.changedSL)
       } // if (lastCandle.close < this.openShort * (1-0.008))
 
@@ -662,6 +678,7 @@ class Alex412Class1hTrade {
     return this
   } // changeTPSLOnMarket()
 
+  /*
   changeTPSL2(price) {
     if (this.openShort < price) {
       if (!this.changedTP) {
@@ -682,5 +699,6 @@ class Alex412Class1hTrade {
       }
     }
   }
+  */
 }
 module.exports = Alex412Class1hTrade

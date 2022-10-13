@@ -1,5 +1,5 @@
 const optionsOfTrade = {
-  entryAmountPercent: 25, // trigger trade with 25%
+  entryAmountPercent: 33, // trigger trade with 33%
   multiplier: 10, // плечо
 }
 
