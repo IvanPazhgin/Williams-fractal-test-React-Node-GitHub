@@ -30,7 +30,7 @@ async function submittingEnterOrder(api_option, symbol, side) {
 
     // отправка ордера
     const orderResult = await client.submitNewOrder(orderRequest)
-    orderResult.name = api_option.name
+    // orderResult.name = api_option.name
     console.log(`${api_option.name}: ${side} Order Result:`, orderResult)
     return orderResult
   } catch (e) {

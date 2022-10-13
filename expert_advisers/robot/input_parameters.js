@@ -154,7 +154,7 @@ const symbols4h41 = [
 
 // разделил 106 монет по 50
 const symbolsPart1 = [
-  'BTCUSDT',
+  //'BTCUSDT',
   'ATAUSDT',
   'ETHUSDT',
   'BNBUSDT',
@@ -198,7 +198,7 @@ const symbolsPart1 = [
   'LRCUSDT',
   'LINKUSDT',
   'FILUSDT',
-  'FLMUSDT',
+  //'FLMUSDT',
   'FTMUSDT',
   'FTTUSDT',
   'FLOWUSDT',

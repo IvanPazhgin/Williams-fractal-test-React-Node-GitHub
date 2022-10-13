@@ -145,7 +145,7 @@ class Alex414Class1h {
   async alex4FindUnconfirmedFractal(lastCandle, interval) {
     if (lastCandle.interval == interval) {
       await this.Alex4prepair5Candles(interval) // заново запрашиваем свечки
-      //console.log(`\n---=== ${new Date()} ===---`)
+      //console.log(`\n---=== ${timestampToDateHuman(new Date().getTime())} ===---`)
       //console.log(`${this.symbol}: первоначальные свечи для поиска фрактала`)
       //console.table(this.candlesForFractal)
 
@@ -156,7 +156,9 @@ class Alex414Class1h {
       this.fractalBearish = fractal_Bearish(this.candlesForFractal) // ищем фрактал
       //console.log(this.symbol + ': фрактал ', this.fractalBearish)
       if (this.fractalBearish.isFractal) {
-        console.log(`\n---=== ${new Date()} ===---`)
+        console.log(
+          `\n---=== ${timestampToDateHuman(new Date().getTime())} ===---`
+        )
         const message = `${this.nameStrategy}, ${this.symbol}: нашли неподтвержденный фрактал = ${this.fractalBearish.high} USD, его время: ${this.fractalBearish.timeH}`
         console.log(message)
       }
@@ -173,9 +175,9 @@ class Alex414Class1h {
         this.brokenFractal = true
         //this.fractalOfBearish.isFractal = false
 
-        const message = `\n${new Date()}\n${this.whitchSignal}\nМонета: ${
-          this.symbol
-        }\n--== Сломали фрактал ==--\nТекущая цена: ${
+        const message = `\n-=${timestampToDateHuman(new Date().getTime())}=-\n${
+          this.whitchSignal
+        }\nМонета: ${this.symbol}\n--== Сломали фрактал ==--\nТекущая цена: ${
           lastCandle.close
         } USDT \nУровень фрактала: ${this.fractalBearish.high} USDT`
         // sendInfoToUser(message)
@@ -204,9 +206,9 @@ class Alex414Class1h {
       // подготавливаем данные для проверки условий
       await this.Alex4prepair5Candles(interval)
       console.log(
-        `\n---=== ${new Date()}: [${
-          this.symbol
-        }] новые свечи для поиска сигнала ===---`
+        `\n---=== ${timestampToDateHuman(new Date().getTime())}: ${
+          this.nameStrategy
+        }: [${this.symbol}] новые свечи для поиска сигнала ===---`
       )
       console.table(this.candlesForFractal)
 
@@ -216,19 +218,8 @@ class Alex414Class1h {
       // ищем фрактал
       // this.fractalBearish = fractal_Bearish(this.candlesForFractal)
 
-      // готовим данные по свече фрактала
-      this.fractalBodyLength =
-        this.candlesForFractal[2].close / this.candlesForFractal[2].open - 1
-      // this.fractalShadowLength = this.candlesForFractal[2].high / this.candlesForFractal[2].close - 1
-
       // расчет отношения между high и low на фрактальной свече
       // this.fractalLengthCalc = (this.candlesForFractal[2].high / this.candlesForFractal[2].low - 1) * 100
-
-      // вычисляем длину зеленых свечей (сигнал №1)
-      this.bodyLength1g =
-        this.candlesForFractal[0].close / this.candlesForFractal[0].open - 1
-      this.bodyLength2g =
-        this.candlesForFractal[1].close / this.candlesForFractal[1].open - 1
 
       // вычисляем тени на 4й красной свече
       // this.upperShadowRed = this.candlesForFractal[3].high / this.candlesForFractal[3].open - 1
@@ -244,6 +235,19 @@ class Alex414Class1h {
 
       if (this.brokenFractal) {
         // ищем сигнал №1: 3 зелёных, 1 красная
+        console.log(`ищем сигнал №1: 3 зелёных, 1 красная:`)
+
+        // вычисляем длину зеленых свечей
+        this.bodyLength1g =
+          this.candlesForFractal[0].close / this.candlesForFractal[0].open - 1
+        this.bodyLength2g =
+          this.candlesForFractal[1].close / this.candlesForFractal[1].open - 1
+
+        // готовим данные по свече фрактала
+        this.fractalBodyLength =
+          this.candlesForFractal[2].close / this.candlesForFractal[2].open - 1
+        // this.fractalShadowLength = this.candlesForFractal[2].high / this.candlesForFractal[2].close - 1
+
         // середина верхней тени 4й красной свечи
         this.middleShadow =
           (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2
@@ -277,6 +281,7 @@ class Alex414Class1h {
         }
 
         // ищем сигнал №2: 1 зелёная 2 красных
+        console.log(`ищем сигнал №2: 1 зелёная 2 красных:`)
         // середина верхней тени фрактала
         this.middleShadow =
           (this.candlesForFractal[2].open + this.candlesForFractal[2].high) / 2
@@ -354,6 +359,7 @@ class Alex414Class1h {
     }%)\n\nЖдем цену на рынке для входа в SHORT...`
 
     sendInfoToUser(message)
+    console.log(message)
 
     // !!! отправляем в общий класс информацию о: монете, длине 5й свечи, цене входа. Будем сравнивать по длине 5й свечи
     return this
@@ -428,7 +434,7 @@ class Alex414Class1h {
             this.closeShort
           }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
 
-          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
           sendInfoToUser(message1 + message2)
           this.reset()
@@ -468,7 +474,7 @@ class Alex414Class1h {
             this.closeShort
           }\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
 
-          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
           sendInfoToUser(message1 + message2)
           this.reset()
@@ -502,7 +508,7 @@ class Alex414Class1h {
     // изменение TP: если мы в просадке
     if (this.openShort < lastCandle.close) {
       if (!this.changedTP) {
-        this.takeProfit = this.openShort
+        this.takeProfit = this.openShort * (1 - 0.001)
         // dateChangeTP = array[i].startTime
         this.changedTP = true
         sendInfoToUser(
@@ -512,7 +518,7 @@ class Alex414Class1h {
             this.sygnalTime
           )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
             this.positionTime
-          )}\n\n--== Мы в вариативной просадке ==--\nМеняем take profit на точку входа: ${
+          )}\n\n--== Мы в вариативной просадке ==--\nМеняем take profit на (точку входа - 0.1%): ${
             this.takeProfit
           }`
         )

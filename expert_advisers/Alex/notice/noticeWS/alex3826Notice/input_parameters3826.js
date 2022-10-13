@@ -11,7 +11,7 @@ const nameStrategy = {
 
 // 02.10.2022 разделил 100 монет по 50
 const symbols2h38Part1 = [
-  'BTCUSDT',
+  //'BTCUSDT',
   'ATAUSDT',
   'ETHUSDT',
   'BNBUSDT',
@@ -55,7 +55,7 @@ const symbols2h38Part1 = [
   'LRCUSDT',
   'LINKUSDT',
   'FILUSDT',
-  'FLMUSDT',
+  //'FLMUSDT',
   'FTMUSDT',
   'FTTUSDT',
   'FLOWUSDT',

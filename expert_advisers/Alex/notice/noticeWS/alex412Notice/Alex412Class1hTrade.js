@@ -414,7 +414,7 @@ class Alex412Class1hTrade {
             this.closeShort
           }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
 
-          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
           sendInfoToUser(message1 + message2)
 
@@ -455,7 +455,7 @@ class Alex412Class1hTrade {
             this.closeShort
           }\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
 
-          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
           sendInfoToUser(message1 + message2)
 
@@ -468,8 +468,8 @@ class Alex412Class1hTrade {
   } // closeShortPosition(lastCandle, interval)
 
   // вход в сделку
-  openDeal() {
-    this.enterOrderResult = submittingEnterOrder(
+  async openDeal() {
+    this.enterOrderResult = await submittingEnterOrder(
       apiOptionsIvan,
       this.symbol,
       'SELL'
@@ -482,8 +482,8 @@ class Alex412Class1hTrade {
   }
 
   // выход из сделки
-  closeDeal() {
-    this.closeOrderResult = submittingCloseOrder(
+  async closeDeal() {
+    this.closeOrderResult = await submittingCloseOrder(
       apiOptionsIvan,
       this.symbol,
       'BUY',
@@ -524,7 +524,7 @@ class Alex412Class1hTrade {
     // изменение TP: если мы в просадке
     if (this.openShort < lastCandle.close) {
       if (!this.changedTP) {
-        this.takeProfit = this.openShort
+        this.takeProfit = this.openShort * (1 - 0.001)
         // dateChangeTP = array[i].startTime
         this.changedTP = true
         sendInfoToUser(
@@ -534,7 +534,7 @@ class Alex412Class1hTrade {
             this.sygnalTime
           )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
             this.positionTime
-          )}\n\n--== Мы в вариативной просадке ==--\nМеняем take profit на точку входа: ${
+          )}\n\n--== Мы в вариативной просадке ==--\nМеняем take profit на (точку входа - 0.1%): ${
             this.takeProfit
           }`
         )
