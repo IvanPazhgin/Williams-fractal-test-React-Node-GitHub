@@ -5,7 +5,7 @@ async function submittingEnterOrder(api_option, symbol, side) {
   const client = binanceUSDMClient(api_option)
 
   // Calculate amount
-  const [amountForDeal, quantity] = await calculateAmount(
+  const [amountForDeal, quantity, lastPrice] = await calculateAmount(
     api_option,
     symbol,
     side
@@ -32,8 +32,9 @@ async function submittingEnterOrder(api_option, symbol, side) {
         orderRequest
       )
 
-      // отправка ордера
+      // отправка ордера - найти другой ордер, который воззвращает цену
       const orderResult = await client.submitNewOrder(orderRequest)
+      orderResult.lastPrice = lastPrice
       // orderResult.name = api_option.name
       console.log(`${api_option.name}: ${side} Order Result:`, orderResult)
       return orderResult

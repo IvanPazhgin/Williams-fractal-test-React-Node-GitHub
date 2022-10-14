@@ -21,7 +21,7 @@ async function calculateAmount(api_option, symbol, side) {
   console.log(
     `Last [${symbol}] price: ${lastPrice} => will ${side} ${amountForDeal} ${symbol} (${quantity} ${symbol} c ${optionsOfTrade.multiplier}x плечом)`
   )
-  return [amountForDeal, quantity]
+  return [amountForDeal, quantity, lastPrice]
 }
 
 module.exports = calculateAmount

@@ -8,9 +8,13 @@ const apiOptionsIvan = {
   api_key: '2MqDbjP8Y8dmTd8BzZeXRenyucmuSvZk5C18OJM4AqjYRcv2uUEUo5BJO83EqaPP',
   api_secret:
     'FfWpiqyy3E1Ok3dwBjTWtI1PHS2yqHyelTDmdqdRqWZSs4egnlnmmnFk4H0us3v3',
+  countOfPosition: 3, // кол-во разрешенных одновременных позиций
 }
 
 const apiOptionsAlex = { name: 'Alex' }
+
+//const apiOptions = [apiOptionsIvan, apiOptionsAlex]
+const apiOptions = [apiOptionsIvan]
 
 const response = {
   orderId: 3046860969,
@@ -37,4 +41,10 @@ const response = {
   name: 'Ivan',
 }
 
-module.exports = { optionsOfTrade, apiOptionsIvan, apiOptionsAlex, response }
+module.exports = {
+  optionsOfTrade,
+  apiOptionsIvan,
+  apiOptionsAlex,
+  response,
+  apiOptions,
+}

@@ -128,10 +128,102 @@ SL= 1.5% TP = 2%.
 
 
 ---- ручной контроль --- с 13.10 время 18:09
-CHZUSDT
-GMTUSDT
 ROSEUSDT
 APEUSDT
 
 ----
-запуск торгового робота 13.10 в 19:45
+--== Приложение запущено в 2022.10.14 at 01:40:48 ==--
+
+4.1.2 вход только в одну сделку - но реализовано для каждой монеты в отдельности
+4.1.4 вход в сделку по самой длинной 5й свечке
+
+// убрать служебную информацию про web socket
+// исправить инфу по прибыли при торговле
+// 4.1.4 	фильтрация по 5й свече: low и high
+v 4.1.2 убрать сообщение о сломе фрактала
+х скачать отчет с бинанс и проверить: изолированная, 10х
+
+---- Telegram API - Отправка Emoji ----
+https://ru.stackoverflow.com/questions/497325/telegram-api-%D0%9E%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0-emoji
+
+https://apps.timwhitlock.info/emoji/tables/unicode
+
+---- New Order (TRADE) ---
+https://binance-docs.github.io/apidocs/futures/en/#new-order-trade
+
+
+------- ордера ----------
+ {
+      symbol: 'MASKUSDT',
+      initialMargin: '0',
+      maintMargin: '0',
+      unrealizedProfit: '0.00000000',
+      positionInitialMargin: '0',
+      openOrderInitialMargin: '0',
+      leverage: '10', // плечо
+      isolated: true, // изолированная
+      entryPrice: 0,
+      maxNotional: '100000',
+      positionSide: 'BOTH',
+      positionAmt: 0,
+      notional: 0,
+      isolatedWallet: 0,
+      updateTime: 1665731437113,
+      bidNotional: '0',
+      askNotional: '0'
+    },
+
+  {
+      symbol: 'APEUSDT',
+      initialMargin: '13.73100000',
+      maintMargin: '1.37310000',
+      unrealizedProfit: '-5.97000000',
+      positionInitialMargin: '13.73100000',
+      openOrderInitialMargin: '0',
+      leverage: '10',
+      isolated: true,
+      entryPrice: 4.378,
+      maxNotional: '250000',
+      positionSide: 'BOTH',
+      positionAmt: -30,
+      notional: -137.31,
+      isolatedWallet: 13.15510562,
+      updateTime: 1665734403111,
+      bidNotional: '0',
+      askNotional: '0'
+    },
+
+(ок) 1. считать кол-во по полю positionAmt
+(ок) 2. если сумма открытых сделок > 0 (или > 4) , то не входим
+  
+console.log('getAccountInformation: ', await client.getAccountInformation())
+
+Account Information V2 (USER_DATA)
+https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data
+
+getAccountInformation(): Promise<FuturesAccountInformation> {
+    return this.getPrivate('fapi/v2/account');
+  }
+  
+---------------------------- 
+// плечо
+setLeverage(params: SetLeverageParams): Promise<SetLeverageResult> {
+    return this.postPrivate('fapi/v1/leverage', params);
+  }
+  
+// скорее всего не то что нужно
+setIsolatedPositionMargin(
+    params: SetIsolatedMarginParams
+  ): Promise<SetIsolatedMarginResult> {
+    return this.postPrivate('fapi/v1/positionMargin', params);
+  }
+
+----  
+Account Trade List (USER_DATA) - история сделок
+https://binance-docs.github.io/apidocs/futures/en/#account-trade-list-user_data
+
+getAccountTrades(
+    params: SymbolFromPaginatedRequestFromId
+  ): Promise<FuturesPositionTrade[]> {
+    return this.getPrivate('fapi/v1/userTrades', params);
+  }

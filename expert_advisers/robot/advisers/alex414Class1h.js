@@ -12,7 +12,7 @@ const { sendInfoToUser } = require('../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../common.func/candlesToObject')
 const fractal_Bearish = require('../../common.func/fractal_Bearish')
 const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
-const choiceSymbol = require('../choiceSymbol')
+//const choiceSymbol = require('../choiceSymbol')
 
 /*
 в начале запуска приложения:
@@ -54,7 +54,7 @@ class Alex414Class1h {
     this.countOfNegative = 0 // кол-во отрицательных сделок
     this.countOfZero = 0 // кол-во нулевых сделок
 
-    this.inOneDeal = new choiceSymbol()
+    //this.inOneDeal = new choiceSymbol()
 
     this.reset()
   }
@@ -213,7 +213,7 @@ class Alex414Class1h {
           this.nameStrategy
         }: [${this.symbol}] новые свечи для поиска сигнала ===---`
       )
-      console.table(this.candlesForFractal)
+      //console.table(this.candlesForFractal)
 
       // подготавливаем данные для поиска фрактала
       // this.prepairDataforFindFractal(lastCandle)
@@ -238,7 +238,7 @@ class Alex414Class1h {
 
       if (this.brokenFractal) {
         // ищем сигнал №1: 3 зелёных, 1 красная
-        console.log(`ищем сигнал №1: 3 зелёных, 1 красная:`)
+        //console.log(`ищем сигнал №1: 3 зелёных, 1 красная:`)
 
         // вычисляем длину зеленых свечей
         this.bodyLength1g =
@@ -284,7 +284,7 @@ class Alex414Class1h {
         }
 
         // ищем сигнал №2: 1 зелёная 2 красных
-        console.log(`\nищем сигнал №2: 1 зелёная 2 красных:`)
+        //console.log(`\nищем сигнал №2: 1 зелёная 2 красных:`)
         // середина верхней тени фрактала
         this.middleShadow =
           (this.candlesForFractal[2].open + this.candlesForFractal[2].high) / 2
@@ -366,10 +366,10 @@ class Alex414Class1h {
     }%)\n\nЖдем цену на рынке для входа в SHORT...`
 
     sendInfoToUser(message)
-    console.log(message)
+    //console.log(message)
 
     // !!! отправляем в общий класс информацию о: монете, длине 5й свечи, цене входа. Будем сравнивать по длине 5й свечи
-    this.inOneDeal.symbolAdd(this.symbol, this.openShort, this.bodyLength5g)
+    //this.inOneDeal.symbolAdd(this.symbol, this.openShort, this.bodyLength5g)
     return this
   } // openShortCommon(arrayOpenTime
 
@@ -446,7 +446,7 @@ class Alex414Class1h {
 
           sendInfoToUser(message1 + message2)
           this.reset()
-          this.inOneDeal.reset414()
+          //this.inOneDeal.reset414()
         } // условия выхода из сделки по TP
 
         // условия выхода из сделки по SL

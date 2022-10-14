@@ -1,4 +1,5 @@
 const binanceUSDMClient = require('../common/binanceUSDMClient')
+const getLastAssetPrice = require('../common/getLastAssetPrice')
 
 async function submittingCloseOrder(api_option, symbol, side, buyOrderResult) {
   const client = binanceUSDMClient(api_option)
@@ -14,8 +15,9 @@ async function submittingCloseOrder(api_option, symbol, side, buyOrderResult) {
     }
     console.log(`${api_option.name}: Submitting ${side} order: `, orderRequest)
 
-    // отправка ордера
+    // отправка ордера - найти другой ордер, который воззвращает цену
     const orderResult = await client.submitNewOrder(orderRequest)
+    orderResult.lastPrice = await getLastAssetPrice(api_option, symbol)
     console.log(`${api_option.name}: ${side} Order Result:`, orderResult)
     return orderResult
   } catch (e) {

@@ -7,8 +7,9 @@
 */
 //////////////////////////////
 
+const getPositionAmount = require('../../../../../API/binance.engine/common/getPositionAmt')
 const {
-  apiOptionsIvan,
+  optionsOfTrade,
 } = require('../../../../../API/binance.engine/trade/api_options')
 const submittingCloseOrder = require('../../../../../API/binance.engine/trade/submittingCloseOrder')
 const submittingEnterOrder = require('../../../../../API/binance.engine/trade/submittingEnterOrder')
@@ -17,7 +18,7 @@ const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 const fractal_Bearish = require('../../../../common.func/fractal_Bearish')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
-const choiceSymbol = require('../../../../robot/choiceSymbol')
+// const choiceSymbol = require('../../../../robot/choiceSymbol')
 
 /*
 в начале запуска приложения:
@@ -67,7 +68,7 @@ class Alex412Class1hTrade {
     this.countOfNegative = 0 // кол-во отрицательных сделок
     this.countOfZero = 0 // кол-во нулевых сделок
 
-    this.inOneDeal = new choiceSymbol()
+    //this.inOneDeal = new choiceSymbol()
 
     this.reset()
   }
@@ -316,7 +317,7 @@ class Alex412Class1hTrade {
     return this
   } // openShortCommon(arrayOpenTime
 
-  canShortPosition(lastCandle, interval) {
+  canShortPosition(lastCandle, interval, apiOptions) {
     if (this.canShort) {
       if (lastCandle.interval == interval) {
         //if (lastCandle.high > this.openShort) {
@@ -340,9 +341,9 @@ class Alex412Class1hTrade {
             )}\n\nЖдем цену на рынке для выхода из сделки...`
           )
 
-          if (!this.inOneDeal.inDeal412) {
-            this.openDeal() // вход в сделку
-          }
+          //if (!this.inOneDeal.inDeal412) {
+          this.openDeal(apiOptions) // вход в сделку
+          //}
         }
       }
     }
@@ -362,16 +363,15 @@ class Alex412Class1hTrade {
           this.sygnalTime
         )}`
 
-        sendInfoToUser(message)
+        //sendInfoToUser(message)
         this.reset()
       }
     }
 
     if (this.inPosition && !this.aboutBrokenFractal) {
       if (lastCandle.close > this.fractalHigh) {
-        sendInfoToUser(
-          `${this.whitchSignal}\n\nМонета: ${this.symbol}\n\n--== Сломали фрактал ==--\nТекущая цена: ${lastCandle.close} USDT \nУровень фрактала: ${this.fractalHigh} USDT\n\n--== Переноси Take Profit в БУ ==--\nTake Profit = ${this.openShort}`
-        )
+        const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n\n--== Сломали фрактал ==--\nТекущая цена: ${lastCandle.close} USDT \nУровень фрактала: ${this.fractalHigh} USDT\n\n--== Переноси Take Profit в БУ ==--\nTake Profit = ${this.openShort}`
+        //sendInfoToUser(message)
         this.changeTPSLCommon(lastCandle)
         this.aboutBrokenFractal = true
       }
@@ -381,7 +381,7 @@ class Alex412Class1hTrade {
 
   ///////////////////////
   //// закрытие шорт позиции по Take Profit или Stop Loss
-  closeShortPosition(lastCandle, interval) {
+  closeShortPosition(lastCandle, interval, apiOptions) {
     if (this.inPosition) {
       // условия выхода из сделки по TP
       if (lastCandle.interval == interval) {
@@ -423,7 +423,7 @@ class Alex412Class1hTrade {
 
           sendInfoToUser(message1 + message2)
 
-          this.closeDeal()
+          this.closeDeal(apiOptions)
         } // условия выхода из сделки по TP
 
         // условия выхода из сделки по SL
@@ -464,7 +464,7 @@ class Alex412Class1hTrade {
 
           sendInfoToUser(message1 + message2)
 
-          this.closeDeal()
+          this.closeDeal(apiOptions)
         } // отработка выхода из сделки по SL
       } // if (lastCandle.interval == interval)
     } // if (this.inPosition)
@@ -473,45 +473,48 @@ class Alex412Class1hTrade {
   } // closeShortPosition(lastCandle, interval)
 
   // вход в сделку
-  async openDeal() {
-    this.enterOrderResult = await submittingEnterOrder(
-      apiOptionsIvan,
-      this.symbol,
-      'SELL'
-    )
-    if (this.enterOrderResult.origQty > 0) {
-      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Шортанул ${this.enterOrderResult.origQty} монет ==--`
-      sendInfoToUser(message)
-      this.inOneDeal.enterToDeal412() // фиксируем что мы в сделке
-    } else {
-      console.log(
-        `недостаточно средств для входа в сделку. Куплено: ${this.enterOrderResult.origQty} монет`
+  async openDeal(apiOptions) {
+    const result = await getPositionAmount(apiOptions)
+    if (result?.countOfPosition < apiOptions.countOfPosition) {
+      this.enterOrderResult = await submittingEnterOrder(
+        apiOptions,
+        this.symbol,
+        'SELL'
       )
+      if (this.enterOrderResult?.origQty > 0) {
+        const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Шортанул ${this.enterOrderResult.origQty} монет ==--\nпо цене: ${this.enterOrderResult.lastPrice}`
+        sendInfoToUser(message)
+        //this.inOneDeal.enterToDeal412() // фиксируем что мы в сделке
+      } else {
+        // console.log(`недостаточно средств для входа в сделку. Куплено: ${this.enterOrderResult.origQty} монет`)
+      }
     }
     return this
   }
 
   // выход из сделки
-  async closeDeal() {
-    if (this.enterOrderResult.origQty > 0) {
+  async closeDeal(apiOptions) {
+    if (this.enterOrderResult?.origQty > 0) {
       this.closeOrderResult = await submittingCloseOrder(
-        apiOptionsIvan,
+        apiOptions,
         this.symbol,
         'BUY',
         this.enterOrderResult
       )
     }
 
-    if (this.closeOrderResult.origQty > 0) {
+    if (this.closeOrderResult?.origQty > 0) {
       // временный расчет прибыли. По хорошему: надо сохранять фактические цены входа и выхода
       const profit = +(
-        (this.openShort - this.closeShort) *
-        this.closeOrderResult.origQty
+        ((this.enterOrderResult?.lastPrice - this.closeOrderResult?.lastPrice) *
+          this.closeOrderResult?.origQty) /
+        optionsOfTrade.multiplier
       ).toFixed(2)
 
-      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Откупил ${this.enterOrderResult.origQty} монет ==--\nИтог: ${profit} USD`
+      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
       sendInfoToUser(message)
-      this.inOneDeal.reset412() // фиксируем что мы вышли из сделки
+      console.log(`multiplier = ${optionsOfTrade.multiplier}`)
+      //this.inOneDeal.reset412() // фиксируем что мы вышли из сделки
     }
     return this
   }
@@ -570,7 +573,7 @@ class Alex412Class1hTrade {
             this.stopLoss
           }`
         )
-        this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
+        //this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
       }
     }
     //} // if (lastCandle.startTime >= this.startTime + shiftTime)
@@ -639,7 +642,7 @@ class Alex412Class1hTrade {
       if (lastCandle.close < this.openShort * (1 - 0.008)) {
         if (!this.changedSL) {
           // изменение SL: если мы в прибыли
-          this.stopLoss = this.openShort
+          this.stopLoss = this.openShort * (1 - 0.001)
           this.changedSL = true
           sendInfoToUser(
             `${this.whitchSignal}\nМонета: ${
@@ -648,18 +651,18 @@ class Alex412Class1hTrade {
               this.sygnalTime
             )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
               this.positionTime
-            )}\n\n--= Мы в вариативной прибыли > 0.8% ==--\nМеняем Stop Loss на точку входа: ${
+            )}\n\n--= Мы в вариативной прибыли > 0.8% ==--\nМеняем Stop Loss на (точку входа - 0.1%): ${
               this.stopLoss
             }`
           )
-          this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
+          //this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
         } // if (!this.changedSL)
       } // if (lastCandle.close < this.openShort * (1-0.008))
 
       // Если от точки входа -0.5% тейк переносится в БУ
       if (lastCandle.close > this.openShort * (1 + 0.005)) {
         if (!this.changedTP) {
-          this.takeProfit = this.openShort
+          this.takeProfit = this.openShort * (1 - 0.001)
           this.changedTP = true
           sendInfoToUser(
             `${this.whitchSignal}\nМонета: ${
@@ -668,7 +671,7 @@ class Alex412Class1hTrade {
               this.sygnalTime
             )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
               this.positionTime
-            )}\n\n--== Мы в вариативной просадке -0.5% ==--\nМеняем Take Profit на точку входа: ${
+            )}\n\n--== Мы в вариативной просадке -0.5% ==--\nМеняем Take Profit на (точку входа - 0.1%): ${
               this.takeProfit
             }`
           )

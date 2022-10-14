@@ -7,7 +7,6 @@ const {
   startWilliams,
 } = require('./expert_advisers/Williams_fractal/mainWilliams')
 const startAlex = require('./expert_advisers/Alex/mainAlex')
-// const testFunctionBinance = require('./binance_Engine/tests_Ivan/testFunOfBinance')
 const testOfNewFuctiouns = require('./expert_advisers')
 
 const app = express()
@@ -88,16 +87,18 @@ app.post('/alexPage', async function (req, res) {
 })
 
 // тесты функций: get24, exchange info
-/*
 app.post('/testPage', async function (req, res) {
   console.log('test: прилетел запрос на сервер:')
   // console.table(req.body)
 
-  const result = await testFunctionBinance()
+  //const testFunctionBinance = require('./binance_Engine/tests_Ivan/testFunOfBinance')
+  //const result = await testFunctionBinance()
+  const getPositionAmount = require('./API/binance.engine/common/getPositionAmt')
+  const { apiOptionsIvan } = require('./API/binance.engine/trade/api_options')
+  const result = await getPositionAmount(apiOptionsIvan)
   console.log('app отработало')
-  res.json(result)
+  res.json(result.accountInformation)
 })
-*/
 
 // попытка прикрутить обработку POST запроса в express
 

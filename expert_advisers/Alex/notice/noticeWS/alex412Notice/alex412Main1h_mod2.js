@@ -15,6 +15,9 @@ const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.us
 const Alex412Class1hTrade = require('./Alex412Class1hTrade')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
+const {
+  apiOptions,
+} = require('../../../../../API/binance.engine/trade/api_options')
 
 // общий шаблон
 async function alex412Main1h_mod(
@@ -88,10 +91,13 @@ async function alex412Main1h_mod(
           // (1) если в сделке:
           if (item.inPosition) {
             if (!final) {
-              // 1.1 для начала каждую секунду проверяем условие выхода из сделки по TP и SL
-              item.closeShortPosition(lastCandle, timeFrameSenior)
-              item.findBrokenFractal(lastCandle) // отключил из-за большого кол-ва служебных сообщений
+              item.findBrokenFractal(lastCandle) // внутри отключил большое кол-во служебных сообщений
               item.changeTPSLOnMarket(lastCandle, timeFrameSenior)
+
+              // каждую секунду проверяем условие выхода из сделки по TP и SL
+              apiOptions.forEach((traderAPI) => {
+                item.closeShortPosition(lastCandle, timeFrameSenior, traderAPI)
+              })
 
               // если вышли из сделки, то обнуляем состояние сделки:
               if (!item.inPosition) {
@@ -113,8 +119,12 @@ async function alex412Main1h_mod(
             // 2.1 ждем цену на рынке для входа по сигналу
             if (!final) {
               item.findSygnal(lastCandle, timeFrameSenior)
-              //item.findBrokenFractal(lastCandle)
-              item.canShortPosition(lastCandle, timeFrameSenior)
+              item.findBrokenFractal(lastCandle) // внутри отключил большое кол-во служебных сообщений
+
+              apiOptions.forEach((traderAPI) => {
+                item.canShortPosition(lastCandle, timeFrameSenior, traderAPI)
+              })
+
               //console.log(`interval: ${interval}, close = ${lastCandle.close}`)
             } // if (!final)
             if (final) {
