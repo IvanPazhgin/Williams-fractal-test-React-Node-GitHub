@@ -102,10 +102,8 @@ async function alex412Main1h_mod(
               // если вышли из сделки, то обнуляем состояние сделки:
               if (!item.inPosition) {
                 // можно считать что сделка закрыта
-                item.reset()
-                console.log(
-                  `${item.symbol}: Закрыли short. Очистили параметры сделки`
-                )
+                //item.reset() // отключил 17.10.2022 для эксперимента
+                //console.log(`${item.symbol}: Закрыли short. Очистили параметры сделки`)
                 //await item.prepair5Candles(timeFrameSenior)
               } // обнуляем состояние сделки до первоначального состояния
             } // if (!final)

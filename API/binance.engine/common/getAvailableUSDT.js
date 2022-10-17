@@ -19,7 +19,7 @@ async function getAvailableBalance(api_option) {
     const amountValue =
       Number(usdtAvailable) * (optionsOfTrade.entryAmountPercent / 100)
     console.log(
-      `Executing trade with ${optionsOfTrade.entryAmountPercent}% of ${usdtAvailable} USDT => ${amountValue} USDT`
+      `\nExecuting trade with ${optionsOfTrade.entryAmountPercent}% of ${usdtAvailable} USDT => ${amountValue} USDT`
     )
 
     return amountValue

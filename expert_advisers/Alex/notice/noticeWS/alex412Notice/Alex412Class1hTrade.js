@@ -362,7 +362,6 @@ class Alex412Class1hTrade {
         } USDT\n--== ОТМЕНА сигнала ==--\nВремя сигнала: ${timestampToDateHuman(
           this.sygnalTime
         )}`
-
         //sendInfoToUser(message)
         this.reset()
       }
@@ -389,7 +388,6 @@ class Alex412Class1hTrade {
         if (lastCandle.close <= this.takeProfit) {
           //this.closeShort = lastCandle.low
           this.closeShort = this.takeProfit
-          //this.closeTime = lastCandle.startTime
           this.closeTime = new Date().getTime()
 
           this.profit = +(
@@ -430,7 +428,6 @@ class Alex412Class1hTrade {
         else if (lastCandle.close >= this.stopLoss) {
           //this.closeShort = lastCandle.high
           this.closeShort = this.stopLoss
-          //this.closeTime = lastCandle.startTime
           this.closeTime = new Date().getTime()
 
           this.profit = +(
@@ -506,15 +503,20 @@ class Alex412Class1hTrade {
     if (this.closeOrderResult?.origQty > 0) {
       // временный расчет прибыли. По хорошему: надо сохранять фактические цены входа и выхода
       const profit = +(
-        ((this.enterOrderResult?.lastPrice - this.closeOrderResult?.lastPrice) *
-          this.closeOrderResult?.origQty) /
+        ((this.enterOrderResult.lastPrice - this.closeOrderResult.lastPrice) *
+          this.closeOrderResult.origQty) /
         optionsOfTrade.multiplier
       ).toFixed(2)
 
       const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
       sendInfoToUser(message)
-      console.log(`multiplier = ${optionsOfTrade.multiplier}`)
+
+      const checking = `enterOrderResult.lastPrice = ${this.enterOrderResult.lastPrice} USD\nenterOrderResult.origQty = ${this.enterOrderResult.origQty} шт\ncloseOrderResult.lastPrice = ${this.closeOrderResult.lastPrice} USD\ncloseOrderResult.origQty = ${this.closeOrderResult.origQty} шт\nmultiplier = ${optionsOfTrade.multiplier}x`
+      console.log(checking)
+
+      console.log('enterOrderResult после сделки: ', this.enterOrderResult)
       //this.inOneDeal.reset412() // фиксируем что мы вышли из сделки
+      this.reset() // если вышли из сделки, то обнуляем состояние сделки
     }
     return this
   }
@@ -544,17 +546,16 @@ class Alex412Class1hTrade {
         this.takeProfit = this.openShort * (1 - 0.001)
         // dateChangeTP = array[i].startTime
         this.changedTP = true
-        sendInfoToUser(
-          `${this.whitchSignal}\nМонета: ${
-            this.symbol
-          }\n\nВремя появления сигнала:\n${timestampToDateHuman(
-            this.sygnalTime
-          )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
-            this.positionTime
-          )}\n\n--== Мы в вариативной просадке ==--\nМеняем take profit на (точку входа - 0.1%): ${
-            this.takeProfit
-          }`
-        )
+        const message = `${this.whitchSignal}\nМонета: ${
+          this.symbol
+        }\n\nВремя появления сигнала:\n${timestampToDateHuman(
+          this.sygnalTime
+        )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
+          this.positionTime
+        )}\n\n--== Мы в вариативной просадке ==--\nМеняем TAKE PROFIT на (точку входа - 0.1%): ${
+          this.takeProfit
+        }`
+        //sendInfoToUser(message)
       }
     } else {
       if (!this.changedSL) {
@@ -562,17 +563,16 @@ class Alex412Class1hTrade {
         this.stopLoss = this.openShort * (1 - 0.001)
         // dateChangeSL = array[i].startTime
         this.changedSL = true
-        sendInfoToUser(
-          `${this.whitchSignal}\nМонета: ${
-            this.symbol
-          }\n\nВремя появления сигнала:\n${timestampToDateHuman(
-            this.sygnalTime
-          )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
-            this.positionTime
-          )}\n\n--= Мы в вариативной прибыли ==--\nМеняем stop loss на (точку входа - 0.1%): ${
-            this.stopLoss
-          }`
-        )
+        const message = `${this.whitchSignal}\nМонета: ${
+          this.symbol
+        }\n\nВремя появления сигнала:\n${timestampToDateHuman(
+          this.sygnalTime
+        )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
+          this.positionTime
+        )}\n\n--= Мы в вариативной прибыли ==--\nМеняем STOP LOSS на (точку входа - 0.1%): ${
+          this.stopLoss
+        }`
+        //sendInfoToUser(message)
         //this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
       }
     }

@@ -87,6 +87,7 @@ app.post('/alexPage', async function (req, res) {
 })
 
 // тесты функций: get24, exchange info
+/*
 app.post('/testPage', async function (req, res) {
   console.log('test: прилетел запрос на сервер:')
   // console.table(req.body)
@@ -99,6 +100,7 @@ app.post('/testPage', async function (req, res) {
   console.log('app отработало')
   res.json(result.accountInformation)
 })
+*/
 
 // попытка прикрутить обработку POST запроса в express
 

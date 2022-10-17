@@ -286,8 +286,7 @@ class Alex414Class1h {
         // ищем сигнал №2: 1 зелёная 2 красных
         //console.log(`\nищем сигнал №2: 1 зелёная 2 красных:`)
         // середина верхней тени фрактала
-        this.middleShadow =
-          (this.candlesForFractal[2].open + this.candlesForFractal[2].high) / 2
+        //this.middleShadow = (this.candlesForFractal[2].open + this.candlesForFractal[2].high) / 2
 
         // длина тела 5й зеленой свечи
         this.bodyLength5g =
@@ -303,7 +302,8 @@ class Alex414Class1h {
           this.candlesForFractal[2].open > this.candlesForFractal[2].close && // свеча фрактала КРАСНАЯ
           this.candlesForFractal[3].open > this.candlesForFractal[3].close && // 4я свеча КРАСНАЯ
           this.candlesForFractal[4].close > this.candlesForFractal[4].open && // 5я свеча зеленая
-          this.candlesForFractal[4].close >= this.middleShadow && // и закрылась выше либо на середине тени 3й свечи
+          //this.candlesForFractal[4].close >= this.middleShadow && // и закрылась выше либо на середине тени 3й свечи
+          this.candlesForFractal[4].high >= this.candlesForFractal[2].high && // и хай 5-ой должен быть выше хая 3 красной
           this.upperShadow5g < this.bodyLength5g
         ) {
           //if (!this.sygnalSent) {
