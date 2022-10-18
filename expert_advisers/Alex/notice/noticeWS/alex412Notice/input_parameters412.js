@@ -174,7 +174,7 @@ const symbols4h41Part1 = [
   'BNXUSDT',
   'BLZUSDT',
   'CHZUSDT',
-  //'CHRUSDT',
+  'CHRUSDT',
   'CRVUSDT',
   'COMPUSDT',
   'CVXUSDT',

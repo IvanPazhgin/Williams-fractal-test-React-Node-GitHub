@@ -213,7 +213,7 @@ class Alex414Class1h {
           this.nameStrategy
         }: [${this.symbol}] новые свечи для поиска сигнала ===---`
       )
-      //console.table(this.candlesForFractal)
+      console.table(this.candlesForFractal)
 
       // подготавливаем данные для поиска фрактала
       // this.prepairDataforFindFractal(lastCandle)
@@ -238,7 +238,7 @@ class Alex414Class1h {
 
       if (this.brokenFractal) {
         // ищем сигнал №1: 3 зелёных, 1 красная
-        //console.log(`ищем сигнал №1: 3 зелёных, 1 красная:`)
+        console.log(`ищем сигнал №1: 3 зелёных, 1 красная:`)
 
         // вычисляем длину зеленых свечей
         this.bodyLength1g =
@@ -254,6 +254,9 @@ class Alex414Class1h {
         // середина верхней тени 4й красной свечи
         this.middleShadow =
           (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2
+
+        const message = `bodyLength1g = ${this.bodyLength1g}\nbodyLength2g = ${this.bodyLength2g}\nfractalBodyLength = ${this.fractalBodyLength}\nmiddleShadow = ${this.middleShadow}`
+        console.log(message)
 
         if (
           // три первых свечи - ЗЕЛЕНЫЕ
@@ -274,6 +277,9 @@ class Alex414Class1h {
           //if (!this.sygnalSent) {
           this.whitchSignal = this.nameStrategy + ': 3 зеленых и 1 красная'
           this.openShortCommon()
+
+          console.log(`!!! нашли ${this.whitchSignal} !!!`)
+
           //}
           // console.table(this.fractalBearish)
         } // else this.brokenFractal = false
@@ -284,9 +290,10 @@ class Alex414Class1h {
         }
 
         // ищем сигнал №2: 1 зелёная 2 красных
-        //console.log(`\nищем сигнал №2: 1 зелёная 2 красных:`)
+        console.log(`\nищем сигнал №2: 1 зелёная 2 красных:`)
         // середина верхней тени фрактала
-        //this.middleShadow = (this.candlesForFractal[2].open + this.candlesForFractal[2].high) / 2
+        this.middleShadow =
+          (this.candlesForFractal[2].open + this.candlesForFractal[2].high) / 2
 
         // длина тела 5й зеленой свечи
         this.bodyLength5g =
@@ -296,19 +303,24 @@ class Alex414Class1h {
         this.upperShadow5g =
           this.candlesForFractal[4].high / this.candlesForFractal[4].close - 1
 
+        const message2 = `middleShadow = ${this.middleShadow}\nbodyLength5g = ${this.bodyLength5g}\nupperShadow5g = ${this.upperShadow5g}`
+        console.log(message2)
+
         if (
           this.candlesForFractal[0].open > this.candlesForFractal[0].close && // первая свеча - красная
           this.candlesForFractal[1].close > this.candlesForFractal[1].open && // вторая свеча - зеленая
           this.candlesForFractal[2].open > this.candlesForFractal[2].close && // свеча фрактала КРАСНАЯ
           this.candlesForFractal[3].open > this.candlesForFractal[3].close && // 4я свеча КРАСНАЯ
           this.candlesForFractal[4].close > this.candlesForFractal[4].open && // 5я свеча зеленая
-          //this.candlesForFractal[4].close >= this.middleShadow && // и закрылась выше либо на середине тени 3й свечи
-          this.candlesForFractal[4].high >= this.candlesForFractal[2].high && // и хай 5-ой должен быть выше хая 3 красной
+          this.candlesForFractal[4].close >= this.middleShadow && // и закрылась выше либо на середине тени 3й свечи
+          //this.candlesForFractal[4].high >= this.candlesForFractal[2].high && // и хай 5-ой должен быть выше хая 3 красной
           this.upperShadow5g < this.bodyLength5g
         ) {
           //if (!this.sygnalSent) {
           this.whitchSignal = this.nameStrategy + ': 1 зелёная и 2 красных'
           this.openShortCommon()
+
+          console.log(`!!! нашли ${this.whitchSignal} !!!`)
           //}
         } // else this.brokenFractal = false
         else {
