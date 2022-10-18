@@ -1,4 +1,4 @@
-const { optionsOfTrade } = require('../trade/api_options')
+const { optionsOfTrade } = require('../../../config/api_options')
 const getAvailableBalance = require('./getAvailableUSDT')
 const getLastAssetPrice = require('./getLastAssetPrice')
 const getPricePrecision = require('./getPricePrecision')

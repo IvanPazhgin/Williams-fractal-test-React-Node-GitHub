@@ -8,9 +8,7 @@
 //////////////////////////////
 
 const getPositionAmount = require('../../../../../API/binance.engine/common/getPositionAmt')
-const {
-  optionsOfTrade,
-} = require('../../../../../API/binance.engine/trade/api_options')
+// const { optionsOfTrade } = require('../../../../../API/binance.engine/trade/api_options')
 const submittingCloseOrder = require('../../../../../API/binance.engine/trade/submittingCloseOrder')
 const submittingEnterOrder = require('../../../../../API/binance.engine/trade/submittingEnterOrder')
 const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
@@ -503,18 +501,18 @@ class Alex412Class1hTrade {
     if (this.closeOrderResult?.origQty > 0) {
       // временный расчет прибыли. По хорошему: надо сохранять фактические цены входа и выхода
       const profit = +(
-        ((this.enterOrderResult.lastPrice - this.closeOrderResult.lastPrice) *
-          this.closeOrderResult.origQty) /
-        optionsOfTrade.multiplier
-      ).toFixed(2)
+        (this.enterOrderResult.lastPrice - this.closeOrderResult.lastPrice) *
+        this.closeOrderResult.origQty
+      ) // / optionsOfTrade.multiplier
+        .toFixed(2)
 
       const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
       sendInfoToUser(message)
 
-      const checking = `enterOrderResult.lastPrice = ${this.enterOrderResult.lastPrice} USD\nenterOrderResult.origQty = ${this.enterOrderResult.origQty} шт\ncloseOrderResult.lastPrice = ${this.closeOrderResult.lastPrice} USD\ncloseOrderResult.origQty = ${this.closeOrderResult.origQty} шт\nmultiplier = ${optionsOfTrade.multiplier}x`
-      console.log(checking)
+      //const checking = `enterOrderResult.lastPrice = ${this.enterOrderResult.lastPrice} USD\nenterOrderResult.origQty = ${this.enterOrderResult.origQty} шт\ncloseOrderResult.lastPrice = ${this.closeOrderResult.lastPrice} USD\ncloseOrderResult.origQty = ${this.closeOrderResult.origQty} шт\nmultiplier = ${optionsOfTrade.multiplier}x`
+      //console.log(checking)
 
-      console.log('enterOrderResult после сделки: ', this.enterOrderResult)
+      //console.log('enterOrderResult после сделки: ', this.enterOrderResult)
       //this.inOneDeal.reset412() // фиксируем что мы вышли из сделки
       this.reset() // если вышли из сделки, то обнуляем состояние сделки
     }

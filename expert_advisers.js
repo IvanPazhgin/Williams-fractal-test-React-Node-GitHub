@@ -1,5 +1,6 @@
 function testOfNewFuctiouns() {
-  workingFunctions()
+  notifications()
+  tradingRobots()
   //testWilliams() // тест одновременного запуска оповещений на разных стратегиях
   //testWilliamsOnDownload() // Тесты на скаченных свечах
   //testBinanceTrade() // тест торговых функций
@@ -14,7 +15,21 @@ function testOfNewFuctiouns() {
   //testDotJJ() // тест стратегии Точка JJ
 }
 
-function workingFunctions() {
+function tradingRobots() {
+  // сообщения в tg
+  const { tgBotExample } = require('./API/telegram/telegram.bot')
+  tgBotExample()
+
+  // разбил 105 монет на 2 массива по 50
+  const alex412Launch_mod = require('./expert_advisers/Alex/notice/noticeWS/alex412Notice/alex412Launch_mod')
+  alex412Launch_mod()
+
+  // оповещения 3.8.2.6 2h на 105 монетах (02.10.2022)
+  const alexNoticeMain3826 = require('./expert_advisers/Alex/notice/noticeWS/alex3826Notice/alexNoticeMain3826')
+  alexNoticeMain3826()
+}
+
+function notifications() {
   // стратегия 3.7 оповещения на одной монете
   // const alex37tradeMain = require('./expert_advisers/Alex/trade37WS(1symbol)/alex37tradeMain')
   // alex37tradeMain()
@@ -26,10 +41,6 @@ function workingFunctions() {
   // стратегия 3.8 оповещения на восьми монетах
   //const alex38notice8s = require('./expert_advisers/Alex/notice/noticeWSarchive/notice38WS(8s)/alex38notice8s')
   //alex38notice8s()
-
-  // сообщения в tg
-  const { tgBotExample } = require('./API/telegram/telegram.bot')
-  tgBotExample()
 
   // оповещения 3.7-3.9 на 12 монетах (24.08.2022)
   // const alex3notice12s = require('./expert_advisers/Alex/notice/notice3WS(12s)/alex3notice12s')
@@ -74,17 +85,9 @@ function workingFunctions() {
   const alex412Launch = require('./expert_advisers/Alex/notice/noticeWS/alex412Notice/alex412Launch')
   //alex412Launch()
 
-  // разбил 105 монет на 2 массива по 50
-  const alex412Launch_mod = require('./expert_advisers/Alex/notice/noticeWS/alex412Notice/alex412Launch_mod')
-  alex412Launch_mod()
-
   // оповещения 4.1.3 + DEMA на: 4h, 1m, 30m (22.09.2022)
   //const alex413Launch = require('./expert_advisers/Alex/notice/noticeWS/alex413Notice/alex413Launch')
   //alex413Launch()
-
-  // оповещения 3.8.2.6 2h на 105 монетах (02.10.2022)
-  const alexNoticeMain3826 = require('./expert_advisers/Alex/notice/noticeWS/alex3826Notice/alexNoticeMain3826')
-  alexNoticeMain3826()
 
   // оповещения по стратегии Билла Вильямса
   const williamsMain = require('./expert_advisers/Williams_fractal/notification/williamsMain')
@@ -107,10 +110,7 @@ function testBinanceTrade() {
   //getAvailableBalance() // (1) получаем доступный баланс
   const symbol = 'CHRUSDT'
   //getLastAssetPrice(symbol) // (2) получаем текущую цену на рынке
-  const {
-    apiOptionsIvan,
-    response,
-  } = require('./API/binance.engine/trade/api_options')
+  const { apiOptionsIvan, response } = require('./config/api_options')
   //submittingEnterOrder(symbol, 'BUY', apiOptionsIvan) // (3) монета, вид приказа: BUY, SELL
   //submittingCloseOrder(symbol, 'SELL', apiOptionsIvan, response) // (4)
 

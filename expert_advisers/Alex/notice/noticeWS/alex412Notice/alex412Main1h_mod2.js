@@ -13,11 +13,9 @@
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
 //const Alex412Class1h_mod2 = require('./Alex412Class1h_mod2')
 const Alex412Class1hTrade = require('./Alex412Class1hTrade')
-const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
+//const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
-const {
-  apiOptions,
-} = require('../../../../../API/binance.engine/trade/api_options')
+const { apiOptions } = require('../../../../../config/api_options')
 
 // общий шаблон
 async function alex412Main1h_mod(

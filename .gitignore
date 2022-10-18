@@ -8,6 +8,9 @@
 /expert_advisers/tests.js
 /expert_advisers/Alex/tradeFunTemple/
 
+/config/api_options.js
+/config/.env
+
 /API/telegram2
 /_education
 

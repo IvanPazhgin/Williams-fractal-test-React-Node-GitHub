@@ -1,4 +1,4 @@
-const { optionsOfTrade } = require('../trade/api_options')
+const { optionsOfTrade } = require('../../../config/api_options')
 const binanceUSDMClient = require('./binanceUSDMClient')
 
 async function getAvailableBalance(api_option) {
@@ -10,19 +10,28 @@ async function getAvailableBalance(api_option) {
     const usdtBal = balance.find((assetBal) => assetBal.asset === 'USDT')
     //console.log('USDT balance object: ', usdtBal)
 
-    const usdtAvailable = usdtBal?.availableBalance
+    const usdtAvailable = Number(usdtBal?.availableBalance) // баланс доступных средств для торговли
+    const usdtFullBalance = Number(usdtBal?.balance) // берём в расчет весь баланс кошелька
 
-    if (!usdtBal || !usdtAvailable) {
+    if (!usdtBal || !usdtAvailable || !usdtFullBalance) {
       return console.error('Error: funds to trade from USDT')
     }
 
-    const amountValue =
-      Number(usdtAvailable) * (optionsOfTrade.entryAmountPercent / 100)
-    console.log(
-      `\nExecuting trade with ${optionsOfTrade.entryAmountPercent}% of ${usdtAvailable} USDT => ${amountValue} USDT`
-    )
+    const amountValueMin =
+      usdtAvailable * (optionsOfTrade.entryAmountPercent / 100)
 
-    return amountValue
+    const amountValueMax =
+      usdtFullBalance * (optionsOfTrade.entryAmountPercent / 100)
+
+    if (amountValueMax > usdtAvailable) {
+      const message = `\nExecuting trade with ${optionsOfTrade.entryAmountPercent}% of ${usdtFullBalance} USDT => ${amountValueMax} USDT`
+      console.log(message)
+      return amountValueMax
+    } else {
+      const message = `\nExecuting trade with ${optionsOfTrade.entryAmountPercent}% of ${usdtAvailable} USDT => ${amountValueMin} USDT`
+      console.log(message)
+      return amountValueMin
+    }
   } catch (e) {
     console.error('Error: request failed: ', e)
   }

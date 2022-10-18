@@ -11,7 +11,8 @@ const {
 
 function alexNoticeMain3826() {
   // запускаем 3.8.2.6 на 2h
-  const alex3826Notice2h = require('./alex3826Notice2h')
+  //const alex3826Notice2h = require('./alex3826Notice2h')
+  const alex3826Notice2h = require('./alex3826Logic2h')
   alex3826Notice2h(symbols2h38Part1)
   alex3826Notice2h(symbols2h38Part2)
 
