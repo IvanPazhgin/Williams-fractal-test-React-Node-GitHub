@@ -5,7 +5,7 @@ const config = require('config')
 const path = require('path')
 const {
   startWilliams,
-} = require('./expert_advisers/Williams_fractal/mainWilliams')
+} = require('./expert_advisers/Williams_fractal/test/mainWilliams')
 const startAlex = require('./expert_advisers/Alex/mainAlex')
 const testOfNewFuctiouns = require('./expert_advisers')
 

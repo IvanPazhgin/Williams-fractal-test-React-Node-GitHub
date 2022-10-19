@@ -1,9 +1,9 @@
 // const { USDMClient } = require('binance')
 const trade = require('./trade')
 const config = require('config')
-const candlesToObject = require('./candlesToObject')
-const timestampToDateHuman = require('./timestampToDateHuman')
-const getCandles = require('./getCandles')
+const candlesToObject = require('../../common.func/candlesToObject4test')
+const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
+const getCandles = require('../../../API/binance.engine/usdm/getCandles.5param')
 
 const limitInTrend = config.get('limitInTrend') || 1000
 

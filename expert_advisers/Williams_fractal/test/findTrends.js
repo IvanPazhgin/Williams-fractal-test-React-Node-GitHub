@@ -1,4 +1,4 @@
-const timestampToDateHuman = require('./timestampToDateHuman')
+const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 
 function findTrends(arg) {
   let FractalsUp = false // факт наличия фрактала на старшем ТФ

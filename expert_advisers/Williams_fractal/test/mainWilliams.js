@@ -1,11 +1,11 @@
 const config = require('config')
-const diffCandle = require('./diffCandle')
-const candlesToObject = require('./candlesToObject')
+const getCandles = require('../../../API/binance.engine/usdm/getCandles.5param')
+const candlesToObject = require('../../common.func/candlesToObject4test')
+const diffCandle = require('../../common.func/diffCandle')
+const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 const findTrends = require('./findTrends')
 const getTrendsAsync = require('./getTrends')
-const timestampToDateHuman = require('./timestampToDateHuman')
 const printGlobalProfit = require('./printGlobalProfit')
-const getCandles = require('./getCandles')
 
 const limitSeniorTrend = config.get('limitSeniorTrend') || 1000
 

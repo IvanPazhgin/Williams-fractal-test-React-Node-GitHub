@@ -1,4 +1,4 @@
-const timestampToDateHuman = require('./timestampToDateHuman')
+const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 
 function trade(array, trend, index, deposit, partOfDeposit, multiplier) {
   let FractalsUp = false // факт наличия фрактала на младшем ТФ
