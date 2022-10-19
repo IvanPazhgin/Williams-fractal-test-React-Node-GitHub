@@ -63,95 +63,163 @@ export const MainPage = () => {
 
   return (
     <>
-      <h2>Тестер стратегии RC 3.3</h2>
+      <h2>Тестер стратегии</h2>
       <h3>фракталы Билла Вильямса</h3>
       <hr></hr>
       {/* Запрос пользователя */}
-      <form action="/" method="POST">
-        <h4>Введите параметры:</h4>
+      <div class="container py-5">
+        <form class="mb-5" id="form" action="/" method="POST">
+          <h4>Введите параметры:</h4>
 
-        <div class="input-field">
-          <input type="text" name="symbol" onChange={changeHandler} />
-          <label>Инструмент. Например: btcusdt, ETHUSDT</label>
-        </div>
+          <div class="form-group">
+            <label for="symbol">
+              Монета: btcusdt, <b>ETHUSDT</b>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="symbol"
+              name="symbol"
+              onChange={changeHandler}
+              required
+            ></input>
+          </div>
 
-        <p>
-          Ниже введи старший и младщий таймфрейм.
+          <hr></hr>
+          <p>
+            Ниже введи старший и младщий таймфрейм.
+            <br />
+            <em>
+              Таймфреймы бывают: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h,
+              1d, 3d, 1w, 1M, где:
+              <br />m - minutes; h - hours; d - days; w - weeks; M - months
+            </em>
+          </p>
+
+          <div class="form-group">
+            <label for="seniorTimeFrame">
+              Старший таймфрейм. Например: <b>2h</b>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="seniorTimeFrame"
+              name="seniorTimeFrame"
+              onChange={changeHandler}
+              required
+            ></input>
+          </div>
+
+          <div class="form-group">
+            <label for="lowerTimeFrame">
+              Младший таймфрейм. Например: <b>5m</b>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="lowerTimeFrame"
+              name="lowerTimeFrame"
+              onChange={changeHandler}
+              required
+            ></input>
+          </div>
+
+          <hr></hr>
+          <p>
+            Ниже укажи временной интервал в формате{' '}
+            <em>
+              YYYY-MM-DD<strong>T</strong>HH:mm:ss.sss, где:
+              <br />
+              YYYY-MM-DD – дата в формате год-месяц-день.
+              <br />
+              Обычный символ T используется как разделитель.
+              <br />
+              HH:mm:ss.sss – время: часы-минуты-секунды-миллисекунды.
+            </em>
+          </p>
+
+          <div class="form-group">
+            <label for="dateStart">
+              Дата и время первой свечи: <b>2022-01-01T00:00:00.000</b>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="dateStart"
+              name="dateStart"
+              onChange={changeHandler}
+              required
+            ></input>
+          </div>
+
+          <div class="form-group">
+            <label for="dateFinish">
+              Дата и время последней свечи: <b>2022-02-30T00:00:00.000</b>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="dateFinish"
+              name="dateFinish"
+              onChange={changeHandler}
+              required
+            ></input>
+          </div>
+
+          <hr></hr>
+          <div class="form-group">
+            <label for="deposit">
+              Введите размер депозита. Например: <b>1000</b>
+            </label>
+            <input
+              type="number"
+              class="form-control"
+              id="deposit"
+              name="deposit"
+              onChange={changeHandler}
+              required
+            ></input>
+          </div>
+
+          <div class="form-group">
+            <label for="partOfDeposit">
+              Введите % от депозита: от 0.01 до 1. Например: <b>0.25</b>
+            </label>
+            <input
+              type="number"
+              class="form-control"
+              id="partOfDeposit"
+              name="partOfDeposit"
+              onChange={changeHandler}
+              required
+            ></input>
+          </div>
+
+          <div class="form-group">
+            <label for="multiplier">
+              Введите плечо: от 1 до 20. Например: <b>10</b>
+            </label>
+            <input
+              type="number"
+              class="form-control"
+              id="multiplier"
+              name="multiplier"
+              onChange={changeHandler}
+              required
+            ></input>
+          </div>
+
           <br />
-          Таймфреймы бывают: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d,
-          3d, 1w, 1M, где:
-          <br />m - minutes; h - hours; d - days; w - weeks; M - months
-        </p>
-
-        <div class="input-field">
-          <input type="text" name="seniorTimeFrame" onChange={changeHandler} />
-          <label>
-            Старший тайм фрейм. Например: 1h.{' '}
-            <b>
-              ВАЖНО! Приложение пока работает только на ТФ: 5m, 15m, 30m, 1h,
-              2h, 4h, 6h, 8h, 12h, 1d.
-            </b>
-          </label>
-        </div>
-
-        <div class="input-field">
-          <input type="text" name="lowerTimeFrame" onChange={changeHandler} />
-          <label>Младший тайм фрейм. Например: 5m</label>
-        </div>
-
-        <p>
-          Ниже укажи временной интервал в формате YYYY-MM-DDTHH:mm:ss.sss, где:
-          <br />
-          YYYY-MM-DD – дата в формате год-месяц-день.
-          <br />
-          Обычный символ T используется как разделитель.
-          <br />
-          HH:mm:ss.sss – время: часы-минуты-секунды-миллисекунды.
-        </p>
-
-        <div class="input-field">
-          <input type="text" name="dateStart" onChange={changeHandler} />
-          <label>
-            Дата и время первой свечи. Например: 2022-01-01T00:00:00.000
-          </label>
-        </div>
-
-        <div class="input-field">
-          <input type="text" name="dateFinish" onChange={changeHandler} />
-          <label>
-            Дата и время последней свечи. Например: 2022-02-30T00:00:00.000
-          </label>
-        </div>
-
-        <div class="input-field">
-          <input type="text" name="deposit" onChange={changeHandler} />
-          <label>Введите размер депозита</label>
-        </div>
-
-        <div class="input-field">
-          <input type="text" name="partOfDeposit" onChange={changeHandler} />
-          <label>Введите % от депозита для работы: от 0.01 до 1</label>
-        </div>
-
-        <div class="input-field">
-          <input type="text" name="multiplier" onChange={changeHandler} />
-          <label>Введите плечо: от 1 до 20</label>
-        </div>
-
-        <h6>
-          Внимание! Отсутствует защита от дурака! Поэтому проверь корректность
-          данных
-        </h6>
-
-        <button
-          type="submit"
-          class="btn"
-          onClick={registerHandler}
-          disabled={loading}
-        >
-          Запустить тест!
-        </button>
-      </form>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            onClick={registerHandler}
+            disabled={loading}
+          >
+            Запустить тест!
+          </button>
+        </form>
+      </div>
 
       {/*<div>re re: {startTrend}</div> */}
       <hr></hr>
@@ -385,7 +453,7 @@ export const MainPage = () => {
       </div>
       <hr></hr>
       <p>Спасибо!</p>
-      <p>
+      {/* <p>
         <b>Доработки:</b>
         <br />
         <b>Release candidate 3.3</b>:
@@ -406,7 +474,7 @@ export const MainPage = () => {
         <br /> - добавлен запуск тестов на любом диапозоне дат
         <br /> - добавлены: депозит, плечо, % от дипозита (в дальнейшем: для
         распределения депозита среди нескольких инструментов)
-      </p>
+      </p> */}
     </>
   )
 }
