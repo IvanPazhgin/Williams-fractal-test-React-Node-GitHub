@@ -316,24 +316,27 @@ export const AlexPage = () => {
       <h5>Таблица всех сделок:</h5>
       <div>
         <table class="deals">
-          <tr>
-            <td>№</td>
-            <td>Open</td>
-            <td>Цена входа</td>
-            <td>Время входа</td>
-            <td>Объем сделки</td>
-            <td>Close</td>
-            <td>Цена выхода</td>
-            <td>Время выхода</td>
-            <td>Прибыль / Убыток</td>
-            <td>в процентах</td>
-            {/*<td>Депозит2</td>*/}
-            <td>Take Profit</td>
-            <td>Stop Loss</td>
-            <td>Время изменения TP</td>
-            <td>Время изменения SL</td>
-            <td>Сигнал</td>
-          </tr>
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Open</th>
+              <th>Цена входа</th>
+              <th>Время входа</th>
+              <th>Объем сделки</th>
+              <th>Close</th>
+              <th>Цена выхода</th>
+              <th>Время выхода</th>
+              <th>Прибыль / Убыток</th>
+              <th>в процентах</th>
+              {/*<th>Депозит2</th>*/}
+              <th>Take Profit</th>
+              <th>Stop Loss</th>
+              <th>Время изменения TP</th>
+              <th>Время изменения SL</th>
+              <th>Сигнал</th>
+            </tr>
+          </thead>
+
           {data &&
             data.deals35 &&
             data.deals35.map((deal, i) => (
@@ -396,24 +399,26 @@ export const AlexPage = () => {
       <h5>Таблица всех сделок:</h5>
       <div>
         <table class="deals">
-          <tr>
-            <td>№</td>
-            <td>Open</td>
-            <td>Цена входа</td>
-            <td>Время входа</td>
-            <td>Объем сделки</td>
-            <td>Close</td>
-            <td>Цена выхода</td>
-            <td>Время выхода</td>
-            <td>Прибыль / Убыток</td>
-            <td>в процентах</td>
-            {/*<td>Депозит2</td>*/}
-            <td>Take Profit</td>
-            <td>Stop Loss</td>
-            <td>Время изменения TP</td>
-            <td>Время изменения SL</td>
-            <td>Сигнал</td>
-          </tr>
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Open</th>
+              <th>Цена входа</th>
+              <th>Время входа</th>
+              <th>Объем сделки</th>
+              <th>Close</th>
+              <th>Цена выхода</th>
+              <th>Время выхода</th>
+              <th>Прибыль / Убыток</th>
+              <th>в процентах</th>
+              {/*<th>Депозит2</th>*/}
+              <th>Take Profit</th>
+              <th>Stop Loss</th>
+              <th>Время изменения TP</th>
+              <th>Время изменения SL</th>
+              <th>Сигнал</th>
+            </tr>
+          </thead>
           {data &&
             data.deals37 &&
             data.deals37.map((deal, i) => (
@@ -475,25 +480,28 @@ export const AlexPage = () => {
       <h5>Таблица всех сделок:</h5>
       <div>
         <table class="deals">
-          <tr>
-            <td>№</td>
-            <td>Открываем</td>
-            <td>Цена входа</td>
-            <td>Время входа</td>
-            <td>Объем сделки</td>
-            <td>Закрываем</td>
-            <td>Цена выхода</td>
-            <td>Время выхода</td>
-            <td>Прибыль / Убыток</td>
-            <td>в процентах</td>
-            {/*<td>Депозит2</td>*/}
-            <td>Take Profit</td>
-            <td>Stop Loss</td>
-            <td>Время изменения TP</td>
-            <td>Время изменения SL</td>
-            <td>Сигнал</td>
-            {/*<td>Условие</td>*/}
-          </tr>
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Открываем</th>
+              <th>Цена входа</th>
+              <th>Время входа</th>
+              <th>Объем сделки</th>
+              <th>Закрываем</th>
+              <th>Цена выхода</th>
+              <th>Время выхода</th>
+              <th>Прибыль / Убыток</th>
+              <th>в процентах</th>
+              {/*<th>Депозит2</th>*/}
+              <th>Take Profit</th>
+              <th>Stop Loss</th>
+              <th>Время изменения TP</th>
+              <th>Время изменения SL</th>
+              <th>Сигнал</th>
+              {/*<th>Условие</th>*/}
+            </tr>
+          </thead>
+
           {data &&
             data.deals38 &&
             data.deals38.map((deal, i) => (
@@ -556,25 +564,27 @@ export const AlexPage = () => {
       <h5>Таблица всех сделок:</h5>
       <div>
         <table class="deals">
-          <tr>
-            <td>№</td>
-            <td>Открываем</td>
-            <td>Цена входа</td>
-            <td>Время входа</td>
-            <td>Объем сделки</td>
-            <td>Закрываем</td>
-            <td>Цена выхода</td>
-            <td>Время выхода</td>
-            <td>Прибыль / Убыток</td>
-            <td>в процентах</td>
-            {/*<td>Депозит2</td>*/}
-            <td>Take Profit</td>
-            <td>Stop Loss</td>
-            <td>Время изменения TP</td>
-            <td>Время изменения SL</td>
-            <td>Сигнал</td>
-            {/*<td>Условие</td>*/}
-          </tr>
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Открываем</th>
+              <th>Цена входа</th>
+              <th>Время входа</th>
+              <th>Объем сделки</th>
+              <th>Закрываем</th>
+              <th>Цена выхода</th>
+              <th>Время выхода</th>
+              <th>Прибыль / Убыток</th>
+              <th>в процентах</th>
+              {/*<th>Депозит2</th>*/}
+              <th>Take Profit</th>
+              <th>Stop Loss</th>
+              <th>Время изменения TP</th>
+              <th>Время изменения SL</th>
+              <th>Сигнал</th>
+              {/*<th>Условие</th>*/}
+            </tr>
+          </thead>
           {data &&
             data.deals39 &&
             data.deals39.map((deal, i) => (

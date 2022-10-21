@@ -1,9 +1,10 @@
 const { Client } = require('@elastic/elasticsearch')
+require('dotenv').config({ path: __dirname + '/./../../config/.env' })
 const elasticClient = new Client({
-  node: 'http://80.249.150.229:9200',
+  node: process.env.nodeES,
   auth: {
-    username: 'elastic',
-    password: 'Aru11nsgLKcYPYKgaWoS',
+    username: process.env.elasticLogin,
+    password: process.env.elasticPswd,
   },
 })
 

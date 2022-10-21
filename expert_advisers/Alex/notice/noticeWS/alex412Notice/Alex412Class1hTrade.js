@@ -477,7 +477,9 @@ class Alex412Class1hTrade {
         'SELL'
       )
       if (this.enterOrderResult?.origQty > 0) {
-        const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Шортанул ${this.enterOrderResult.origQty} монет ==--\nпо цене: ${this.enterOrderResult.lastPrice}`
+        const summEnterToDeal =
+          this.enterOrderResult.origQty * this.enterOrderResult.lastPrice
+        const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Шортанул ${this.enterOrderResult.origQty} монет ==--\nпо цене: ${this.enterOrderResult.lastPrice}\nЗадействовано: ${summEnterToDeal} USD`
         sendInfoToUser(message)
         //this.inOneDeal.enterToDeal412() // фиксируем что мы в сделке
       } else {

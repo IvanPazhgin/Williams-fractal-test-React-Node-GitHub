@@ -91,7 +91,7 @@ function notifications() {
 
   // оповещения по стратегии Билла Вильямса
   const williamsMain = require('./expert_advisers/Williams_fractal/notification/williamsMain')
-  //williamsMain()
+  williamsMain()
 
   // 10.10.2022 робот на стратегии 4.1.4
   const robotStart = require('./expert_advisers/robot/robot_start')

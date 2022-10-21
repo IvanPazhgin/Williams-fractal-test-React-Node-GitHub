@@ -11,11 +11,11 @@ username: traderapibot
 // !! вынес 3 строчки в глобальную область
 const TelegramBot = require('node-telegram-bot-api')
 
+require('dotenv').config({ path: __dirname + '/./../../config/.env' })
+const token = process.env.telegram_token
 // replace the value below with the Telegram token you receive from @BotFather
-const token = '5548940647:AAF40e8GY0ahkV5bQq3vowu5HwhemcqpKME'
 
 // Create a bot that uses 'polling' to fetch new updates
-// const bot = new TelegramBot(token, { polling: true })
 const bot = new TelegramBot(token, { polling: true })
 
 function tgBotExample() {
@@ -57,21 +57,8 @@ function sendInfoToUser(text) {
     { name: 'Maks', id: 237283171 },
   ]
   tgid.forEach(function (item) {
-    //bot.sendMessage(item.id, 'локальный запуск')
     bot.sendMessage(item.id, text)
   })
-
-  // const tgidIvan = 591611622
-  // const tgidAlex = 1589257165
-  // bot.sendMessage(tgidIvan, text)
-  // bot.sendMessage(tgid, text)
-
-  // test #1
-  //tgBotExample.call(this)
-  //this.bot.sendMessage(tgid, text)
-  // test #2
-  // const bot2 = tgBotExample
-  // bot2.sendMessage(tgid, text)
 }
 
 function sendInfoToUserWilliams(text) {
@@ -81,7 +68,6 @@ function sendInfoToUserWilliams(text) {
     //{ name: 'Maks', id: 237283171 },
   ]
   tgid.forEach(function (item) {
-    //bot.sendMessage(item.id, 'локальный запуск')
     bot.sendMessage(item.id, text)
   })
 }
@@ -93,7 +79,6 @@ function sendInfo382ToUser(text) {
     { name: 'Maks', id: 237283171 },
   ]
   tgid.forEach(function (item) {
-    //bot.sendMessage(item.id, 'локальный запуск')
     bot.sendMessage(item.id, text)
   })
 }
@@ -111,5 +96,3 @@ module.exports = {
   sendInfo382ToUser,
   sendSymbolObjToUser,
 }
-
-// module.exports = tgBotExample
