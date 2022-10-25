@@ -11,7 +11,7 @@ const timeFrames = {
   timeFrame1m: '1m',
 }
 
-const nameAlex = 'Trade_4.1.4'
+const nameAlex = 'Test_4.1.4.2'
 const nameStrategy = {
   //notice4h: `${nameAlex} на ${timeFrames.timeFrame4h}`,
   notice1h: `${nameAlex} на ${timeFrames.timeFrame1h}`,

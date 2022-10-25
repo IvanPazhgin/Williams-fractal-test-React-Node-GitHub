@@ -94,8 +94,12 @@ function notifications() {
   williamsMain()
 
   // 10.10.2022 робот на стратегии 4.1.4
-  const robotStart = require('./expert_advisers/robot/robot_start')
-  robotStart()
+  // const alex414Start = require('./expert_advisers/robot/alex414Start')
+  // alex414Start()
+
+  // 25.10.2022 оповещения на стратегии 4.1.4.2
+  const alex4142Start = require('./expert_advisers/robot/alex4142Start')
+  alex4142Start()
 }
 
 function testBinanceTrade() {

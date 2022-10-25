@@ -1,8 +1,8 @@
-const getLastCandle4s = require('../../API/binance.engine/web.socket.usdm/getLastCandle4s')
-const Alex414Class1h = require('./advisers/alex414Class1h')
-const { nameAlex } = require('./input_parameters')
+const getLastCandle4s = require('../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
+const Alex414Class1h = require('./alex414Class1h')
+const { nameAlex } = require('../input_parameters')
 
-async function robotMain(
+async function alex414Logic1h(
   symbols, // array
   timeFrameSenior, // array
   nameStrategy,
@@ -145,4 +145,4 @@ async function robotMain(
   ) // await getLastCandle4s()
 }
 
-module.exports = robotMain
+module.exports = alex414Logic1h

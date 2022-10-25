@@ -12,12 +12,13 @@ function williamsMain() {
   //const intervalJunior = timeFrames.timeFrame1m
 
   // запускаем на 1h / 5m
-  const intervalSenior = timeFrames.timeFrame1h
-  const intervalJunior = timeFrames.timeFrame5m
+  // const intervalSenior = timeFrames.timeFrame1h
+  // const intervalJunior = timeFrames.timeFrame5m
 
   // запускаем на 4h / 15m
-  //const intervalSenior = timeFrames.timeFrame4h
-  //const intervalJunior = timeFrames.timeFrame15m
+  const intervalSenior = timeFrames.timeFrame4h
+  const intervalJunior = timeFrames.timeFrame15m
+
   const nameStrategy4h15m =
     nameStrategy.williams + intervalSenior + '_' + intervalJunior
 
