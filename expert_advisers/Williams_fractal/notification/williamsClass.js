@@ -44,7 +44,7 @@ class williamsClass {
     //this.trend.resetUpTrend()
     //this.trend.resetDownTrend()
 
-    this.inPosition = false
+    //this.inPosition = false
 
     return this
   }
@@ -265,7 +265,7 @@ class williamsClass {
           !this.deal.inPosition
         ) {
           this.deal.inOrder = true
-          this.orderPrice = this.deal.fractalOfBearish.high
+          this.deal.orderPrice = this.deal.fractalOfBearish.high
           this.setLongOrder('(3.1) Find Fractal Junior')
         }
 
@@ -273,9 +273,9 @@ class williamsClass {
         if (
           this.trend.isUpTrend &&
           !this.deal.inPosition &&
-          this.deal.fractalOfBearish.high < this.orderPrice
+          this.deal.fractalOfBearish.high < this.deal.orderPrice
         ) {
-          this.orderPrice = this.deal.fractalOfBearish.high
+          this.deal.orderPrice = this.deal.fractalOfBearish.high
           this.changeLongOrderPrice('(3.2) Find New Fractal Junior')
         }
 
@@ -341,7 +341,7 @@ class williamsClass {
           !this.deal.inPosition
         ) {
           this.deal.inOrder = true
-          this.orderPrice = this.deal.fractalOfBullish.low
+          this.deal.orderPrice = this.deal.fractalOfBullish.low
           this.setShortOrder('(3.1) Find Fractal Junior')
         }
 
@@ -349,9 +349,9 @@ class williamsClass {
         if (
           this.trend.isDownTrend &&
           !this.deal.inPosition &&
-          this.deal.fractalOfBullish.low > this.orderPrice // убрать условие и отправлять эти значения в TG для теста (тоже самое в LONG)
+          this.deal.fractalOfBullish.low > this.deal.orderPrice // убрать условие и отправлять эти значения в TG для теста (тоже самое в LONG)
         ) {
-          this.orderPrice = this.deal.fractalOfBullish.low
+          this.deal.orderPrice = this.deal.fractalOfBullish.low
           this.changeShortOrderPrice('(3.2) Find New Fractal Junior')
         }
 
@@ -476,17 +476,21 @@ class williamsClass {
     // ОТПРАВИТЬ СООБЩЕНИЕ В телеграм
     // подготовка концовок про Stop Loss
     let messageSL = ''
+    const bullishFractal = `${this.deal.fractalOfBullish.nameFracralRus}\nЕго время: ${this.deal.fractalOfBullish.timeHuman}`
+    const bearishFractal = `${this.deal.fractalOfBearish.nameFracralRus}\nЕго время: ${this.deal.fractalOfBearish.timeHuman}`
     if (this.deal.position == 'LONG') {
-      messageSL = `\n${this.deal.fractalOfBullish.nameFracralRus}\nЕго время: ${this.deal.fractalOfBullish.timeHuman}`
+      messageSL = `\nэто ` + bullishFractal
+      messageBrokenFractal = `\n\nпробили ` + bearishFractal
     }
 
     if (this.deal.position == 'SHORT') {
-      messageSL = `\n${this.deal.fractalOfBearish.nameFracralRus}\nЕго время: ${this.deal.fractalOfBearish.timeHuman}`
+      messageSL = `\nэто ` + bearishFractal
+      messageBrokenFractal = `\n\nпробили ` + bullishFractal
     }
 
     // основное сообщение
     const text = `--== (4) вход в сделку ==--\n-= ${this.symbol} =-\n--==[ open ${this.deal.position} по ${this.deal.openPosition} USD ]==--\nКол-во монет: ${this.deal.amountReal}\n\nСтавь stop Loss: ${this.deal.stopLoss}`
-    sendInfoToUserWilliams(text + messageSL)
+    sendInfoToUserWilliams(text + messageSL + messageBrokenFractal)
 
     return this
   }
@@ -502,8 +506,10 @@ class williamsClass {
     this.deal.depositReal += +this.deal.profitReal.toFixed(2)
 
     // ОТПРАВИТЬ СООБЩЕНИЕ В телеграм
-    const text = `--== (6) выход из сделки ==--\n-= ${this.symbol} =-\n--==[ close ${this.deal.position} по ${this.deal.closePosition} USD ]==--\n\nРезультат: ${this.deal.profitReal} USD (${this.deal.percentReal}%)\nДепозит сейчас: ${this.deal.depositReal} USD`
-    sendInfoToUserWilliams(text)
+    const text1 = `--== (6) выход из сделки ==--\n-= ${this.symbol} =-\n--==[ close ${this.deal.position} по ${this.deal.closePosition} USD ]==--`
+    const text2 = `\nopen ${this.deal.position} был по: ${this.deal.openPosition} USD`
+    const textResult = `\n\nРезультат: ${this.deal.profitReal} USD (${this.deal.percentReal}%)\nДепозит сейчас: ${this.deal.depositReal} USD`
+    sendInfoToUserWilliams(text1 + text2 + textResult)
 
     return this
   }
@@ -535,7 +541,7 @@ class williamsClass {
     if (this.deal.fractalOfBullish.isFractal) {
       //console.table(this.fractalOfBullish)
 
-      const textBullishJunior = `--== ${this.symbol}==--\nТекущий тренд: ${this.trend.trendName}\n\n--==[ Двигаем Stop Loss на ${this.deal.fractalOfBullish.low} USD ]==--\n\n${this.deal.fractalOfBullish.nameFracralRus}\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
+      const textBullishJunior = `--== ${this.symbol}==--\nТекущий тренд: ${this.trend.trendName}\nТекущая позиция: ${this.deal.position}\n\n--==[ Двигаем Stop Loss на ${this.deal.fractalOfBullish.low} USD ]==--\n\n${this.deal.fractalOfBullish.nameFracralRus}\nВремя фрактала: ${this.deal.fractalOfBullish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBullishJunior)
     }
   }
@@ -566,7 +572,7 @@ class williamsClass {
     if (this.deal.fractalOfBearish.isFractal) {
       //console.table(this.fractalOfBearish)
 
-      const textBearishJunior = `--== ${this.symbol}==--\nТекущий тренд: ${this.trend.trendName}\n\n--==[ Двигаем Stop Loss на ${this.deal.fractalOfBearish.high} USD ]==--\n\n${this.deal.fractalOfBearish.nameFracralRus}\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
+      const textBearishJunior = `--== ${this.symbol}==--\nТекущий тренд: ${this.trend.trendName}\nТекущая позиция: ${this.deal.position}\n\n--==[ Двигаем Stop Loss на ${this.deal.fractalOfBearish.high} USD ]==--\n\n${this.deal.fractalOfBearish.nameFracralRus}\nВремя фрактала: ${this.deal.fractalOfBearish.timeHuman}\nИсточник: ${nameFunc}`
       sendInfoToUserWilliams(textBearishJunior)
     }
   }

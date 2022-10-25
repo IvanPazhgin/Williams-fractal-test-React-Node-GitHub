@@ -65,6 +65,7 @@ export const AlexPage = () => {
             <input
               type="text"
               class="form-control"
+              placeholder="введите хоть что-нибудь ))"
               id="symbol"
               name="symbol"
               onChange={changeHandler}
