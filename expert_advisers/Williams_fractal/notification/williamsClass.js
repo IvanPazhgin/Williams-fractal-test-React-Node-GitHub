@@ -476,8 +476,9 @@ class williamsClass {
     // ОТПРАВИТЬ СООБЩЕНИЕ В телеграм
     // подготовка концовок про Stop Loss
     let messageSL = ''
-    const bullishFractal = `${this.deal.fractalOfBullish.nameFracralRus}\nЕго время: ${this.deal.fractalOfBullish.timeHuman}`
-    const bearishFractal = `${this.deal.fractalOfBearish.nameFracralRus}\nЕго время: ${this.deal.fractalOfBearish.timeHuman}`
+    let messageBrokenFractal = ''
+    const bullishFractal = `${this.deal.fractalOfBullish.nameFracralRus}\nего время: ${this.deal.fractalOfBullish.timeHuman}`
+    const bearishFractal = `${this.deal.fractalOfBearish.nameFracralRus}\nего время: ${this.deal.fractalOfBearish.timeHuman}`
     if (this.deal.position == 'LONG') {
       messageSL = `\nэто ` + bullishFractal
       messageBrokenFractal = `\n\nпробили ` + bearishFractal

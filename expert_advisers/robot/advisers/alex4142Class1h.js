@@ -441,8 +441,8 @@ class alex4142Class1h {
   // (4) ищем сигнал. Часть 2
   alex4FindSygnal2(lastCandle, interval) {
     // допроверка сигнала №1: 3 зелёных, 1 красная
-    console.log('вторая проверка наличия сигнала. lastCandle:')
-    console.table(lastCandle)
+    // console.log('вторая проверка наличия сигнала. lastCandle:')
+    // console.table(lastCandle)
     if (
       this.whitchSignalTrue == 1 &&
       lastCandle.close > lastCandle.open && // 5 свеча зелёная
@@ -476,6 +476,7 @@ class alex4142Class1h {
     if (!this.canShort) {
       this.reset()
     }
+    return this
   }
 
   // функция openShortCommon с общими полями для входа в сделку

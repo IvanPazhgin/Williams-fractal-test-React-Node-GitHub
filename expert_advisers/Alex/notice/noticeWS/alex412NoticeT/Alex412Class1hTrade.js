@@ -184,6 +184,7 @@ class Alex412Class1hTrade {
       //console.log(`this.diffShadowRed: ${this.diffShadowRed}`)
 
       // ищем сигнал №1: 03.10.2022
+      /*
       if (
         // 03.10.2022: отношение между high и low фрактальной свечи должно быть меньше 5%
         this.fractalLengthCalc < this.fractalLength &&
@@ -212,6 +213,7 @@ class Alex412Class1hTrade {
         }
         // console.table(this.fractalBearish)
       }
+      */
 
       // ищем сигнал №2: свеча фрактала ЗЕЛЕНАЯ
       /*
@@ -311,7 +313,7 @@ class Alex412Class1hTrade {
       this.stopLossConst * 100
     }%)\n\nЖдем цену на рынке для входа в SHORT...`
 
-    //sendInfoToUser(message)
+    sendInfoToUser(message)
     return this
   } // openShortCommon(arrayOpenTime
 
@@ -325,6 +327,7 @@ class Alex412Class1hTrade {
           //this.positionTime = lastCandle.startTime
           this.positionTime = new Date().getTime()
 
+          /*
           sendInfoToUser(
             `${this.whitchSignal}\n\nМонета: ${
               this.symbol
@@ -338,6 +341,7 @@ class Alex412Class1hTrade {
               this.positionTime
             )}\n\nЖдем цену на рынке для выхода из сделки...`
           )
+          */
 
           //if (!this.inOneDeal.inDeal412) {
           // this.openDeal(apiOptions) // вход в сделку
@@ -417,7 +421,7 @@ class Alex412Class1hTrade {
 
           const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
-          sendInfoToUser(message1 + message2)
+          //sendInfoToUser(message1 + message2)
 
           // this.closeDeal(apiOptions)
         } // условия выхода из сделки по TP
@@ -457,7 +461,7 @@ class Alex412Class1hTrade {
 
           const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
-          sendInfoToUser(message1 + message2)
+          //sendInfoToUser(message1 + message2)
 
           // this.closeDeal(apiOptions)
         } // отработка выхода из сделки по SL
@@ -644,6 +648,7 @@ class Alex412Class1hTrade {
           // изменение SL: если мы в прибыли
           this.stopLoss = this.openShort * (1 - 0.001)
           this.changedSL = true
+          /*
           sendInfoToUser(
             `${this.whitchSignal}\nМонета: ${
               this.symbol
@@ -655,6 +660,7 @@ class Alex412Class1hTrade {
               this.stopLoss
             }`
           )
+          */
           //this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
         } // if (!this.changedSL)
       } // if (lastCandle.close < this.openShort * (1-0.008))
@@ -664,6 +670,7 @@ class Alex412Class1hTrade {
         if (!this.changedTP) {
           this.takeProfit = this.openShort * (1 - 0.001)
           this.changedTP = true
+          /*
           sendInfoToUser(
             `${this.whitchSignal}\nМонета: ${
               this.symbol
@@ -675,6 +682,7 @@ class Alex412Class1hTrade {
               this.takeProfit
             }`
           )
+          */
         } // if (!this.changedTP)
       } // if (lastCandle.close > this.openShort * (1 + 0.005))
     } // if (lastCandle.interval == interval)
