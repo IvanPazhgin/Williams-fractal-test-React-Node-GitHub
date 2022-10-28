@@ -82,7 +82,7 @@ function notifications() {
   //const alex41Launch = require('./expert_advisers/Alex/notice/noticeWS/alex4Notice/alex41Launch')
   //alex41Launch()
 
-  const alex412Launch = require('./expert_advisers/Alex/notice/noticeWS/alex412Notice/alex412Launch')
+  // const alex412Launch = require('./expert_advisers/Alex/notice/noticeWS/alex412Notice/alex412Launch')
   //alex412Launch()
 
   // оповещения 4.1.3 + DEMA на: 4h, 1m, 30m (22.09.2022)
@@ -97,13 +97,17 @@ function notifications() {
   // const alex414Start = require('./expert_advisers/robot/alex414Start')
   // alex414Start()
 
-  // 25.10.2022 оповещения на стратегии 4.1.4.2
+  // 25.10.2022 оповещения на стратегии 4.1.4.2 на 1h
   const alex4142Start = require('./expert_advisers/robot/alex4142Start')
   alex4142Start()
 
   // тест 4.1.2 на 30m (26.10.2022)
   const alex412LaunchTmod = require('./expert_advisers/Alex/notice/noticeWS/alex412NoticeT/alex412LaunchTmod')
   alex412LaunchTmod()
+
+  // тест 4.2: 3 зеленых на 30m (27.10.2022)
+  const an42Launch = require('./expert_advisers/Alex/notice/noticeWS/an42/an42Launch')
+  an42Launch()
 }
 
 function testBinanceTrade() {
