@@ -103,7 +103,7 @@ function notifications() {
 
   // тест 4.1.2 на 30m (26.10.2022)
   const alex412LaunchTmod = require('./expert_advisers/Alex/notice/noticeWS/alex412NoticeT/alex412LaunchTmod')
-  alex412LaunchTmod()
+  // alex412LaunchTmod()
 
   // тест 4.2: 3 зеленых на 30m (27.10.2022)
   const an42Launch = require('./expert_advisers/Alex/notice/noticeWS/an42/an42Launch')

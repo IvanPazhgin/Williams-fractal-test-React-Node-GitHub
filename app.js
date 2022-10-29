@@ -6,7 +6,7 @@ const path = require('path')
 const {
   startWilliams,
 } = require('./expert_advisers/Williams_fractal/test/mainWilliams')
-const startAlex = require('./expert_advisers/Alex/mainAlex')
+const startAlex = require('./expert_advisers/Alex/test/mainAlex')
 const testOfNewFuctiouns = require('./expert_advisers')
 
 const app = express()
@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const PORT = config.get('port') || 5000
 
-async function start() {
+async function startServer() {
   try {
     // подключаемся к базе данных, если она есть
     app.listen(PORT, () =>
@@ -39,7 +39,7 @@ async function start() {
   }
 }
 
-start()
+startServer()
 testOfNewFuctiouns()
 
 app.post('/', async function (req, res) {

@@ -1,4 +1,4 @@
-const timestampToDateHuman = require('../common.func/timestampToDateHuman')
+const timestampToDateHuman = require('../../common.func/timestampToDateHuman')
 
 // name: без теневая
 // VERSION 3.5

@@ -169,11 +169,9 @@ class alex4142Class1h {
       this.fractalBearish = fractal_Bearish(this.candlesForFractal) // ищем фрактал
       //console.log(this.symbol + ': фрактал ', this.fractalBearish)
       if (this.fractalBearish.isFractal) {
-        const message0 = `\n---=== ${timestampToDateHuman(
-          new Date().getTime()
-        )} ===---`
-        const message1 = `\n${this.nameStrategy}, ${this.symbol}: нашли НЕПОДТВЕРЖДЕННЫЙ фрактал = ${this.fractalBearish.high} USD, его время: ${this.fractalBearish.timeH}`
-        console.log(message0 + message1)
+        // const message0 = `\n---=== ${timestampToDateHuman(new Date().getTime())} ===---`
+        // const message1 = `\n${this.nameStrategy}, ${this.symbol}: нашли НЕПОДТВЕРЖДЕННЫЙ фрактал = ${this.fractalBearish.high} USD, его время: ${this.fractalBearish.timeH}`
+        // console.log(message0 + message1)
       }
       this.searchFractal = true // ждем закрытие свечи для поиска следующего фрактала (нужен только для одноразового поиска фрактала, чтобы не загружать сервер проверкой на каждой нефинальной свечке)
 
@@ -230,8 +228,8 @@ class alex4142Class1h {
             `!!! шаг 2: нашли ПРЕДВАРИТЕЛЬНЫЙ сигнал №1: 3 зелёных, 1 красная !!!`
           )
         } else {
-          const message = `${this.nameStrategy}: [${this.symbol}]: шаг 2: ПРЕДВАРИТЕЛЬНЫЙ сигнал №1 ОТСУТСТВУЕТ: 3 зеленых и 1 красная`
-          console.log(message)
+          // const message = `${this.nameStrategy}: [${this.symbol}]: шаг 2: ПРЕДВАРИТЕЛЬНЫЙ сигнал №1 ОТСУТСТВУЕТ: 3 зеленых и 1 красная`
+          // console.log(message)
         }
 
         // ищем сигнал №2: 1 зелёная 2 красных
@@ -258,8 +256,8 @@ class alex4142Class1h {
             `!!! шаг2: нашли ПРЕДВАРИТЕЛЬНЫЙ сигнал №2: 1 зелёная 2 красных !!!`
           )
         } else {
-          const message = `${this.nameStrategy}: [${this.symbol}]: шаг 2: ПРЕДВАРИТЕЛЬНЫЙ сигнал №2 ОТСУТСТВУЕТ: 1 зелёная и 2 красных`
-          console.log(message)
+          // const message = `${this.nameStrategy}: [${this.symbol}]: шаг 2: ПРЕДВАРИТЕЛЬНЫЙ сигнал №2 ОТСУТСТВУЕТ: 1 зелёная и 2 красных`
+          // console.log(message)
         }
       } // if (this.fractalBearish.isFractal)
 
@@ -282,7 +280,7 @@ class alex4142Class1h {
           lastCandle.close
         } USDT \nУровень фрактала: ${this.fractalBearish.high} USDT`
         // sendInfoToUser(message)
-        console.log(message)
+        // console.log(message)
         //this.reset()
         return this
       }

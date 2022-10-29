@@ -27,7 +27,7 @@ const options = {
 
   // 1h
   takeProfitFloating1h: 0.015,
-  takeProfitConst1h: 0.02,
+  takeProfitConst1h: 0.015,
   stopLossConst1h: 0.015,
   shiftTime1h: 1000 * 60 * 60, // сдвиг на одну 1h свечу
 
