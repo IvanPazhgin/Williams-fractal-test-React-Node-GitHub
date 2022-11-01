@@ -108,6 +108,10 @@ function notifications() {
   // тест 4.2: 3 зеленых на 30m (27.10.2022)
   const an42Launch = require('./expert_advisers/Alex/notice/noticeWS/an42/an42Launch')
   an42Launch()
+
+  // тест 4.3 DEMA на 1h и 30m (01.11.2022)
+  const an43Launch = require('./expert_advisers/Alex/notice/noticeWS/an43/an43Launch')
+  an43Launch()
 }
 
 function testBinanceTrade() {
