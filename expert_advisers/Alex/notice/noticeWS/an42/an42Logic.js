@@ -46,7 +46,7 @@ async function an42Logic(
   // ищем первый фрактал
   // для начала запрашиваем 4 первых свечи
   symbolObj.forEach(async (item) => {
-    await item.prepair5Candles(timeFrameSenior)
+    // await item.prepair5Candles(timeFrameSenior)
     //console.log('\nполучили первые свечи для поиска фрактала')
     //console.table(symbolObj)
   })
@@ -87,7 +87,7 @@ async function an42Logic(
           // (1) если в сделке:
           if (item.inPosition) {
             if (!final) {
-              item.findBrokenFractal(lastCandle) // внутри отключил большое кол-во служебных сообщений
+              // item.findBrokenFractal(lastCandle) // внутри отключил большое кол-во служебных сообщений
               item.changeTPSLOnMarket(lastCandle, timeFrameSenior)
 
               // каждую секунду проверяем условие выхода из сделки по TP и SL
@@ -112,8 +112,8 @@ async function an42Logic(
             // (2) если не в сделке:
             // 2.1 ждем цену на рынке для входа по сигналу
             if (!final) {
-              item.findSygnal(lastCandle, timeFrameSenior)
-              item.findBrokenFractal(lastCandle) // внутри отключил большое кол-во служебных сообщений
+              // item.findSygnal(lastCandle, timeFrameSenior)
+              // item.findBrokenFractal(lastCandle) // внутри отключил большое кол-во служебных сообщений
 
               apiOptions.forEach((traderAPI) => {
                 item.canShortPosition(lastCandle, timeFrameSenior, traderAPI)
@@ -139,6 +139,8 @@ async function an42Logic(
 
               // 2.2 на финальной свечке запускаем поиск сигнала на вход
               await item.prepair5Candles(timeFrameSenior)
+
+              item.findSygnal(lastCandle, timeFrameSenior)
               //await item.prepairData(lastCandle, timeFrames.timeFrame2h)
             } // if (final)
           } // end of: if (!symbolObj.inPosition)

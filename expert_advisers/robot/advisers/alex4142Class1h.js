@@ -224,9 +224,7 @@ class alex4142Class1h {
             (this.candlesForFractal[3].open + this.candlesForFractal[3].high) /
             2
 
-          console.log(
-            `!!! шаг 2: нашли ПРЕДВАРИТЕЛЬНЫЙ сигнал №1: 3 зелёных, 1 красная !!!`
-          )
+          // console.log(`!!! шаг 2: нашли ПРЕДВАРИТЕЛЬНЫЙ сигнал №1: 3 зелёных, 1 красная !!!`)
         } else {
           // const message = `${this.nameStrategy}: [${this.symbol}]: шаг 2: ПРЕДВАРИТЕЛЬНЫЙ сигнал №1 ОТСУТСТВУЕТ: 3 зеленых и 1 красная`
           // console.log(message)
@@ -252,9 +250,7 @@ class alex4142Class1h {
             (this.candlesForFractal[2].open + this.candlesForFractal[2].high) /
             2
 
-          console.log(
-            `!!! шаг2: нашли ПРЕДВАРИТЕЛЬНЫЙ сигнал №2: 1 зелёная 2 красных !!!`
-          )
+          // console.log(`!!! шаг2: нашли ПРЕДВАРИТЕЛЬНЫЙ сигнал №2: 1 зелёная 2 красных !!!`)
         } else {
           // const message = `${this.nameStrategy}: [${this.symbol}]: шаг 2: ПРЕДВАРИТЕЛЬНЫЙ сигнал №2 ОТСУТСТВУЕТ: 1 зелёная и 2 красных`
           // console.log(message)

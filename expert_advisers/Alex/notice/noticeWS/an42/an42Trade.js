@@ -162,7 +162,9 @@ class An42Trade {
   findSygnal(lastCandle, interval) {
     if (lastCandle.interval == interval) {
       // подготавливаем данные для поиска фрактала
-      this.prepairDataforFindFractal(lastCandle)
+      // this.prepairDataforFindFractal(lastCandle)
+      // console.log(`${this.symbol} ищем сигнал, свечи для поиска сигнала:`)
+      // console.table(this.candlesForFractal)
 
       // ищем фрактал
       // this.fractalBearish = fractal_Bearish(this.candlesForFractal)
