@@ -1,8 +1,16 @@
+// const submittingCloseOrderSPOT = require('../../API/binance.engine/tradeSPOT/submittingCloseOrder')
+// const submittingEnterOrderSPOT = require('../../API/binance.engine/tradeSPOT/submittingEnterOrder')
 const getLastCandleSPOT4s = require('../../API/binance.engine/web.socket.spot/getLastCandle4s')
+const { apiOptionsIvan, apiOptions } = require('../../config/api_options')
+const ArbitrationTrade = require('./trade')
 
 // ведётся посчет прибыли при прямой последовательности сделки.
 // Поставить эксперимент с обратной последовательностью или вариант Short с учетом комиссии за шорт
-async function arbitration() {
+
+// реализован трединг
+
+async function arbitrationTrade() {
+  let deal = new ArbitrationTrade()
   // SPOT
   const symbols = ['BTCUSDT', 'ETHUSDT', 'ETHBTC']
   const timeFrame = '1m'
@@ -20,6 +28,12 @@ async function arbitration() {
   const startProgramAt = new Date().getTime() // для расчета времени работы приложения
   let nowTime = 0 // текущее время
   let diffTime = 0 // продолжительность работы приложения
+
+  // submittingCloseOrderSPOT()
+  // submittingEnterOrderSPOT(apiOptionsIvan, 'BTCUSDT', 'BUY', 20000)
+  // submittingEnterOrderSPOT(apiOptionsIvan, 'ETHUSDT', 'BUY', 1600)
+
+  // return
 
   await getLastCandleSPOT4s(
     symbols,
@@ -61,26 +75,49 @@ async function arbitration() {
 
       feeResult = (feeConst * deposit) / (btcPrice + ethPrice + ethBtcPrice)
       profit = deposit - (deposit / btcPrice / ethBtcPrice) * ethPrice
-      if (profit > 0) {
-        sumProfit += profit
-        nowTime = new Date().getTime()
-        diffTime = nowTime - startProgramAt
 
-        const message1 = `profit = ${profit} USD, summ Profit = ${+sumProfit.toFixed(
-          2
-        )} USD, прошло ${diffTime / 1000} секунд (${+(
-          diffTime /
-          1000 /
-          60
-        ).toFixed(2)} минут). `
-        const message2 = `fee = ${feeResult} USD`
-        console.log(message1 + message2)
+      if (profit > 0) {
+        apiOptions.forEach((traderAPI) => {
+          // step 1
+          if (deal.inUSDT) {
+            deal.buyBTC(traderAPI, btcPrice)
+          }
+
+          // step 2
+          if (deal.resultBTC?.origQty > 0 && deal.inBTC) {
+            deal.buyETHBTC(traderAPI, 'ETHBTC', 'BUY', ethBtcPrice)
+          }
+
+          // step 3
+          if (deal.resultETHBTC?.origQty > 0 && deal.inETH) {
+            deal.sellETH(traderAPI, 'ETHUSDT', 'SELL', ethPrice)
+          }
+
+          // step 4
+          if (deal.resultETH?.origQty > 0) {
+            deal.reset()
+          }
+        })
+
+        // sumProfit += profit
+        // nowTime = new Date().getTime()
+        // diffTime = nowTime - startProgramAt
+
+        // const message1 = `profit = ${profit} USD, summ Profit = ${+sumProfit.toFixed(
+        //   2
+        // )} USD, прошло ${diffTime / 1000} секунд (${+(
+        //   diffTime /
+        //   1000 /
+        //   60
+        // ).toFixed(2)} минут). `
+        // const message2 = `fee = ${feeResult} USD`
+        // console.log(message1 + message2)
       }
     }
   )
 }
 
-module.exports = arbitration
+module.exports = arbitrationTrade
 
 /*
 вариант схемы:
