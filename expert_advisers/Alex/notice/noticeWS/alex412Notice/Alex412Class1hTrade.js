@@ -13,10 +13,12 @@ const submittingCloseOrder = require('../../../../../API/binance.engine/trade/su
 const submittingEnterOrder = require('../../../../../API/binance.engine/trade/submittingEnterOrder')
 const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
+// const Deal = require('../../../../../models/deal')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 const fractal_Bearish = require('../../../../common.func/fractal_Bearish')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 // const choiceSymbol = require('../../../../robot/choiceSymbol')
+const mongoDBadd = require('../../../../../API/mongoDB/mogoDBadd')
 
 /*
 в начале запуска приложения:
@@ -326,17 +328,15 @@ class Alex412Class1hTrade {
           this.positionTime = new Date().getTime()
 
           sendInfoToUser(
-            `${this.whitchSignal}\n\nМонета: ${
+            `${this.whitchSignal}\n\n🪙Монета: ${
               this.symbol
-            }\n\n--== Вошли в SHORT ==--\nпо цене: ${
+            }\n\n⬇ Вошли в SHORT\nпо цене: ${
               this.openShort
             } USDT\nТекущая close цена: ${
               lastCandle.close
             } USD\n\nВремя сигнала: ${timestampToDateHuman(
               this.sygnalTime
-            )}\nВремя входа: ${timestampToDateHuman(
-              this.positionTime
-            )}\n\nЖдем цену на рынке для выхода из сделки...`
+            )}\nВремя входа: ${timestampToDateHuman(this.positionTime)}`
           )
 
           //if (!this.inOneDeal.inDeal412) {
@@ -405,19 +405,22 @@ class Alex412Class1hTrade {
             this.countOfZero++
           }
 
+          saveToMongoDB(interval)
+
           // отправка сообщения
           // console.log(`Close SHORT with takeProfit: ${this.closeShort}`)
           const message1 = `${this.whitchSignal}\n${timestampToDateHuman(
             this.closeTime
           )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
             lastCandle.close
-          } USD\n\n--== Close SHORT ==--\nwith Take Profit: ${
+          } USD\n\n✅ Close SHORT\nwith Take Profit: ${
             this.closeShort
           }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
 
-          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+          // const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
-          sendInfoToUser(message1 + message2)
+          // sendInfoToUser(message1 + message2)
+          sendInfoToUser(message1)
 
           // this.closeDeal(apiOptions)
         } // условия выхода из сделки по TP
@@ -445,19 +448,22 @@ class Alex412Class1hTrade {
             this.countOfZero++
           }
 
+          saveToMongoDB(interval)
+
           // отправка сообщения
           //console.log(`Close SHORT with stopLoss: ${this.closeShort}`)
           const message1 = `${this.whitchSignal}\n${timestampToDateHuman(
             this.closeTime
           )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
             lastCandle.close
-          } USD\n\n--== Close SHORT ==--\nwith Stop Loss: ${
+          } USD\n\n❌ Close SHORT\nwith Stop Loss: ${
             this.closeShort
           }\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
 
-          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+          //const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
-          sendInfoToUser(message1 + message2)
+          sendInfoToUser(message1)
+          // sendInfoToUser(message1 + message2)
 
           // this.closeDeal(apiOptions)
         } // отработка выхода из сделки по SL
@@ -520,6 +526,35 @@ class Alex412Class1hTrade {
     }
     return this
   }
+
+  // сохраняем в БД
+  saveToMongoDB(interval) {
+    // const deal = new Deal({
+    const deal = {
+      symbol: this.symbol,
+      interval: interval,
+      strategy: this.whitchSignal,
+      description: 'добавить описание...',
+
+      openDealTime: this.positionTime,
+      openDealPrice: this.openShort,
+      takeProfit: this.takeProfit,
+      stopLoss: this.stopLoss,
+
+      closeDealTime: this.closeTime,
+      closeDealPrice: this.closeShort,
+      profit: this.profit,
+      percent: this.percent,
+    }
+
+    mongoDBadd('deals412', deal)
+
+    // deal
+    //   .save()
+    //   .then((result) => console.log('result', result))
+    //   .catch((error) => console.error(error))
+  }
+
   ///////////////////////////
   //// общие функции для условия переноса Take Profit или Stop Loss
   changeTPSLCommon(lastCandle) {
@@ -645,13 +680,13 @@ class Alex412Class1hTrade {
           this.stopLoss = this.openShort * (1 - 0.001)
           this.changedSL = true
           sendInfoToUser(
-            `${this.whitchSignal}\nМонета: ${
+            `${this.whitchSignal}\n🪙Монета: ${
               this.symbol
             }\n\nВремя появления сигнала:\n${timestampToDateHuman(
               this.sygnalTime
             )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
               this.positionTime
-            )}\n\n--= Мы в вариативной прибыли > 0.8% ==--\nМеняем Stop Loss на (точку входа - 0.1%): ${
+            )}\n\nМы в прибыли > 0.8%\n🔄Меняем Stop Loss на (точку входа - 0.1%): ${
               this.stopLoss
             }`
           )
@@ -665,13 +700,13 @@ class Alex412Class1hTrade {
           this.takeProfit = this.openShort * (1 - 0.001)
           this.changedTP = true
           sendInfoToUser(
-            `${this.whitchSignal}\nМонета: ${
+            `${this.whitchSignal}\n🪙Монета: ${
               this.symbol
             }\n\nВремя появления сигнала:\n${timestampToDateHuman(
               this.sygnalTime
             )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
               this.positionTime
-            )}\n\n--== Мы в вариативной просадке -0.5% ==--\nМеняем Take Profit на (точку входа - 0.1%): ${
+            )}\n\nМы в просадке -0.5%\n🔄Меняем Take Profit на (точку входа - 0.1%): ${
               this.takeProfit
             }`
           )

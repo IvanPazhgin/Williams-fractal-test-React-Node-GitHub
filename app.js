@@ -1,5 +1,3 @@
-// по видео Владилена Минина
-
 const express = require('express')
 const config = require('config')
 const path = require('path')
@@ -8,6 +6,7 @@ const {
 } = require('./expert_advisers/Williams_fractal/test/mainWilliams')
 const startAlex = require('./expert_advisers/Alex/test/mainAlex')
 const testOfNewFuctiouns = require('./expert_advisers')
+const startMongoDB = require('./API/mongoDB/mongoDBconnect')
 
 const app = express()
 
@@ -29,7 +28,8 @@ const PORT = config.get('port') || 5000
 
 async function startServer() {
   try {
-    // подключаемся к базе данных, если она есть
+    startMongoDB() // подключаемся к базе данных
+
     app.listen(PORT, () =>
       console.log(`App has been started on port ${PORT}...`)
     )

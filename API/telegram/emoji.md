@@ -5,10 +5,10 @@ https://ru.stackoverflow.com/questions/497325/telegram-api-%D0%9E%D1%82%D0%BF%D1
 https://apps.timwhitlock.info/emoji/tables/unicode
 
 ❗ новый сигнал
-❌ отмена сигнала
+❎ отмена сигнала
 ⬆ вход в лонг
 ⬇ вход в шорт
 🔃 перенос TP SL 🔁 🔄
 ✅ выход по TP
-❎ выход по SL
+❌ выход по SL
 🪙 монета
