@@ -1,4 +1,5 @@
 const getCandles = require('../../../API/binance.engine/usdm/getCandles.3param')
+const mongoDBadd = require('../../../API/mongoDB/mongoDBadd')
 const { sendInfoToUserWilliams } = require('../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../common.func/candlesToObject')
 const dealClass = require('../../common.func/dealClass')
@@ -506,6 +507,9 @@ class williamsClass {
     ).toFixed(2)
     this.deal.depositReal += +this.deal.profitReal.toFixed(2)
 
+    // сохраняем инфу в БД
+    this.saveToMongoDB(candleJunior.interval)
+
     // ОТПРАВИТЬ СООБЩЕНИЕ В телеграм
     const text1 = `--== (6) выход из сделки ==--\n-= ${this.symbol} =-\n--==[ close ${this.deal.position} по ${this.deal.closePosition} USD ]==--`
     const text2 = `\nopen ${this.deal.position} был по: ${this.deal.openPosition} USD`
@@ -513,6 +517,33 @@ class williamsClass {
     sendInfoToUserWilliams(text1 + text2 + textResult)
 
     return this
+  }
+
+  // сохраняем в БД
+  saveToMongoDB(interval) {
+    // const deal = new Deal({
+    const deal = {
+      symbol: this.symbol,
+      interval: interval,
+      strategy: this.nameStrategy,
+      description: 'v1: простейшая версия',
+
+      sidePosition: this.deal.position, // Long, Short
+
+      openDealTime: this.deal.openTime,
+      openDealTimeHuman: this.deal.openTimeHuman,
+      openDealPrice: this.deal.openPosition,
+      // takeProfit: this.takeProfit,
+      // stopLoss: this.stopLoss,
+
+      closeDealTime: this.deal.closeTime,
+      closeDealTimeHuman: this.deal.closeTimeHuman,
+      closeDealPrice: this.deal.closePosition,
+      profit: this.deal.profitReal,
+      percent: this.deal.percentReal,
+    }
+
+    mongoDBadd('Williams', deal)
   }
 
   // --== сообщения о фракталах interval Junior ==--

@@ -350,7 +350,15 @@ class An42Trade {
     }%)\n\nЖдем цену на рынке для входа в SHORT...`
     */
 
-    // sendInfoToUser(message)
+    const message42small = `❗ НОВЫЙ СИГНАЛ ❗\n${
+      this.whitchSignal
+    }\n🪙 монета: ${this.symbol}\n\nЦена для входа в SHORT: ${
+      this.openShort
+    }\n\nTake Profit: ${this.takeProfit} (${
+      this.takeProfitConst * 100
+    }%)\nStop Loss: ${this.stopLoss} (${this.stopLossConst * 100}%)`
+
+    sendInfoToUser(message42small)
     return this
   } // openShortCommon()
 
@@ -363,19 +371,18 @@ class An42Trade {
           //this.positionTime = lastCandle.startTime
           this.positionTime = new Date().getTime()
 
-          sendInfoToUser(
-            `${this.whitchSignal}\n\nМонета: ${
-              this.symbol
-            }\n\n--== Вошли в SHORT ==--\nпо цене: ${
-              this.openShort
-            } USDT\nТекущая close цена: ${
-              lastCandle.close
-            } USD\n\nВремя сигнала: ${timestampToDateHuman(
-              this.sygnalTime
-            )}\nВремя входа: ${timestampToDateHuman(
-              this.positionTime
-            )}\n\nЖдем цену на рынке для выхода из сделки...`
-          )
+          const message = `${this.whitchSignal}\n\nМонета: ${
+            this.symbol
+          }\n\n--== Вошли в SHORT ==--\nпо цене: ${
+            this.openShort
+          } USDT\nТекущая close цена: ${
+            lastCandle.close
+          } USD\n\nВремя сигнала: ${timestampToDateHuman(
+            this.sygnalTime
+          )}\nВремя входа: ${timestampToDateHuman(
+            this.positionTime
+          )}\n\nЖдем цену на рынке для выхода из сделки...`
+          // sendInfoToUser(message)
 
           //if (!this.inOneDeal.inDeal412) {
           // this.openDeal(apiOptions) // вход в сделку
@@ -447,15 +454,16 @@ class An42Trade {
           // console.log(`Close SHORT with takeProfit: ${this.closeShort}`)
           const message1 = `${this.whitchSignal}\n${timestampToDateHuman(
             this.closeTime
-          )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
+          )}\n\n🪙 Монета: ${this.symbol}\nТекущая close цена: ${
             lastCandle.close
-          } USD\n\n--== Close SHORT ==--\nwith Take Profit: ${
+          } USD\n\n✅ Close SHORT\nwith Take Profit: ${
             this.closeShort
           }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
 
-          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+          // const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
-          sendInfoToUser(message1 + message2)
+          // sendInfoToUser(message1 + message2)
+          sendInfoToUser(message1)
 
           // this.closeDeal(apiOptions)
         } // условия выхода из сделки по TP
@@ -487,15 +495,16 @@ class An42Trade {
           //console.log(`Close SHORT with stopLoss: ${this.closeShort}`)
           const message1 = `${this.whitchSignal}\n${timestampToDateHuman(
             this.closeTime
-          )}\n\nМонета: ${this.symbol}\nТекущая close цена: ${
+          )}\n\n🪙 Монета: ${this.symbol}\nТекущая close цена: ${
             lastCandle.close
-          } USD\n\n--== Close SHORT ==--\nwith Stop Loss: ${
+          } USD\n\n❌ Close SHORT\nwith Stop Loss: ${
             this.closeShort
           }\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
 
-          const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
+          // const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
-          sendInfoToUser(message1 + message2)
+          // sendInfoToUser(message1 + message2)
+          sendInfoToUser(message1)
 
           // this.closeDeal(apiOptions)
         } // отработка выхода из сделки по SL

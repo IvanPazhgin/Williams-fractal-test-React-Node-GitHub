@@ -18,7 +18,7 @@ const candlesToObject = require('../../../../common.func/candlesToObject')
 const fractal_Bearish = require('../../../../common.func/fractal_Bearish')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 // const choiceSymbol = require('../../../../robot/choiceSymbol')
-const mongoDBadd = require('../../../../../API/mongoDB/mogoDBadd')
+const mongoDBadd = require('../../../../../API/mongoDB/mongoDBadd')
 
 /*
 в начале запуска приложения:
@@ -405,7 +405,7 @@ class Alex412Class1hTrade {
             this.countOfZero++
           }
 
-          saveToMongoDB(interval)
+          this.saveToMongoDB(interval)
 
           // отправка сообщения
           // console.log(`Close SHORT with takeProfit: ${this.closeShort}`)
@@ -448,7 +448,7 @@ class Alex412Class1hTrade {
             this.countOfZero++
           }
 
-          saveToMongoDB(interval)
+          this.saveToMongoDB(interval)
 
           // отправка сообщения
           //console.log(`Close SHORT with stopLoss: ${this.closeShort}`)
@@ -686,7 +686,7 @@ class Alex412Class1hTrade {
               this.sygnalTime
             )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
               this.positionTime
-            )}\n\nМы в прибыли > 0.8%\n🔄Меняем Stop Loss на (точку входа - 0.1%): ${
+            )}\n\nМы в прибыли > 0.8% \n🔄Меняем Stop Loss на (точку входа - 0.1%): ${
               this.stopLoss
             }`
           )
@@ -706,7 +706,7 @@ class Alex412Class1hTrade {
               this.sygnalTime
             )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
               this.positionTime
-            )}\n\nМы в просадке -0.5%\n🔄Меняем Take Profit на (точку входа - 0.1%): ${
+            )}\n\nМы в просадке -0.5% \n🔄Меняем Take Profit на (точку входа - 0.1%): ${
               this.takeProfit
             }`
           )
