@@ -537,11 +537,13 @@ class Alex412Class1hTrade {
       description: 'добавить описание...',
 
       openDealTime: this.positionTime,
+      openDealTimeHuman: timestampToDateHuman(this.positionTime),
       openDealPrice: this.openShort,
       takeProfit: this.takeProfit,
       stopLoss: this.stopLoss,
 
       closeDealTime: this.closeTime,
+      closeDealTimeHuman: timestampToDateHuman(this.closeTime),
       closeDealPrice: this.closeShort,
       profit: this.profit,
       percent: this.percent,

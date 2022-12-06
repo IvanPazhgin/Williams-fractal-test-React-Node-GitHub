@@ -295,7 +295,7 @@ class An42Trade {
       this.candlesForFractal[0].volume < this.candlesForFractal[1].volume &&
       this.candlesForFractal[1].volume < this.candlesForFractal[2].volume / 2 &&
       // тело каждой след-й зеленой больше предыдущей
-      this.bodyLength2g < this.fractalBodyLength / 2
+      this.bodyLength2g < this.fractalBodyLength / 3
     ) {
       if (!this.sygnalSent) {
         this.whitchSignal = this.nameStrategy + ': 3 зеленых'
@@ -465,6 +465,7 @@ class An42Trade {
           // sendInfoToUser(message1 + message2)
           sendInfoToUser(message1)
 
+          this.saveToMongoDB(interval)
           // this.closeDeal(apiOptions)
         } // условия выхода из сделки по TP
 
@@ -506,6 +507,7 @@ class An42Trade {
           // sendInfoToUser(message1 + message2)
           sendInfoToUser(message1)
 
+          this.saveToMongoDB(interval)
           // this.closeDeal(apiOptions)
         } // отработка выхода из сделки по SL
       } // if (lastCandle.interval == interval)
@@ -567,6 +569,32 @@ class An42Trade {
     }
     return this
   }
+
+  // сохраняем в БД
+  saveToMongoDB(interval) {
+    // const deal = new Deal({
+    const deal = {
+      symbol: this.symbol,
+      interval: interval,
+      strategy: this.whitchSignal,
+      description: 'тело в 3 раза больше',
+
+      openDealTime: this.positionTime,
+      openDealTimeHuman: timestampToDateHuman(this.positionTime),
+      openDealPrice: this.openShort,
+      takeProfit: this.takeProfit,
+      stopLoss: this.stopLoss,
+
+      closeDealTime: this.closeTime,
+      closeDealTimeHuman: timestampToDateHuman(this.closeTime),
+      closeDealPrice: this.closeShort,
+      profit: this.profit,
+      percent: this.percent,
+    }
+
+    mongoDBadd('deals42', deal)
+  }
+
   ///////////////////////////
   //// общие функции для условия переноса Take Profit или Stop Loss
   changeTPSLCommon(lastCandle) {
@@ -642,9 +670,15 @@ class An42Trade {
       }
       */
 
+      // 06.12.2022  Sl TP передвигаем после закрытия свечи открытия
+      if (lastCandle.startTime == this.sygnalTime) {
+        // перенос стопа или тейка после закрытия свечи открытия
+        this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
+      }
+
       // 27.10.2022
       // (1) Если свеча открытия зеленая, тогда перенос после закрытия свечи входа в позицию
-
+      /*
       if (
         lastCandle.startTime == this.sygnalTime &&
         lastCandle.close > lastCandle.open
@@ -661,7 +695,7 @@ class An42Trade {
       ) {
         this.changeTPSLCommon(lastCandle) // проверка общих условий по переносу TP и SL
       }
-
+      */
       // 03.10.2022
       // (1) Если свеча открытия зеленая и следующая свеча зеленая, то TP переносится БУ
       /*

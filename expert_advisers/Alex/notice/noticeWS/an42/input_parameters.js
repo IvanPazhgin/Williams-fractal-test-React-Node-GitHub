@@ -10,6 +10,7 @@ const timeFrames = {
 }
 
 const name = 'Test_4.2'
+// const name = '4⃣.2⃣'
 
 const nameStrategy = {
   notice4h41: `${name} на ${timeFrames.timeFrame4h}`,
@@ -30,8 +31,8 @@ const options = {
   shiftTime1h: 1000 * 60 * 60, // сдвиг на одну 1h свечу
 
   // 30m
-  takeProfitConst30m: 0.01,
-  stopLossConst30m: 0.01,
+  takeProfitConst30m: 0.03,
+  stopLossConst30m: 0.02,
   shiftTime30m: 1000 * 60 * 30, // сдвиг на одну 30m свечу
 }
 
