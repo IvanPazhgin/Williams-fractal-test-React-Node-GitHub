@@ -534,7 +534,7 @@ class williamsClass {
       openDealTimeHuman: this.deal.openTimeHuman,
       openDealPrice: this.deal.openPosition,
       // takeProfit: this.takeProfit,
-      // stopLoss: this.stopLoss,
+      stopLoss: this.deal.stopLoss,
 
       closeDealTime: this.deal.closeTime,
       closeDealTimeHuman: this.deal.closeTimeHuman,
