@@ -266,6 +266,7 @@ const symbols4h41Part2 = [
 
 module.exports = {
   timeFrames,
+  name,
   nameStrategy,
   options,
   symbols4h41Part1,

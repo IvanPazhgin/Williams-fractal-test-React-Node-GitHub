@@ -525,7 +525,8 @@ class williamsClass {
     const deal = {
       symbol: this.symbol,
       interval: interval,
-      strategy: this.nameStrategy,
+      strategy: 'Williams',
+      sygnal: this.nameStrategy,
       description: 'v1: простейшая версия',
 
       sidePosition: this.deal.position, // Long, Short

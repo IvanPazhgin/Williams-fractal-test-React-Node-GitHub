@@ -12,6 +12,7 @@ const timeFrames = {
 const nameStrategy = {
   // williams: `Стратегия Билла Вильямса на ${timeFrames.timeFrame2h}`,
   williams: `Стратегия Билла Вильямса на `,
+  shortName: 'Williams',
 }
 
 const symbolsWilliams = ['BTCUSDT', 'ETHUSDT']

@@ -18,6 +18,7 @@ const candlesToObject = require('../../../../common.func/candlesToObject')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 // const choiceSymbol = require('../../../../robot/choiceSymbol')
 const mongoDBadd = require('../../../../../API/mongoDB/mongoDBadd')
+const { name } = require('./input_parameters')
 
 /*
 в начале запуска приложения:
@@ -580,7 +581,8 @@ class An42Trade {
     const deal = {
       symbol: this.symbol,
       interval: interval,
-      strategy: this.whitchSignal,
+      strategy: name,
+      sygnal: this.whitchSignal,
       description: 'тело в 2 раза больше, откл. сравнение volume',
 
       sidePosition: this.position, // Long, Short
