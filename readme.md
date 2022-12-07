@@ -1,7 +1,7 @@
 ## Состав проекта:
 
-1. backend приложение на nodeJs, используя framework expressJs и Binance API. Реализовал информирование посредством telegram API.
-2. frontend клиентское приложение на reactJs для теста стратегий на исторических данных.
+1. backend приложение на `node JS`, используя framework `express JS` и `Binance API`. Реализовал информирование посредством `telegram API`.
+2. frontend клиентское приложение на react JS для теста стратегий на исторических данных.
 
 ## Frontend - тесты стратегий:
 
@@ -52,6 +52,8 @@ hide: Test 3.5 со страницы пользователя -->
 3.8.2.6 на 2h
 
 off: 4.1.2 на 1h (to MongoDB)
+
+[Статистика](http://82.148.29.68/history)
 
 ### оповещения в telegram
 

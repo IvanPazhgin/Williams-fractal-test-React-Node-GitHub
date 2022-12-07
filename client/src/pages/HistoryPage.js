@@ -80,8 +80,8 @@ export const HistoryPage = () => {
               <th>Время выхода</th>
               <th>Цена выхода</th>
               <th>Депозит</th>
-              <th>Прибыль / Убыток</th>
-              <th>в процентах</th>
+              <th>+ / -</th>
+              <th>в %</th>
               <th>Take Profit</th>
               <th>Stop Loss</th>
             </tr>

@@ -600,6 +600,7 @@ class An42Trade {
     }
 
     mongoDBadd('deals42', deal)
+    mongoDBadd('allDeals', deal)
   }
 
   ///////////////////////////

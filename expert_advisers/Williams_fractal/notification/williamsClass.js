@@ -545,6 +545,7 @@ class williamsClass {
     }
 
     mongoDBadd('Williams', deal)
+    mongoDBadd('allDeals', deal)
   }
 
   // --== сообщения о фракталах interval Junior ==--

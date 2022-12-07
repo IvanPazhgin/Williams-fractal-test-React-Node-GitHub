@@ -1,7 +1,7 @@
 const mongoClient = require('./mongoDB.init')
 
 async function mongoDBadd(
-  nameOfCollection = 'deals412',
+  nameOfCollection = 'allDeals',
   deal = { symbol: 'BTC', interval: '1h' }
   // deal = { symbol: 'BTC', interval: '1D', description: 'первое вхождение' }
 ) {
