@@ -17,6 +17,7 @@ const candlesToObject = require('../../../../common.func/candlesToObject')
 // const fractal_Bearish = require('../../../../common.func/fractal_Bearish')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 // const choiceSymbol = require('../../../../robot/choiceSymbol')
+const mongoDBadd = require('../../../../../API/mongoDB/mongoDBadd')
 
 /*
 в начале запуска приложения:
@@ -179,8 +180,9 @@ class An42Trade {
 
       // вычисляем длину зеленых свечей (сигнал №1)
       // this.bodyLength1g = this.candlesForFractal[0].close / this.candlesForFractal[0].open - 1
+      // this.bodyLength2g = this.candlesForFractal[1].close / this.candlesForFractal[1].open - 1
       this.bodyLength2g =
-        this.candlesForFractal[1].close / this.candlesForFractal[1].open - 1
+        this.candlesForFractal[1].high / this.candlesForFractal[1].low - 1
 
       // вычисляем тени на 4й красной свече
       // this.upperShadowRed = this.candlesForFractal[3].high / this.candlesForFractal[3].open - 1
@@ -292,10 +294,10 @@ class An42Trade {
       this.candlesForFractal[1].close > this.candlesForFractal[1].open && // вторая свеча ЗЕЛЕНАЯ
       this.candlesForFractal[2].close > this.candlesForFractal[2].open && // свеча фрактала ЗЕЛЕНАЯ
       // объемы растут (каждая зелёная больше объёмом)
-      this.candlesForFractal[0].volume < this.candlesForFractal[1].volume &&
-      this.candlesForFractal[1].volume < this.candlesForFractal[2].volume / 2 &&
+      // this.candlesForFractal[0].volume < this.candlesForFractal[1].volume &&
+      // this.candlesForFractal[1].volume < this.candlesForFractal[2].volume / 2 &&
       // тело каждой след-й зеленой больше предыдущей
-      this.bodyLength2g < this.fractalBodyLength / 3
+      this.bodyLength2g < this.fractalBodyLength / 2
     ) {
       if (!this.sygnalSent) {
         this.whitchSignal = this.nameStrategy + ': 3 зеленых'
@@ -577,7 +579,7 @@ class An42Trade {
       symbol: this.symbol,
       interval: interval,
       strategy: this.whitchSignal,
-      description: 'тело в 3 раза больше',
+      description: 'тело в 2 раза больше, откл. сравнение volume',
 
       openDealTime: this.positionTime,
       openDealTimeHuman: timestampToDateHuman(this.positionTime),
