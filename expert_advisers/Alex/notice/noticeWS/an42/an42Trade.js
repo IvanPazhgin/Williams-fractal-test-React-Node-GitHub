@@ -58,6 +58,7 @@ class An42Trade {
   constructor(symbol, nameStrategy, takeProfitConst, stopLossConst, shiftTime) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
+    this.position = 'SHORT'
 
     this.takeProfitConst = takeProfitConst
     this.stopLossConst = stopLossConst
@@ -370,12 +371,13 @@ class An42Trade {
         if (lastCandle.close > this.openShort) {
           this.canShort = false
           this.inPosition = true
+          this.position = 'SHORT'
           //this.positionTime = lastCandle.startTime
           this.positionTime = new Date().getTime()
 
           const message = `${this.whitchSignal}\n\nМонета: ${
             this.symbol
-          }\n\n--== Вошли в SHORT ==--\nпо цене: ${
+          }\n\n--== Вошли в ${this.position} ==--\nпо цене: ${
             this.openShort
           } USDT\nТекущая close цена: ${
             lastCandle.close
@@ -580,6 +582,9 @@ class An42Trade {
       interval: interval,
       strategy: this.whitchSignal,
       description: 'тело в 2 раза больше, откл. сравнение volume',
+
+      sidePosition: this.position, // Long, Short
+      deposit: this.deposit,
 
       openDealTime: this.positionTime,
       openDealTimeHuman: timestampToDateHuman(this.positionTime),

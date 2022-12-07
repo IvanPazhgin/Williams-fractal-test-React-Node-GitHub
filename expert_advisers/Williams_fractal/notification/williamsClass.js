@@ -529,6 +529,7 @@ class williamsClass {
       description: 'v1: простейшая версия',
 
       sidePosition: this.deal.position, // Long, Short
+      deposit: this.deal.depositReal,
 
       openDealTime: this.deal.openTime,
       openDealTimeHuman: this.deal.openTimeHuman,

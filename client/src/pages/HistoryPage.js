@@ -79,6 +79,7 @@ export const HistoryPage = () => {
               <th>Цена входа</th>
               <th>Время выхода</th>
               <th>Цена выхода</th>
+              <th>Депозит</th>
               <th>Прибыль / Убыток</th>
               <th>в процентах</th>
               <th>Take Profit</th>
@@ -96,6 +97,7 @@ export const HistoryPage = () => {
                 <td>{deal.openDealPrice}</td>
                 <td>{deal.closeDealTimeHuman}</td>
                 <td>{deal.closeDealPrice}</td>
+                <td>{deal.deposit}</td>
                 <td>{deal.profit}</td>
                 <td>{deal.percent}</td>
                 <td>{deal.takeProfit}</td>

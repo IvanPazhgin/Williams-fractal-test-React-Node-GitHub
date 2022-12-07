@@ -5,6 +5,7 @@ function testOfNewFuctiouns() {
   //testWilliamsOnDownload() // Тесты на скаченных свечах
   //testBinanceTrade() // тест торговых функций
   //arbitrationTest() // простейший тест арбитража
+  // arbitrationTrade() // тестируем торговлю на арбитраже
   //elasticPut() // тест elastic search: put (реализовано в MainAlex)
   //elasticInfo() // тест elastic search: info (работает)
   //elasticPutTest() // тесты с эластик по видео (работает)
@@ -22,7 +23,7 @@ function tradingRobots() {
 
   // разбил 105 монет на 2 массива по 50
   const alex412Launch_mod = require('./expert_advisers/Alex/notice/noticeWS/alex412Notice/alex412Launch_mod')
-  alex412Launch_mod()
+  // alex412Launch_mod()
 
   // оповещения 3.8.2.6 2h на 105 монетах (02.10.2022)
   const alexNoticeMain3826 = require('./expert_advisers/Alex/notice/noticeWS/alex3826Notice/alexNoticeMain3826')
@@ -99,7 +100,7 @@ function notifications() {
 
   // 25.10.2022 оповещения на стратегии 4.1.4.2 на 1h
   const alex4142Start = require('./expert_advisers/robot/alex4142Start')
-  alex4142Start()
+  // alex4142Start()
 
   // тест 4.1.2 на 30m (26.10.2022)
   const alex412LaunchTmod = require('./expert_advisers/Alex/notice/noticeWS/alex412NoticeT/alex412LaunchTmod')
@@ -111,7 +112,19 @@ function notifications() {
 
   // тест 4.3 DEMA на 1h и 30m (01.11.2022)
   const an43Launch = require('./expert_advisers/Alex/notice/noticeWS/an43/an43Launch')
-  an43Launch()
+  // an43Launch()
+
+  // тест 4.3 DEMA на 1h и 30m (05.11.2022), задержка при запросе свечек с биржи (setTimeOut - сбрасывает приложение)
+  const an432Launch = require('./expert_advisers/Alex/notice/noticeWS/an432/an432Launch')
+  // an432Launch()
+
+  // тест 4.3 DEMA на 1h и 30m (05.11.2022), перенес поиск сигнала в сексию !final
+  const an433Launch = require('./expert_advisers/Alex/notice/noticeWS/an433/an433Launch')
+  // an433Launch()
+
+  // тест 4.3 DEMA на 1h и 30m (10.11.2022), свечи запрашиваем внутри findSygnal
+  const an44Launch = require('./expert_advisers/Alex/notice/noticeWS/an44/an44Launch')
+  // an44Launch()
 }
 
 function testBinanceTrade() {
@@ -224,6 +237,11 @@ function testWilliamsOnDownload() {
 function arbitrationTest() {
   const arbitration = require('./expert_advisers/arbitration/arbitration')
   arbitration()
+}
+
+function arbitrationTrade() {
+  const arbitrationTrade = require('./expert_advisers/arbitration/arbitrationTrade')
+  arbitrationTrade()
 }
 
 function elasticPut() {
