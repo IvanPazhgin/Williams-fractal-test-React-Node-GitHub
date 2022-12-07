@@ -5,8 +5,12 @@ async function mongoDBfind(
   toFind = { symbol: 'BTC' }
 ) {
   const collection = mongoClient.db().collection(nameOfCollection) // выносим коллекцию в переменную
-  const deal = await collection.findOne(toFind) // получаем информацию
-  console.log('deal', deal)
+
+  const oneDeal = await collection.findOne(toFind) // получаем информацию
+  console.log('oneDeal', oneDeal)
+
+  const allDeals = await collection.find({}).toArray()
+  console.log('allDeals', allDeals)
 }
 
 module.exports = mongoDBfind

@@ -7,6 +7,7 @@ const {
 const startAlex = require('./expert_advisers/Alex/test/mainAlex')
 const testOfNewFuctiouns = require('./expert_advisers')
 const startMongoDB = require('./API/mongoDB/mongoDBconnect')
+const mongoClient = require('./API/mongoDB/mongoDB.init')
 
 const app = express()
 
@@ -101,6 +102,16 @@ app.post('/testPage', async function (req, res) {
   res.json(result.accountInformation)
 })
 */
+
+// получаем данные из MongoDB
+app.post('/history', async function (req, res) {
+  console.log('history: прилетел запрос на сервер:')
+  console.table(req.body)
+
+  const collection = mongoClient.db().collection(req.body.form)
+  const allDeals = await collection.find({}).toArray()
+  res.json(allDeals)
+})
 
 // попытка прикрутить обработку POST запроса в express
 
