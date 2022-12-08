@@ -130,11 +130,11 @@ async function alex3826Logic2h(symbols2h38) {
                 lastCandle.interval == timeFrames.timeFrame2h
               ) {
                 // если до финальной свечки не вошли в сделку, то отменяем сигнал
-                const message = `${item.whitchSignal}\n\nМонета: ${
+                const message = `${item.whitchSignal}\n\n🪙 Монета: ${
                   item.symbol
-                }\n\n--== ОТМЕНА сигнала ==--\nСигнал был: ${timestampToDateHuman(
+                }\n\n❎ ОТМЕНА сигнала\nСигнал был: ${timestampToDateHuman(
                   item.sygnalTime
-                )}\nУДАЛИ ордер на бирже\n\nЖдем следющего сигнала...`
+                )}\nУДАЛИ ордер на бирже`
                 sendInfo382ToUser(message)
                 item.reset()
                 //console.log(`${item.symbol}: Отменили сигнал. Очистили параметры сделки`)

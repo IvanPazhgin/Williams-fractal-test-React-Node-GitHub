@@ -465,8 +465,10 @@ class williamsClass {
   // --== дополнительные функции к (2) ==--
   enterDeal(candleJunior) {
     this.deal.inPosition = true
-    this.deal.openTime = candleJunior.startTime
-    this.deal.openTimeHuman = timestampToDateHuman(candleJunior.startTime)
+    // this.deal.openTime = candleJunior.startTime
+    // this.deal.openTimeHuman = timestampToDateHuman(candleJunior.startTime)
+    this.deal.openTime = new Date().getTime()
+    this.deal.openTimeHuman = timestampToDateHuman(this.deal.openTime)
 
     this.deal.amountReal = +(
       (this.deal.depositReal / this.deal.openPosition) *
@@ -499,8 +501,10 @@ class williamsClass {
 
   closeDeal(candleJunior) {
     this.deal.outPosition = true
-    this.deal.closeTime = candleJunior.startTime
-    this.deal.closeTimeHuman = timestampToDateHuman(candleJunior.startTime)
+    // this.deal.closeTime = candleJunior.startTime
+    // this.deal.closeTimeHuman = timestampToDateHuman(candleJunior.startTime)
+    this.deal.closeTime = new Date().getTime()
+    this.deal.closeTimeHuman = timestampToDateHuman(this.deal.closeTime)
     this.deal.percentReal = +(
       (this.deal.profitReal / this.deal.openPosition) *
       100

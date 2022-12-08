@@ -2,6 +2,7 @@
 const submittingCloseOrder = require('../../../../../API/binance.engine/trade/submittingCloseOrder')
 const submittingEnterOrder = require('../../../../../API/binance.engine/trade/submittingEnterOrder')
 const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
+const mongoDBadd = require('../../../../../API/mongoDB/mongoDBadd')
 const {
   sendInfo382ToUser,
 } = require('../../../../../API/telegram/telegram.bot')
@@ -209,7 +210,19 @@ class alexTrade3826Class {
             this.stopLossConst * 100
           }%)\n\nЖдем цену на рынке для входа в SHORT...`
 
-          sendInfo382ToUser(message)
+          const messageShort = `❗ НОВЫЙ СИГНАЛ ❗\n${
+            this.whitchSignal
+          }\n\n🪙 Монета: ${this.symbol}\nЦена для входа в SHORT: ${
+            this.openShort
+          }\n\nВремя сигнальной свечи: ${timestampToDateHuman(
+            array[i].startTime
+          )}\nВремя сигнала: ${timestampToDateHuman(
+            this.sygnalTime
+          )}\n\nTake Profit: ${this.takeProfit} (${
+            this.takeProfitConst * 100
+          }%)\nStop Loss: ${this.stopLoss} (${this.stopLossConst * 100}%)`
+
+          sendInfo382ToUser(messageShort)
           //sendInfo382ToUser(JSON.stringify(this))
         } else {
           // console.log(`${this.symbol}: Сигнала на вход не было. Ждем следующую свечу (${this.nameStrategy})`)
@@ -247,15 +260,13 @@ class alexTrade3826Class {
           //this.positionTime = lastCandle.startTime
           this.positionTime = new Date().getTime()
 
-          const message = `${this.whitchSignal}\n\nМонета: ${
+          const message = `${this.whitchSignal}\n\n🪙 Монета: ${
             this.symbol
-          }\n\n--== Вошли в SHORT ==--\nпо цене: ${
+          }\n\n⬇ Вошли в SHORT\nпо цене: ${
             this.openShort
           } USDT \n\nВремя сигнала: ${timestampToDateHuman(
             this.sygnalTime
-          )}\nВремя входа: ${timestampToDateHuman(
-            this.positionTime
-          )}\n\nЖдем цену на рынке для выхода из сделки...`
+          )}\nВремя входа: ${timestampToDateHuman(this.positionTime)}`
           sendInfo382ToUser(message)
 
           this.openDeal(apiOptions) // вход в сделку
@@ -288,13 +299,14 @@ class alexTrade3826Class {
           // console.log(`Close SHORT with takeProfit: ${this.closeShort}`)
           const message = `${this.whitchSignal}\n${timestampToDateHuman(
             this.closeTime
-          )}\n\nМонета: ${
+          )}\n\n🪙 Монета: ${
             this.symbol
-          }\n\n--== Close SHORT ==--\nwith Take Profit: ${
+          }\n\n✅ Close SHORT\nwith Take Profit: ${
             this.closeShort
           }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
           sendInfo382ToUser(message)
 
+          this.saveToMongoDB(interval)
           this.closeDeal(apiOptions)
         } // условия выхода из сделки по TP
 
@@ -317,13 +329,12 @@ class alexTrade3826Class {
           //console.log(`Close SHORT with stopLoss: ${this.closeShort}`)
           const message = `${this.whitchSignal}\n${timestampToDateHuman(
             this.closeTime
-          )}\n\nМонета: ${
-            this.symbol
-          }\n\n--== Close SHORT ==--\nwith Stop Loss: ${
+          )}\n\n🪙 Монета: ${this.symbol}\n\n❌ Close SHORT\nwith Stop Loss: ${
             this.closeShort
           }\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
           sendInfo382ToUser(message)
 
+          this.saveToMongoDB(interval)
           this.closeDeal(apiOptions)
         } // отработка выхода из сделки по SL
       } // if (lastCandle.interval == interval)
@@ -342,7 +353,7 @@ class alexTrade3826Class {
       'SELL'
     )
     if (this.enterOrderResult?.origQty > 0) {
-      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Шортанул ${this.enterOrderResult.origQty} монет ==--\nпо цене: ${this.enterOrderResult.lastPrice}`
+      const message = `${this.whitchSignal}\n\n🪙 Монета: ${this.symbol}\n⬇ Шортанул ${this.enterOrderResult.origQty} монет\nпо цене: ${this.enterOrderResult.lastPrice}`
       sendInfo382ToUser(message)
       //this.inOneDeal.enterToDeal412() // фиксируем что мы в сделке
     } else {
@@ -371,12 +382,42 @@ class alexTrade3826Class {
       ) // / optionsOfTrade.multiplier
         .toFixed(2)
 
-      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
+      const message = `${this.whitchSignal}\n\n🪙 Монета: ${this.symbol}\n--== Откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
       sendInfo382ToUser(message)
 
       this.reset() // если вышли из сделки, то обнуляем состояние сделки
     }
     return this
+  }
+
+  // сохраняем в БД
+  saveToMongoDB(interval) {
+    // const deal = new Deal({
+    const deal = {
+      symbol: this.symbol,
+      interval: interval,
+      strategy: 'Test 3.8.2.6',
+      sygnal: this.whitchSignal,
+      description: 'редко стреляет',
+
+      sidePosition: 'SHORT', // Long, Short
+      deposit: this.deposit,
+
+      openDealTime: this.positionTime,
+      openDealTimeHuman: timestampToDateHuman(this.positionTime),
+      openDealPrice: this.openShort,
+      takeProfit: this.takeProfit,
+      stopLoss: this.stopLoss,
+
+      closeDealTime: this.closeTime,
+      closeDealTimeHuman: timestampToDateHuman(this.closeTime),
+      closeDealPrice: this.closeShort,
+      profit: this.profit,
+      percent: this.percent,
+    }
+
+    mongoDBadd('deals38', deal)
+    mongoDBadd('allDeals', deal)
   }
 
   ///////////////////////////
