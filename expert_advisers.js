@@ -115,15 +115,15 @@ function notifications() {
   // an43Launch()
 
   // тест 4.3 DEMA на 1h и 30m (05.11.2022), задержка при запросе свечек с биржи (setTimeOut - сбрасывает приложение)
-  const an432Launch = require('./expert_advisers/Alex/notice/noticeWS/an432/an432Launch')
+  // const an432Launch = require('./expert_advisers/Alex/notice/noticeWS/an432/an432Launch')
   // an432Launch()
 
   // тест 4.3 DEMA на 1h и 30m (05.11.2022), перенес поиск сигнала в сексию !final
-  const an433Launch = require('./expert_advisers/Alex/notice/noticeWS/an433/an433Launch')
+  // const an433Launch = require('./expert_advisers/Alex/notice/noticeWS/an433/an433Launch')
   // an433Launch()
 
   // тест 4.3 DEMA на 1h и 30m (10.11.2022), свечи запрашиваем внутри findSygnal
-  const an44Launch = require('./expert_advisers/Alex/notice/noticeWS/an44/an44Launch')
+  // const an44Launch = require('./expert_advisers/Alex/notice/noticeWS/an44/an44Launch')
   // an44Launch()
 }
 

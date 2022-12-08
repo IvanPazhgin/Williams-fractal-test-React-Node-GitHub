@@ -36,7 +36,7 @@ async function getLastCandle4s(symbols, timeFrames, callback) {
   })
 
   binanceWsClient.on('open', (data) => {
-    console.log('connection opened open:', data.wsKey, data.ws.target.url)
+    // console.log('connection opened open:', data.wsKey, data.ws.target.url)
   })
 
   // response to command sent via WS stream (e.g LIST_SUBSCRIPTIONS)

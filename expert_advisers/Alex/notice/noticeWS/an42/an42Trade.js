@@ -298,8 +298,8 @@ class An42Trade {
       // объемы растут (каждая зелёная больше объёмом)
       // this.candlesForFractal[0].volume < this.candlesForFractal[1].volume &&
       // this.candlesForFractal[1].volume < this.candlesForFractal[2].volume / 2 &&
-      // тело каждой след-й зеленой больше предыдущей
-      this.bodyLength2g < this.fractalBodyLength / 2
+      this.fractalBodyLength > 1.2 / 100 && // тело 3 свечи > 1,2%
+      this.bodyLength2g < this.fractalBodyLength / 2 // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
     ) {
       if (!this.sygnalSent) {
         this.whitchSignal = this.nameStrategy + ': 3 зеленых'
@@ -322,6 +322,23 @@ class An42Trade {
     //this.middleShadow = (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2 // середина верхней тени
     this.openShort = this.middleShadow
     this.sygnalTime = this.candlesForFractal[2].startTime // ВАЖНО УЧИТЫВАТЬ НА КОЛ-ВО СВЕЧЕЙ В ЗАПРОСЕ С БИРЖИ
+
+    if (
+      this.fractalBodyLength >= 1.2 / 100 &&
+      this.fractalBodyLength < 2 / 100
+    ) {
+      this.takeProfitConst = 0.01
+      this.stopLossConst = 0.01
+    } else if (
+      this.fractalBodyLength >= 2 / 100 &&
+      this.fractalBodyLength < 3 / 100
+    ) {
+      this.takeProfitConst = 0.02
+      this.stopLossConst = 0.02
+    } else if (this.fractalBodyLength >= 3 / 100) {
+      this.takeProfitConst = 0.03
+      this.stopLossConst = 0.02
+    }
 
     // вычисляем уровень take profit
     this.takeProfit = +(this.openShort * (1 - this.takeProfitConst)).toFixed(5)
@@ -583,7 +600,7 @@ class An42Trade {
       interval: interval,
       strategy: name,
       sygnal: this.whitchSignal,
-      description: 'тело в 2 раза больше, откл. сравнение volume',
+      description: 'тело 3 свечи > 1,2%',
 
       sidePosition: this.position, // Long, Short
       deposit: this.deposit,
