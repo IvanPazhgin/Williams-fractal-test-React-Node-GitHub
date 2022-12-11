@@ -31,6 +31,15 @@ export const HistoryPage = () => {
     } catch (e) {}
   }
 
+  async function getDataFromMondoDBall() {
+    const form = 'allDeals'
+    try {
+      const data = await request('/history', 'POST', { form })
+      console.log(data)
+      setData(data)
+    } catch (e) {}
+  }
+
   // async function getDataFromMondoDB(form) {
   //   const data = mongoDBfind(form)
   //   console.log(data)
@@ -49,7 +58,7 @@ export const HistoryPage = () => {
           disabled={loading}
         >
           Статистика 4.2
-        </button>{' '}
+        </button>
         |
         <button
           type="submit"
@@ -59,11 +68,16 @@ export const HistoryPage = () => {
         >
           Статистика Williams
         </button>
+        |
+        <button
+          type="submit"
+          class="btn btn-primary"
+          onClick={getDataFromMondoDBall}
+          disabled={loading}
+        >
+          Вся статистика
+        </button>
       </div>
-
-      <br />
-      <p>Стратегия Билла Вильямса на 4h_15m. v1: простейшая версия</p>
-      <p>Test_4.2 на 30m: 3 зеленых</p>
 
       <div>
         <hr />
@@ -73,8 +87,10 @@ export const HistoryPage = () => {
           <thead>
             <tr>
               <th>№</th>
-              <th>Направление</th>
+              <th>Стратегия</th>
               <th>Монета</th>
+              <th>Интервал</th>
+              <th>Направление</th>
               <th>Время входа</th>
               <th>Цена входа</th>
               <th>Время выхода</th>
@@ -82,8 +98,8 @@ export const HistoryPage = () => {
               <th>Депозит</th>
               <th>+ / -</th>
               <th>в %</th>
-              <th>Take Profit</th>
-              <th>Stop Loss</th>
+              {/* <th>Take Profit</th> */}
+              {/* <th>Stop Loss</th> */}
             </tr>
           </thead>
 
@@ -91,8 +107,10 @@ export const HistoryPage = () => {
             data.map((deal, i) => (
               <tr>
                 <td>{i + 1}</td>
-                <td>{deal.sidePosition}</td>
+                <td>{deal.strategy}</td>
                 <td>{deal.symbol}</td>
+                <td>{deal.interval}</td>
+                <td>{deal.sidePosition}</td>
                 <td>{deal.openDealTimeHuman}</td>
                 <td>{deal.openDealPrice}</td>
                 <td>{deal.closeDealTimeHuman}</td>
@@ -100,8 +118,8 @@ export const HistoryPage = () => {
                 <td>{deal.deposit}</td>
                 <td>{deal.profit}</td>
                 <td>{deal.percent}</td>
-                <td>{deal.takeProfit}</td>
-                <td>{deal.stopLoss}</td>
+                {/* <td>{deal.takeProfit}</td> */}
+                {/* <td>{deal.stopLoss}</td> */}
               </tr>
             ))}
         </table>

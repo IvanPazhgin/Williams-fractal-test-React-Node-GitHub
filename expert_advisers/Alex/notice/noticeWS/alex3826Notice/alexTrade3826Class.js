@@ -222,7 +222,15 @@ class alexTrade3826Class {
             this.takeProfitConst * 100
           }%)\nStop Loss: ${this.stopLoss} (${this.stopLossConst * 100}%)`
 
-          sendInfo382ToUser(messageShort)
+          const messageShort2 = `❗ НОВЫЙ СИГНАЛ ❗\n${
+            this.whitchSignal
+          }\n\n🪙 Монета: ${this.symbol}\nЦена для входа в SHORT: ${
+            this.openShort
+          }\n\nTake Profit: ${this.takeProfit} (${
+            this.takeProfitConst * 100
+          }%)\nStop Loss: ${this.stopLoss} (${this.stopLossConst * 100}%)`
+
+          // sendInfo382ToUser(messageShort2)
           //sendInfo382ToUser(JSON.stringify(this))
         } else {
           // console.log(`${this.symbol}: Сигнала на вход не было. Ждем следующую свечу (${this.nameStrategy})`)
@@ -455,7 +463,7 @@ class alexTrade3826Class {
         )}\n\n--== Мы в вариативной просадке ==--\nМеняем TAKE PROFIT на (точку входа - 0.1%): ${
           this.takeProfit
         }`
-        sendInfo382ToUser(message)
+        // sendInfo382ToUser(message)
       }
     } else {
       if (!this.changedSL) {
@@ -472,7 +480,7 @@ class alexTrade3826Class {
         )}\n\n--= Мы в вариативной прибыли ==--\nМеняем STOP LOSS на (точку входа - 0.1%): ${
           this.stopLoss
         }`
-        sendInfo382ToUser(message)
+        // sendInfo382ToUser(message)
       }
     }
     //} // if (lastCandle.startTime >= this.startTime + shiftTime)

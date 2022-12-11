@@ -609,11 +609,11 @@ class An42Trade {
       openDealTimeHuman: timestampToDateHuman(this.positionTime),
       openDealPrice: this.openShort,
       takeProfit: this.takeProfit,
-      stopLoss: this.stopLoss,
+      stopLoss: +this.stopLoss.toFixed(8),
 
       closeDealTime: this.closeTime,
       closeDealTimeHuman: timestampToDateHuman(this.closeTime),
-      closeDealPrice: this.closeShort,
+      closeDealPrice: +this.closeShort.toFixed(8),
       profit: this.profit,
       percent: this.percent,
     }

@@ -135,7 +135,7 @@ async function alex3826Logic2h(symbols2h38) {
                 }\n\n❎ ОТМЕНА сигнала\nСигнал был: ${timestampToDateHuman(
                   item.sygnalTime
                 )}\nУДАЛИ ордер на бирже`
-                sendInfo382ToUser(message)
+                // sendInfo382ToUser(message)
                 item.reset()
                 //console.log(`${item.symbol}: Отменили сигнал. Очистили параметры сделки`)
               } // обнуляем состояние сигнала
