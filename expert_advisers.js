@@ -28,6 +28,10 @@ function tradingRobots() {
   // оповещения 3.8.2.6 2h на 105 монетах (02.10.2022)
   const alexNoticeMain3826 = require('./expert_advisers/Alex/notice/noticeWS/alex3826Notice/alexNoticeMain3826')
   alexNoticeMain3826()
+
+  // 12.12.2022 тест 4.2.2: 3 сигнала, 3 зеленых на 30m
+  const an422Launch = require('./expert_advisers/Alex/notice/noticeWS/an422/an422Launch')
+  an422Launch()
 }
 
 function notifications() {

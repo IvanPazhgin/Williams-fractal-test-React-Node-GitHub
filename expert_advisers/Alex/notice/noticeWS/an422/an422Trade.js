@@ -7,18 +7,16 @@
 */
 //////////////////////////////
 
-const getPositionAmount = require('../../../../../API/binance.engine/common/getPositionAmt')
-// const { optionsOfTrade } = require('../../../../../API/binance.engine/trade/api_options')
 const submittingCloseOrder = require('../../../../../API/binance.engine/trade/submittingCloseOrder')
 const submittingEnterOrder = require('../../../../../API/binance.engine/trade/submittingEnterOrder')
 const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
-// const fractal_Bearish = require('../../../../common.func/fractal_Bearish')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
-// const choiceSymbol = require('../../../../robot/choiceSymbol')
 const mongoDBadd = require('../../../../../API/mongoDB/mongoDBadd')
-const { name } = require('./input_parameters')
+const { nameStr } = require('./input_parameters')
+const mongoDBfind = require('../../../../../API/mongoDB/mongoDBfind')
+const updateСountPosition = require('../../../../../API/mongoDB/updPos')
 
 /*
 в начале запуска приложения:
@@ -55,7 +53,10 @@ SL=-1% Тейк +1%
 Если свеча открытия красная то перенос после закрытия 3 свечи (первой свечой в данном случае считается свеча открытия)
 */
 
-class An42Trade {
+// 12.12.2022
+// версия 4.2.2: 3 зеленых, 30 m
+
+class An422Trade {
   constructor(symbol, nameStrategy, takeProfitConst, stopLossConst, shiftTime) {
     this.symbol = symbol
     this.nameStrategy = nameStrategy
@@ -70,7 +71,7 @@ class An42Trade {
 
     this.fractalLength = 5 // отношение между high и low фрактальной свечи должно быть меньше 5%
 
-    this.candlesForFractal = [] // свечи для поиска фрактала
+    this.candles = [] // свечи для поиска фрактала
 
     // статистика
     this.countAllDeals = 0
@@ -78,22 +79,16 @@ class An42Trade {
     this.countOfNegative = 0 // кол-во отрицательных сделок
     this.countOfZero = 0 // кол-во нулевых сделок
 
-    //this.inOneDeal = new choiceSymbol()
-
     this.reset()
   }
 
   reset() {
     // для сигнала
-    this.fractalBodyLength = 0 // длина тела фрактальной свечи
-    this.fractalShadowLength = 0 // длина верхней тени фрактальной свечи
-    this.fractalBearish = {}
+    this.BodyLength3 = 0 // длина тела 3й зеленой свечи
+    this.highShadow3 = 0 // длина верхней тени 3й зеленой свечи
+    this.lowShadow3 = 0 // нижняя тень 3й зеленой свечи
     this.bodyLength1g = 0 // длина тела 1й зеленой свечи
     this.bodyLength2g = 0 // длина тела 2й зеленой свечи
-    this.upperShadowRed = 0 // верхняя тень красной свечи
-    this.lowerShadowRed = 0 // верхняя тень красной свечи
-    this.diffShadowRed = 0 // отношение теней на красной свечи
-    this.fractalLengthCalc = 0 // для расчета отношения между high и low на фрактальной свече
 
     // для сделки
     this.sygnalSent = false
@@ -124,218 +119,159 @@ class An42Trade {
 
   // подготовка данных для поиска фрактала
   async prepair5Candles(interval) {
-    const limitOfCandle = 3 // кол-во свечей для поиска фрактала
-    const candles = await getCandles(this.symbol, interval, limitOfCandle) // получаем первые n свечей
-    this.candlesForFractal = candlesToObject(candles) // преобрзауем массив свечей в объект
-    //console.table(this.candlesForFractal)
-    //console.log(`alex412: prepair5Candles(): прилетело ${this.candlesForFractal.length} свечей`) // удалить
+    const limitOfCandle = 4 // кол-во свечей для поиска сигнала
+    const candles2 = await getCandles(this.symbol, interval, limitOfCandle) // получаем первые n свечей
+    this.candles = candlesToObject(candles2) // преобрзауем массив свечей в объект
+    //console.table(this.candles)
+    //console.log(`alex412: prepair5Candles(): прилетело ${this.candles.length} свечей`) // удалить
     return this
   } // async prepair5Candles(interval
 
   prepairDataforFindFractal(lastCandle) {
     // заменяем последнюю свечку по примеру кода Толи
     if (
-      this.candlesForFractal
+      this.candles
         .map(({ startTime }) => startTime)
         .includes(lastCandle.startTime)
     ) {
       //console.log('время последних свечей совпадает') // закомментировать
-      const delLastCandle = this.candlesForFractal.pop() // для начала удаляем незавршенную свечку
+      const delLastCandle = this.candles.pop() // для начала удаляем незавршенную свечку
       //console.log('убираем последнюю свечку')
       //console.table(delLastCandle)
-      //console.log(`кол-во свечей после удаления последней = ${this.candlesForFractal.length}`)
+      //console.log(`кол-во свечей после удаления последней = ${this.candles.length}`)
     } else {
       //console.log(`${this.symbol} время последних свечей НЕ совпадает`)
-      const delFirstCandle = this.candlesForFractal.shift() // удаляем первую свечку
-      //console.log(`кол-во свечей после удаления первой = ${this.candlesForFractal.length}`) // закомментировать
+      const delFirstCandle = this.candles.shift() // удаляем первую свечку
+      //console.log(`кол-во свечей после удаления первой = ${this.candles.length}`) // закомментировать
 
       // выводим проверки
-      //console.table(this.candlesForFractal)
+      //console.table(this.candles)
       //console.table(lastCandle)
     }
 
     // далее добавляем последнюю свечку из WS
-    this.candlesForFractal = this.candlesForFractal.concat(lastCandle)
-    //console.table(this.candlesForFractal)
-    //console.log(`итого кол-во свечей = ${this.candlesForFractal.length}`) // закомментировать
+    this.candles = this.candles.concat(lastCandle)
+    //console.table(this.candles)
+    //console.log(`итого кол-во свечей = ${this.candles.length}`) // закомментировать
 
     return this
   } //prepairDataforFindFractal(lastCandle
 
   findSygnal(lastCandle, interval) {
     if (lastCandle.interval == interval) {
-      // подготавливаем данные для поиска фрактала
-      // this.prepairDataforFindFractal(lastCandle)
-      // console.log(`${this.symbol} ищем сигнал, свечи для поиска сигнала:`)
-      // console.table(this.candlesForFractal)
+      // для сигнала № 1 и 2
+      this.BodyLength3 =
+        this.candles.at(-1).close / this.candles.at(-1).open - 1
+      this.highShadow3 =
+        this.candles.at(-1).high / this.candles.at(-1).close - 1
 
-      // ищем фрактал
-      // this.fractalBearish = fractal_Bearish(this.candlesForFractal)
+      this.bodyLength2g = this.candles.at(-2).high / this.candles.at(-2).low - 1
+      this.findSygnal1()
+      this.findSygnal2()
 
-      // готовим данные по свече фрактала
-      this.fractalBodyLength =
-        this.candlesForFractal[2].close / this.candlesForFractal[2].open - 1
-      // this.fractalShadowLength = this.candlesForFractal[2].high / this.candlesForFractal[2].close - 1
+      // для сигнала № 3
+      this.BodyLength3 =
+        this.candles.at(-2).close / this.candles.at(-2).open - 1
+      this.highShadow3 =
+        this.candles.at(-2).high / this.candles.at(-2).close - 1
 
-      // расчет отношения между high и low на фрактальной свече
-      // this.fractalLengthCalc = (this.candlesForFractal[2].high / this.candlesForFractal[2].low - 1) * 100
-
-      // вычисляем длину зеленых свечей (сигнал №1)
-      // this.bodyLength1g = this.candlesForFractal[0].close / this.candlesForFractal[0].open - 1
-      // this.bodyLength2g = this.candlesForFractal[1].close / this.candlesForFractal[1].open - 1
-      this.bodyLength2g =
-        this.candlesForFractal[1].high / this.candlesForFractal[1].low - 1
-
-      // вычисляем тени на 4й красной свече
-      // this.upperShadowRed = this.candlesForFractal[3].high / this.candlesForFractal[3].open - 1
-      // this.lowerShadowRed = this.candlesForFractal[3].close / this.candlesForFractal[3].low - 1
-      // this.diffShadowRed = this.lowerShadowRed / this.upperShadowRed - 1
-
-      // this.findSygnal1() // ищем сигнал №1: 3 зеленых и красная
-      // this.findSygnal2() // ищем сигнал №2: свеча фрактала ЗЕЛЕНАЯ
-      // this.findSygnal3() // ищем сигнал №3: свеча фрактала КРАСНАЯ
-      this.findSygnal4() // три первых свечи - ЗЕЛЕНЫЕ
+      this.bodyLength2g = this.candles.at(-3).high / this.candles.at(-3).low - 1
+      this.findSygnal3()
 
       return this
     }
   } // findSygnal(lastCandle, interval)
 
-  // ищем сигнал №1: 3 зеленых и красная
+  // -- Сигнал №1 --
+  // три первых свечи - ЗЕЛЕНЫЕ
+  // если 3я зеленая (close - open) > 5%, то:
+
+  // если верхняя тень длинная - то входим на середине верхней тени
+  // если короткая - на цене закрытия
+
+  // пояснение:
+  // длиная тень - это если отношение тела к свечи менее 5 по значению (см. excel), то входим на середине верхней тени,
+  // иначе входим по цене закрытия
   findSygnal1() {
     if (
-      // 03.10.2022: отношение между high и low фрактальной свечи должно быть меньше 5%
-      this.fractalLengthCalc < this.fractalLength &&
       // три первых свечи - ЗЕЛЕНЫЕ
-      this.candlesForFractal[0].close > this.candlesForFractal[0].open && // первая свеча ЗЕЛЕНАЯ
-      this.candlesForFractal[1].close > this.candlesForFractal[1].open && // вторая свеча ЗЕЛЕНАЯ
-      this.candlesForFractal[2].close > this.candlesForFractal[2].open && // свеча фрактала ЗЕЛЕНАЯ
-      // объемы растут (каждая зелёная больше объёмом)
-      this.candlesForFractal[0].volume < this.candlesForFractal[1].volume &&
-      this.candlesForFractal[1].volume < this.candlesForFractal[2].volume &&
-      // тело каждой след-й зеленой больше предыдущей
-      this.bodyLength1g < this.bodyLength2g &&
-      this.bodyLength2g < this.fractalBodyLength &&
-      // если нашли фрактал
-      this.fractalBearish.isFractal &&
-      this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
-      this.candlesForFractal[3].open > this.candlesForFractal[3].close && // и после него КРАСНАЯ свеча
-      this.upperShadowRed >= this.lowerShadowRed // у которого верхняя тень равна либо больше по длине нижней тени
+      this.candles.at(-3).close > this.candles.at(-3).open && // первая свеча ЗЕЛЕНАЯ
+      this.candles.at(-2).close > this.candles.at(-2).open && // вторая свеча ЗЕЛЕНАЯ
+      this.candles.at(-1).close > this.candles.at(-1).open && // третья свеча ЗЕЛЕНАЯ
+      this.BodyLength3 >= 5 / 100 && // тело 3й свечи > 5%
+      this.bodyLength2g < this.BodyLength3 / 2 // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
     ) {
-      if (!this.sygnalSent) {
-        this.whitchSignal = this.nameStrategy + ': 3 зеленых'
+      if (this.BodyLength3 / this.highShadow3 < 5) {
+        // если верхняя тень длинная - то входим на середине верхней тени
         this.middleShadow =
-          (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2 // середина верхней тени красной свечи
-        this.openShortCommon()
+          (this.candles.at(-1).close + this.candles.at(-1).high) / 2
+      } else {
+        // если короткая - на цене закрытия
+        this.middleShadow = this.candles.at(-1).close
       }
+      this.whitchSignal = this.nameStrategy + ': 3d green > 5%'
+      this.openShortCommon()
     }
-
     return this
   }
 
-  // ищем сигнал №2: свеча фрактала ЗЕЛЕНАЯ
+  //   -- Сигнал №2 --
+  // 1.2% < (тело 3й свечи) < 5%
+  // на 3й зеленой:
+  // если (верхняя тень < нижней тени), то входим по цене закрытия зеленой свечи
   findSygnal2() {
-    if (
-      // 03.10.2022: отношение между high и low фрактальной свечи должно быть меньше 5%
-      this.fractalLengthCalc < this.fractalLength &&
-      // 30.09.2022: убираем зеленый фрактал на 30m, оставляем на 1h
-      interval == '1h' &&
-      // свеча до фрактала - красная
-      this.candlesForFractal[1].open > this.candlesForFractal[1].close && // вторая свеча КРАСНАЯ
-      this.candlesForFractal[2].close > this.candlesForFractal[2].open && // свеча фрактала ЗЕЛЕНАЯ
-      // если нашли фрактал
-      this.fractalBearish.isFractal &&
-      this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
-      this.candlesForFractal[3].open > this.candlesForFractal[3].close && // и после него КРАСНАЯ свеча
-      (this.upperShadowRed >= this.lowerShadowRed || this.diffShadowRed < 0.6) // у которого верхняя тень равна либо больше по длине нижней тени
-    ) {
-      if (!this.sygnalSent) {
-        this.whitchSignal = this.nameStrategy + ': свеча фрактала ЗЕЛЕНАЯ'
-        this.middleShadow =
-          (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2 // середина верхней тени красной свечи
-        this.openShortCommon()
-      }
-    }
-
-    return this
-  }
-
-  // ищем сигнал №3: свеча фрактала КРАСНАЯ
-  findSygnal3() {
-    if (
-      // 03.10.2022: отношение между high и low фрактальной свечи должно быть меньше 5%
-      this.fractalLengthCalc < this.fractalLength &&
-      // вариант №1
-      ((this.candlesForFractal[0].open > this.candlesForFractal[0].close && // первая свеча - красная
-        this.candlesForFractal[1].close >
-          this.candlesForFractal[1].open) /*&& // вторая свеча - зеленая
-      this.candlesForFractal[1].volume > this.candlesForFractal[3].volume*/ || // vol 2й зеленой > vol 4й красной
-        // вариант №2: свеча до фрактала - красная
-        this.candlesForFractal[1].open > this.candlesForFractal[1].close) && // вторая свеча КРАСНАЯ
-      this.candlesForFractal[2].open > this.candlesForFractal[2].close && // свеча фрактала КРАСНАЯ
-      // если нашли фрактал
-      this.fractalBearish.isFractal &&
-      //this.fractalBodyLength > this.fractalShadowLength && // если тело фрактала больше тени фрактала
-      this.candlesForFractal[3].open > this.candlesForFractal[3].close // и после него КРАСНАЯ свеча
-      //(this.upperShadowRed >= this.lowerShadowRed || this.diffShadowRed < 0.6) // у которого верхняя тень равна либо больше по длине нижней тени
-    ) {
-      if (!this.sygnalSent) {
-        this.whitchSignal = this.nameStrategy + ': свеча фрактала КРАСНАЯ'
-        this.middleShadow =
-          (this.candlesForFractal[2].open + this.candlesForFractal[2].high) / 2 // середина верхней тени фрактала
-        this.openShortCommon()
-      }
-    }
-    return this
-  }
-
-  // три первых свечи - ЗЕЛЕНЫЕ
-  findSygnal4() {
+    this.lowShadow3 = this.candles.at(-1).open / this.candles.at(-1).low - 1
     if (
       // три первых свечи - ЗЕЛЕНЫЕ
-      this.candlesForFractal[0].close > this.candlesForFractal[0].open && // первая свеча ЗЕЛЕНАЯ
-      this.candlesForFractal[1].close > this.candlesForFractal[1].open && // вторая свеча ЗЕЛЕНАЯ
-      this.candlesForFractal[2].close > this.candlesForFractal[2].open && // свеча фрактала ЗЕЛЕНАЯ
-      // объемы растут (каждая зелёная больше объёмом)
-      // this.candlesForFractal[0].volume < this.candlesForFractal[1].volume &&
-      // this.candlesForFractal[1].volume < this.candlesForFractal[2].volume / 2 &&
-      this.fractalBodyLength > 1.2 / 100 && // тело 3 свечи > 1,2%
-      this.bodyLength2g < this.fractalBodyLength / 2 // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
+      this.candles.at(-3).close > this.candles.at(-3).open && // первая свеча ЗЕЛЕНАЯ
+      this.candles.at(-2).close > this.candles.at(-2).open && // вторая свеча ЗЕЛЕНАЯ
+      this.candles.at(-1).close > this.candles.at(-1).open && // третья свеча ЗЕЛЕНАЯ
+      this.BodyLength3 >= 1.2 / 100 && // тело 3й свечи < 5%
+      this.BodyLength3 < 5 / 100 && // тело 3й свечи < 5%
+      this.bodyLength2g < this.BodyLength3 / 2 && // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
+      this.highShadow3 < this.lowShadow3 // верхняя тень < нижней тени
     ) {
-      if (!this.sygnalSent) {
-        this.whitchSignal = this.nameStrategy + ': 3 зеленых'
-        this.middleShadow = this.candlesForFractal[2].close
-        // this.middleShadow =
-        //   (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2 // середина верхней тени красной свечи
-        this.openShortCommon()
-      }
+      this.middleShadow = this.candles.at(-1).close
+      this.whitchSignal = this.nameStrategy + ': 1.2% < 3d green < 5%'
+      this.openShortCommon()
     }
+    return this
+  }
 
+  findSygnal3() {
+    this.lowShadow3 = this.candles.at(-2).open / this.candles.at(-2).low - 1
+    if (
+      // три первых свечи - ЗЕЛЕНЫЕ
+      this.candles.at(-4).close > this.candles.at(-4).open && // первая свеча ЗЕЛЕНАЯ
+      this.candles.at(-3).close > this.candles.at(-3).open && // вторая свеча ЗЕЛЕНАЯ
+      this.candles.at(-2).close > this.candles.at(-2).open && // третья свеча ЗЕЛЕНАЯ
+      this.candles.at(-1).close < this.candles.at(-1).open && // четвертая свеча КРАСНАЯ
+      this.BodyLength3 >= 1.2 / 100 && // тело 3й свечи < 5%
+      this.BodyLength3 < 5 / 100 && // тело 3й свечи < 5%
+      this.bodyLength2g < this.BodyLength3 / 2 && // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
+      this.highShadow3 > this.lowShadow3 // верхняя тень > нижней
+    ) {
+      this.middleShadow = this.candles.at(-1).open // входим после красной по цене ее открытия
+      this.whitchSignal = this.nameStrategy + ': 3 green, 1 red'
+      this.openShortCommon()
+    }
     return this
   }
 
   // функция openShortCommon с общими полями для входа в сделку
   openShortCommon() {
-    // this.fractalHigh = this.fractalBearish.high
-    this.sygnalSent = true
+    // this.sygnalSent = true
     this.canShort = true
-    //this.openShort = this.candlesForFractal[3].open
-    //this.middleShadow = (this.candlesForFractal[3].open + this.candlesForFractal[3].high) / 2 // середина верхней тени
     this.openShort = this.middleShadow
-    this.sygnalTime = this.candlesForFractal[2].startTime // ВАЖНО УЧИТЫВАТЬ НА КОЛ-ВО СВЕЧЕЙ В ЗАПРОСЕ С БИРЖИ
+    this.sygnalTime = this.candles.at(-1).startTime // ВАЖНО УЧИТЫВАТЬ НА КОЛ-ВО СВЕЧЕЙ В ЗАПРОСЕ С БИРЖИ
 
-    if (
-      this.fractalBodyLength >= 1.2 / 100 &&
-      this.fractalBodyLength < 2 / 100
-    ) {
+    if (this.BodyLength3 >= 1.2 / 100 && this.BodyLength3 < 2 / 100) {
       this.takeProfitConst = 0.01
       this.stopLossConst = 0.01
-    } else if (
-      this.fractalBodyLength >= 2 / 100 &&
-      this.fractalBodyLength < 3 / 100
-    ) {
+    } else if (this.BodyLength3 >= 2 / 100 && this.BodyLength3 < 3 / 100) {
       this.takeProfitConst = 0.02
       this.stopLossConst = 0.02
-    } else if (this.fractalBodyLength >= 3 / 100) {
+    } else if (this.BodyLength3 >= 3 / 100) {
       this.takeProfitConst = 0.03
       this.stopLossConst = 0.02
     }
@@ -352,24 +288,6 @@ class An42Trade {
       this.partOfDeposit *
       this.multiplier
     ).toFixed(8)
-
-    /*
-    const message = `---=== НОВЫЙ СИГНАЛ ===---\n${
-      this.whitchSignal
-    }\nМонета: ${this.symbol}\n\nНЕ подтвержденный ${
-      this.fractalBearish.nameFracralRus
-    }\nДата: ${this.fractalBearish.timeH}\nHigh: ${
-      this.fractalBearish.high
-    }\n\nЦена для входа в SHORT: ${this.openShort}\n\nКол-во монет: ${
-      this.amountOfPosition
-    }\nВзяли ${this.partOfDeposit * 100}% c плечом ${
-      this.multiplier
-    }x от депозита = ${this.deposit} USDT\n\nПоставь:\nTake Profit: ${
-      this.takeProfit
-    } (${this.takeProfitConst * 100}%)\nStop Loss: ${this.stopLoss} (${
-      this.stopLossConst * 100
-    }%)\n\nЖдем цену на рынке для входа в SHORT...`
-    */
 
     const message42small = `❗ НОВЫЙ СИГНАЛ ❗\n${
       this.whitchSignal
@@ -406,9 +324,7 @@ class An42Trade {
           )}\n\nЖдем цену на рынке для выхода из сделки...`
           // sendInfoToUser(message)
 
-          //if (!this.inOneDeal.inDeal412) {
-          // this.openDeal(apiOptions) // вход в сделку
-          //}
+          this.openDeal(apiOptions) // вход в сделку
         }
       }
     }
@@ -464,34 +380,11 @@ class An42Trade {
 
           this.inPosition = false
 
-          // статистика
-          this.countAllDeals++
-          if (this.profit > 0) {
-            this.countOfPositive++
-          } else {
-            this.countOfZero++
-          }
-
-          // отправка сообщения
-          // console.log(`Close SHORT with takeProfit: ${this.closeShort}`)
-          const message1 = `${this.whitchSignal}\n${timestampToDateHuman(
-            this.closeTime
-          )}\n\n🪙 Монета: ${this.symbol}\nТекущая close цена: ${
-            lastCandle.close
-          } USD\n\n✅ Close SHORT\nwith Take Profit: ${
-            this.closeShort
-          }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
-
-          // const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
-
-          // sendInfoToUser(message1 + message2)
-          // sendInfoToUser(message1)
+          this.closeDeal(apiOptions)
+          this.saveToMongoDB(interval)
 
           const message42small = `${this.whitchSignal}\n🪙 Монета: ${this.symbol}\n\n✅ Close SHORT\nwith Take Profit: ${this.closeShort}\n\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
-          sendInfoToUser(message42small)
-
-          this.saveToMongoDB(interval)
-          // this.closeDeal(apiOptions)
+          sendInfoToUser(message42small) // отправка сообщения
         } // условия выхода из сделки по TP
 
         // условия выхода из сделки по SL
@@ -509,34 +402,11 @@ class An42Trade {
 
           this.inPosition = false
 
-          // статистика
-          this.countAllDeals++
-          if (this.profit < 0) {
-            this.countOfNegative++
-          } else {
-            this.countOfZero++
-          }
-
-          // отправка сообщения
-          //console.log(`Close SHORT with stopLoss: ${this.closeShort}`)
-          const message1 = `${this.whitchSignal}\n${timestampToDateHuman(
-            this.closeTime
-          )}\n\n🪙 Монета: ${this.symbol}\nТекущая close цена: ${
-            lastCandle.close
-          } USD\n\n❌ Close SHORT\nwith Stop Loss: ${
-            this.closeShort
-          }\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
-
-          // const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых:\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
-
-          // sendInfoToUser(message1 + message2)
-          // sendInfoToUser(message1)
+          this.closeDeal(apiOptions)
+          this.saveToMongoDB(interval)
 
           const message42small = `${this.whitchSignal}\n🪙 Монета: ${this.symbol}\n\n❌ Close SHORT\nwith Stop Loss: ${this.closeShort}\n\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
-          sendInfoToUser(message42small)
-
-          this.saveToMongoDB(interval)
-          // this.closeDeal(apiOptions)
+          sendInfoToUser(message42small) // отправка сообщения
         } // отработка выхода из сделки по SL
       } // if (lastCandle.interval == interval)
     } // if (this.inPosition)
@@ -546,8 +416,9 @@ class An42Trade {
 
   // вход в сделку
   async openDeal(apiOptions) {
-    const result = await getPositionAmount(apiOptions)
-    if (result?.countOfPosition < apiOptions.countOfPosition) {
+    const usersInfo = await mongoDBfind('users') // запрашиваем в БД кол-во открытых сделок по данной стратегии
+    // const myquery = usersInfo[0][apiOptions.name].countOfPosition
+    if (usersInfo[0][apiOptions.name].countOfPosition[nameStr] === 0) {
       this.enterOrderResult = await submittingEnterOrder(
         apiOptions,
         this.symbol,
@@ -558,7 +429,18 @@ class An42Trade {
           this.enterOrderResult.origQty * this.enterOrderResult.lastPrice
         const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Шортанул ${this.enterOrderResult.origQty} монет ==--\nпо цене: ${this.enterOrderResult.lastPrice}\nЗадействовано: ${summEnterToDeal} USD`
         sendInfoToUser(message)
-        //this.inOneDeal.enterToDeal412() // фиксируем что мы в сделке
+
+        // фиксируем что мы в сделке
+        const newValues = {
+          $set: {
+            [apiOptions.name]: {
+              countOfPosition: {
+                [nameStr]: 1,
+              },
+            },
+          },
+        }
+        updateСountPosition('users', newValues)
       } else {
         // console.log(`недостаточно средств для входа в сделку. Куплено: ${this.enterOrderResult.origQty} монет`)
       }
@@ -588,11 +470,18 @@ class An42Trade {
       const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
       sendInfoToUser(message)
 
-      //const checking = `enterOrderResult.lastPrice = ${this.enterOrderResult.lastPrice} USD\nenterOrderResult.origQty = ${this.enterOrderResult.origQty} шт\ncloseOrderResult.lastPrice = ${this.closeOrderResult.lastPrice} USD\ncloseOrderResult.origQty = ${this.closeOrderResult.origQty} шт\nmultiplier = ${optionsOfTrade.multiplier}x`
-      //console.log(checking)
-
       //console.log('enterOrderResult после сделки: ', this.enterOrderResult)
-      //this.inOneDeal.reset412() // фиксируем что мы вышли из сделки
+      // фиксируем что мы вышли из сделки
+      const newValues = {
+        $set: {
+          [apiOptions.name]: {
+            countOfPosition: {
+              [nameStr]: 0,
+            },
+          },
+        },
+      }
+      updateСountPosition('users', newValues)
       this.reset() // если вышли из сделки, то обнуляем состояние сделки
     }
     return this
@@ -604,9 +493,9 @@ class An42Trade {
     const deal = {
       symbol: this.symbol,
       interval: interval,
-      strategy: name,
+      strategy: nameStr,
       sygnal: this.whitchSignal,
-      description: 'тело 3 свечи > 1,2%',
+      description: this.whitchSignal,
 
       sidePosition: this.position, // Long, Short
       deposit: this.deposit,
@@ -624,7 +513,7 @@ class An42Trade {
       percent: this.percent,
     }
 
-    mongoDBadd('deals42', deal)
+    mongoDBadd(nameStr, deal)
     mongoDBadd('allDeals', deal)
   }
 
@@ -827,4 +716,4 @@ class An42Trade {
   }
   */
 }
-module.exports = An42Trade
+module.exports = An422Trade

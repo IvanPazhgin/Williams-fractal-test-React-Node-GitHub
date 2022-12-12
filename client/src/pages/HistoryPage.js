@@ -18,7 +18,7 @@ export const HistoryPage = () => {
     try {
       const data = await request('/history', 'POST', { form })
       console.log(data)
-      setData(data) //  установил данные в React
+      setData(data.reverse()) //  установил данные в React
     } catch (e) {}
   }
 
@@ -27,7 +27,7 @@ export const HistoryPage = () => {
     try {
       const data = await request('/history', 'POST', { form })
       console.log(data)
-      setData(data)
+      setData(data.reverse())
     } catch (e) {}
   }
 
@@ -36,7 +36,7 @@ export const HistoryPage = () => {
     try {
       const data = await request('/history', 'POST', { form })
       console.log(data)
-      setData(data)
+      setData(data.reverse())
     } catch (e) {}
   }
 
@@ -82,6 +82,9 @@ export const HistoryPage = () => {
       <div>
         <hr />
         {/* <h4>Стратегия {data && data[-1].strategy}</h4> */}
+        <h5>
+          Вверху таблицы - самые последние сделки, внизу - самые давние сделки
+        </h5>
 
         <table class="deals">
           <thead>
