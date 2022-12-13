@@ -53,6 +53,8 @@ hide: Test 3.5 со страницы пользователя -->
 
 off: 4.1.2 на 1h (to MongoDB)
 
+4.2.2 на 30m (to MongoDB)
+
 [Статистика](http://82.148.29.68/history)
 
 ### оповещения в telegram
@@ -61,7 +63,7 @@ off: 4.1.2 на 1h (to MongoDB)
 
 4.1.4.2 на 1h (off)
 
-4.2 на 30m (to MongoDB)
+off: 4.2 на 30m (to MongoDB)
 
 Фракталы Билла Вильямса (to MongoDB)
 

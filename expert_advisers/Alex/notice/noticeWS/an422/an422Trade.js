@@ -176,7 +176,7 @@ class An422Trade {
         this.candles.at(-2).high / this.candles.at(-2).close - 1
 
       this.bodyLength2g = this.candles.at(-3).high / this.candles.at(-3).low - 1
-      this.findSygnal3()
+      // this.findSygnal3()
 
       return this
     }
@@ -232,12 +232,17 @@ class An422Trade {
       this.highShadow3 < this.lowShadow3 // верхняя тень < нижней тени
     ) {
       this.middleShadow = this.candles.at(-1).close
+      // this.middleShadow = this.candles.at(-1).close * (1 - 0.001) // на 0.1% ниже
       this.whitchSignal = this.nameStrategy + ': 1.2% < 3d green < 5%'
       this.openShortCommon()
     }
     return this
   }
 
+  //   -- Сигнал №3 --
+  // 1.2% < (тело 3й свечи) < 5%
+  // на 3й зеленой:
+  // верхняя тень > нижней
   findSygnal3() {
     this.lowShadow3 = this.candles.at(-2).open / this.candles.at(-2).low - 1
     if (
@@ -323,6 +328,17 @@ class An422Trade {
             this.positionTime
           )}\n\nЖдем цену на рынке для выхода из сделки...`
           // sendInfoToUser(message)
+
+          const messageShort = `${this.whitchSignal}\n\n🪙Монета: ${
+            this.symbol
+          }\n\n⬇ Вошли в SHORT\nпо цене: ${
+            this.openShort
+          } USDT\nТекущая close цена: ${
+            lastCandle.close
+          } USD\n\nВремя сигнала: ${timestampToDateHuman(
+            this.sygnalTime
+          )}\nВремя входа: ${timestampToDateHuman(this.positionTime)}`
+          console.log(messageShort)
 
           this.openDeal(apiOptions) // вход в сделку
         }
@@ -417,6 +433,9 @@ class An422Trade {
   // вход в сделку
   async openDeal(apiOptions) {
     const usersInfo = await mongoDBfind('users') // запрашиваем в БД кол-во открытых сделок по данной стратегии
+    // const countOfPosition =
+    //   usersInfo[0][apiOptions.name].countOfPosition[nameStr]
+    // console.log(`${apiOptions.name}: countOfPosition  = ${countOfPosition}`)
     // const myquery = usersInfo[0][apiOptions.name].countOfPosition
     if (usersInfo[0][apiOptions.name].countOfPosition[nameStr] === 0) {
       this.enterOrderResult = await submittingEnterOrder(
