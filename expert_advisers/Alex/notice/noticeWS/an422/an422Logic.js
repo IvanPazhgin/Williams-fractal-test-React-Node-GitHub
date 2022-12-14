@@ -91,9 +91,10 @@ async function an422Logic(
               item.changeTPSLOnMarket(lastCandle, timeFrameSenior)
 
               // каждую секунду проверяем условие выхода из сделки по TP и SL
-              apiOptions422.forEach((traderAPI) => {
-                item.closeShortPosition(lastCandle, timeFrameSenior, traderAPI)
-              })
+              item.closeShortPosition(lastCandle, timeFrameSenior)
+              // apiOptions422.forEach((traderAPI) => {
+              //   item.closeShortPosition(lastCandle, timeFrameSenior, traderAPI)
+              // })
 
               // если вышли из сделки, то обнуляем состояние сделки:
               if (!item.inPosition) {
@@ -115,9 +116,10 @@ async function an422Logic(
               // item.findSygnal(lastCandle, timeFrameSenior)
               // item.findBrokenFractal(lastCandle) // внутри отключил большое кол-во служебных сообщений
 
-              apiOptions422.forEach((traderAPI) => {
-                item.canShortPosition(lastCandle, timeFrameSenior, traderAPI)
-              })
+              item.canShortPosition(lastCandle, timeFrameSenior)
+              // apiOptions422.forEach((traderAPI) => {
+              //   item.canShortPosition(lastCandle, timeFrameSenior, traderAPI)
+              // })
 
               //console.log(`interval: ${interval}, close = ${lastCandle.close}`)
             } // if (!final)

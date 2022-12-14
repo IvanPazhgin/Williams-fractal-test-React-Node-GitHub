@@ -17,6 +17,7 @@ const mongoDBadd = require('../../../../../API/mongoDB/mongoDBadd')
 const { nameStr } = require('./input_parameters')
 const mongoDBfind = require('../../../../../API/mongoDB/mongoDBfind')
 const updateСountPosition = require('../../../../../API/mongoDB/updPos')
+const { apiOptions422 } = require('../../../../../config/api_options')
 
 /*
 в начале запуска приложения:
@@ -306,7 +307,7 @@ class An422Trade {
     return this
   } // openShortCommon()
 
-  canShortPosition(lastCandle, interval, apiOptions) {
+  canShortPosition(lastCandle, interval, apiOptions = {}) {
     if (this.canShort) {
       if (lastCandle.interval == interval) {
         if (lastCandle.close > this.openShort) {
@@ -340,7 +341,8 @@ class An422Trade {
           )}\nВремя входа: ${timestampToDateHuman(this.positionTime)}`
           console.log(messageShort)
 
-          this.openDeal(apiOptions) // вход в сделку
+          // this.openDeal(apiOptions) // вход в сделку
+          this.beforeOpenDeal() // вход в сделку
         }
       }
     }
@@ -377,7 +379,7 @@ class An422Trade {
 
   ///////////////////////
   //// закрытие шорт позиции по Take Profit или Stop Loss
-  closeShortPosition(lastCandle, interval, apiOptions) {
+  closeShortPosition(lastCandle, interval, apiOptions = {}) {
     if (this.inPosition) {
       // условия выхода из сделки по TP
       if (lastCandle.interval == interval) {
@@ -396,7 +398,8 @@ class An422Trade {
 
           this.inPosition = false
 
-          this.closeDeal(apiOptions)
+          // this.closeDeal(apiOptions)
+          this.beforeCloseDeal()
           this.saveToMongoDB(interval)
 
           const message42small = `${this.whitchSignal}\n🪙 Монета: ${this.symbol}\n\n✅ Close SHORT\nwith Take Profit: ${this.closeShort}\n\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
@@ -418,7 +421,8 @@ class An422Trade {
 
           this.inPosition = false
 
-          this.closeDeal(apiOptions)
+          // this.closeDeal(apiOptions)
+          this.beforeCloseDeal()
           this.saveToMongoDB(interval)
 
           const message42small = `${this.whitchSignal}\n🪙 Монета: ${this.symbol}\n\n❌ Close SHORT\nwith Stop Loss: ${this.closeShort}\n\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
@@ -430,14 +434,19 @@ class An422Trade {
     return this
   } // closeShortPosition(lastCandle, interval)
 
+  async beforeOpenDeal() {
+    // запрашиваем в БД кол-во открытых сделок по данной стратегии
+    const usersInfo = await mongoDBfind('users')
+
+    apiOptions422.forEach((traderAPI) => {
+      this.openDeal(traderAPI, usersInfo)
+    })
+  }
+
   // вход в сделку
-  async openDeal(apiOptions) {
-    const usersInfo = await mongoDBfind('users') // запрашиваем в БД кол-во открытых сделок по данной стратегии
-    // const countOfPosition =
-    //   usersInfo[0][apiOptions.name].countOfPosition[nameStr]
-    // console.log(`${apiOptions.name}: countOfPosition  = ${countOfPosition}`)
-    // const myquery = usersInfo[0][apiOptions.name].countOfPosition
-    if (usersInfo[0][apiOptions.name].countOfPosition[nameStr] === 0) {
+  async openDeal(apiOptions, usersInfo) {
+    const inPosidion = usersInfo[0][apiOptions.name][nameStr].countOfPosition
+    if (inPosidion === 0) {
       this.enterOrderResult = await submittingEnterOrder(
         apiOptions,
         this.symbol,
@@ -453,12 +462,14 @@ class An422Trade {
         const newValues = {
           $set: {
             [apiOptions.name]: {
-              countOfPosition: {
-                [nameStr]: 1,
+              [nameStr]: {
+                countOfPosition: 1,
+                count: this.enterOrderResult?.origQty,
               },
             },
           },
         }
+
         updateСountPosition('users', newValues)
       } else {
         // console.log(`недостаточно средств для входа в сделку. Куплено: ${this.enterOrderResult.origQty} монет`)
@@ -467,14 +478,26 @@ class An422Trade {
     return this
   }
 
+  async beforeCloseDeal() {
+    // запрашиваем в БД кол-во открытых сделок по данной стратегии
+    const usersInfo = await mongoDBfind('users')
+
+    apiOptions422.forEach((traderAPI) => {
+      this.closeDeal(traderAPI, usersInfo)
+    })
+  }
+
   // выход из сделки
-  async closeDeal(apiOptions) {
-    if (this.enterOrderResult?.origQty > 0) {
+  async closeDeal(apiOptions, usersInfo) {
+    const inPosidion = usersInfo[0][apiOptions.name][nameStr].countOfPosition
+    const count = usersInfo[0][apiOptions.name][nameStr].count
+    if (count > 0 && inPosidion === 1) {
       this.closeOrderResult = await submittingCloseOrder(
         apiOptions,
         this.symbol,
         'BUY',
-        this.enterOrderResult
+        // this.enterOrderResult
+        count
       )
     }
 
@@ -494,8 +517,9 @@ class An422Trade {
       const newValues = {
         $set: {
           [apiOptions.name]: {
-            countOfPosition: {
-              [nameStr]: 0,
+            [nameStr]: {
+              countOfPosition: 0,
+              count: 0,
             },
           },
         },
