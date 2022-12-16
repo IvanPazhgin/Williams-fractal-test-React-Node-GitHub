@@ -34,7 +34,7 @@ class dealClass {
 
     // для входа в сделку
     this.inPosition = false // вошли в сделку
-    this.position = ''
+    this.position = '' // LONG or SHORT
     this.openPosition = 0
     this.openTime = ''
     this.openTimeHuman = ''

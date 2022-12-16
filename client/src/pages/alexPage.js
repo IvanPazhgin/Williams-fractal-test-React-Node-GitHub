@@ -99,6 +99,7 @@ export const AlexPage = () => {
               name="dateStart"
               onChange={changeHandler}
               required
+              value="2022-10-20T00:00:00.000"
             ></input>
           </div>
 
@@ -125,6 +126,7 @@ export const AlexPage = () => {
               name="deposit"
               onChange={changeHandler}
               required
+              value="1000"
             ></input>
           </div>
 

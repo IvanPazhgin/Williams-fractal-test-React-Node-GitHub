@@ -446,7 +446,7 @@ class alex4142Class1h {
       console.log(`!!! нашли ${this.whitchSignal} !!!`)
       this.openShortCommon(lastCandle)
     } else {
-      console.log('нет сигнала №1')
+      // console.log('нет сигнала №1')
     } // if (this.whitchSignalTrue == 1)
 
     // допроверка сигнала №2: 1 зелёная 2 красных
@@ -463,7 +463,7 @@ class alex4142Class1h {
         console.log(`!!! нашли ${this.whitchSignal} !!!`)
         this.openShortCommon(lastCandle)
       } else {
-        console.log('нет сигнала №2')
+        // console.log('нет сигнала №2')
       }
     } // if (this.whitchSignalTrue == 2)
 
@@ -591,7 +591,7 @@ class alex4142Class1h {
 
           const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
-          sendInfoToUser(message1 + message2)
+          // sendInfoToUser(message1 + message2)
           this.reset()
           //this.inOneDeal.reset414()
         } // условия выхода из сделки по TP
@@ -632,7 +632,7 @@ class alex4142Class1h {
 
           const message2 = `\n\nСтатистика по ${this.symbol}:\nВсего сделок: ${this.countAllDeals}, среди которых\nПоложительных: ${this.countOfPositive}\nОтрицательных: ${this.countOfNegative}\nНулевых: ${this.countOfZero}`
 
-          sendInfoToUser(message1 + message2)
+          // sendInfoToUser(message1 + message2)
           this.reset()
         } // отработка выхода из сделки по SL
       } // if (lastCandle.interval == interval)

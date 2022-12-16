@@ -32,7 +32,7 @@ async function startServer() {
     startMongoDB() // подключаемся к базе данных
 
     app.listen(PORT, () =>
-      console.log(`App has been started on port ${PORT}...`)
+      console.log(`[v] Server has been started on port ${PORT}...`)
     )
   } catch (e) {
     console.log('Server Error', e.message)

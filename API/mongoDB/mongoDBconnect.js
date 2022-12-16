@@ -3,7 +3,7 @@ const mongoClient = require('./mongoDB.init')
 async function startMongoDB() {
   try {
     await mongoClient.connect()
-    console.warn('Connected to mongoDB')
+    console.warn('[v] Connected to mongoDB')
   } catch (error) {
     console.error(error)
   }

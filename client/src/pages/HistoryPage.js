@@ -51,7 +51,7 @@ export const HistoryPage = () => {
       <div>
         <h4>История торговли робота в режиме оповещений</h4>
         <hr />
-        <button
+        {/* <button
           type="submit"
           class="btn btn-primary"
           onClick={getDataFromMondoDB42}
@@ -68,7 +68,7 @@ export const HistoryPage = () => {
         >
           Статистика Williams
         </button>
-        |
+        | */}
         <button
           type="submit"
           class="btn btn-primary"
@@ -80,11 +80,12 @@ export const HistoryPage = () => {
       </div>
 
       <div>
-        <hr />
-        {/* <h4>Стратегия {data && data[-1].strategy}</h4> */}
         <h5>
           Вверху таблицы - самые последние сделки, внизу - самые давние сделки
         </h5>
+
+        <hr />
+        {/* <h4>Стратегия {data && data[-1].strategy}</h4> */}
 
         <table class="deals">
           <thead>

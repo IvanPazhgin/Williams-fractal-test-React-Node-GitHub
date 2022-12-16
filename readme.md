@@ -47,13 +47,13 @@ hide: Test 3.5 со страницы пользователя -->
 
 ## Backend
 
-### online traiding
+### online traiding and save to MongoDB
 
 3.8.2.6 на 2h
 
-off: 4.1.2 на 1h (to MongoDB)
+off: 4.1.2 на 1h
 
-4.2.2 на 30m (to MongoDB)
+4.2.2 на 30m
 
 [Статистика](http://82.148.29.68/history)
 
@@ -63,7 +63,7 @@ off: 4.1.2 на 1h (to MongoDB)
 
 4.1.4.2 на 1h (off)
 
-off: 4.2 на 30m (to MongoDB)
+4.2 на 30m (to MongoDB)
 
 Фракталы Билла Вильямса (to MongoDB)
 
