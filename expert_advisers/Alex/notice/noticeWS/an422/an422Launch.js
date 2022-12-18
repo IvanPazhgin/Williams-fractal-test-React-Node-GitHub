@@ -1,12 +1,8 @@
-const {
-  timeFrames,
-  nameStrategy,
-  options,
-  allSymbols,
-} = require('./input_parameters')
+const { timeFrames, nameStrategy, options } = require('./input_parameters')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const an422Logic = require('./an422Logic')
+const allSymbols = require('../symbols')
 
 function an422Launch() {
   // исключил 1m свечи. Свёл все проверки к цене close на старщем ТФ

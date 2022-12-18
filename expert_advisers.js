@@ -13,6 +13,7 @@ function testOfNewFuctiouns() {
   //saveCandle() // сохраняем свечи в JSON для тестера (эмуляция elastic)
   //readCandle() // считываем свечи в JSON для тестера (эмуляция elastic)
   //testOnDonwloadCandles() // тестер на основе закаченных свечек
+  // testOnDonwloadCandlesLevchenko() // тест стратегии Левченко
   //testDotJJ() // тест стратегии Точка JJ
 }
 
@@ -96,7 +97,7 @@ function notifications() {
 
   // оповещения по стратегии Билла Вильямса
   const williamsMain = require('./expert_advisers/Williams_fractal/notification/williamsMain')
-  williamsMain()
+  // williamsMain()
 
   // 10.10.2022 робот на стратегии 4.1.4
   // const alex414Start = require('./expert_advisers/robot/alex414Start')
@@ -112,7 +113,7 @@ function notifications() {
 
   // тест 4.2: 3 зеленых на 30m (27.10.2022)
   const an42Launch = require('./expert_advisers/Alex/notice/noticeWS/an42/an42Launch')
-  // an42Launch()
+  an42Launch()
 
   // тест 4.3 DEMA на 1h и 30m (01.11.2022)
   const an43Launch = require('./expert_advisers/Alex/notice/noticeWS/an43/an43Launch')
@@ -180,6 +181,11 @@ function testOnDonwloadCandles() {
   const testLogics3825 = require('./expert_advisers/test_on_downloaded/alex/testLogics3825')
   const input_parameters = require('./expert_advisers/test_on_downloaded/alex/input_parameters')
   testLogics3825(input_parameters)
+}
+
+function testOnDonwloadCandlesLevchenko() {
+  const levLaunch = require('./expert_advisers/test_on_downloaded/maxLev/levLaunch')
+  levLaunch()
 }
 
 function testDotJJ() {

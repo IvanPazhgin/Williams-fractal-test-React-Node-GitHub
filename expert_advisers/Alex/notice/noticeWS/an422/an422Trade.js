@@ -1,15 +1,6 @@
-/*
-создаем класс
-
-1. берем сохраненные свечи
-2. добавляем НЕ финальную свечку
-3. ищем фрактал
-*/
-//////////////////////////////
-
 const submittingCloseOrder = require('../../../../../API/binance.engine/trade/submittingCloseOrder')
 const submittingEnterOrder = require('../../../../../API/binance.engine/trade/submittingEnterOrder')
-const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
+const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.5param')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
@@ -29,29 +20,6 @@ const { apiOptions422 } = require('../../../../../config/api_options')
 2. получаем нефинальную последнюю свечю и отправляем ее в файл Class
 
 пункты 1 и 2 прописать отдельными функциями в файле Class
-*/
-
-/*
-27.10.2022
-Страта 4.2 
-3 зеленых 30 m
-
-(х) 1я свеча - красная
-Ищем три зеленых подряд. 
-vol 1й зел < vol 2й зел.    
-Vol 3й зел. в 2 раза больше vol 2й зеленой
-
-длина тела 3й зеленой большев 2 раза тела 2й зеленой. Тело - это расстояние между открытием и закрытием свечи.
-
-SL=-1% Тейк +1%
-
-вход по цене закрытия 3й зеленой
-
-
-если профит достиг +0.6%, то переносим SL в БУ
-
-если свеча открытия зеленая то перенос после закрытия свечи открытия. 
-Если свеча открытия красная то перенос после закрытия 3 свечи (первой свечой в данном случае считается свеча открытия)
 */
 
 // 12.12.2022
@@ -74,25 +42,19 @@ class An422Trade {
 
     this.candles = [] // свечи для поиска фрактала
 
-    // статистика
-    this.countAllDeals = 0
-    this.countOfPositive = 0 // кол-во положительных сделок
-    this.countOfNegative = 0 // кол-во отрицательных сделок
-    this.countOfZero = 0 // кол-во нулевых сделок
-
     this.reset()
   }
 
   reset() {
     // для сигнала
-    this.BodyLength3 = 0 // длина тела 3й зеленой свечи
+    this.bodyLength3 = 0 // длина тела 3й зеленой свечи
     this.highShadow3 = 0 // длина верхней тени 3й зеленой свечи
     this.lowShadow3 = 0 // нижняя тень 3й зеленой свечи
     this.bodyLength1g = 0 // длина тела 1й зеленой свечи
     this.bodyLength2g = 0 // длина тела 2й зеленой свечи
 
     // для сделки
-    this.sygnalSent = false
+    // this.sygnalSent = false
     this.aboutBrokenFractal = false
     this.canShort = false
     this.inPosition = false
@@ -109,11 +71,15 @@ class An422Trade {
     this.fractalHigh = 0 // хай фрактала для отмены сигнала
 
     // для TP SL
-    this.openCandleIsGreen = false // свеча, на которой вошли в сделку, оказалась зеленой
+    // this.openCandleIsGreen = false // свеча, на которой вошли в сделку, оказалась зеленой
 
     // для торговли
     this.enterOrderResult = {} // результат входа в сделку
     this.closeOrderResult = {} // результат выхода из сделки
+
+    // для запроса свечек на бирже
+    this.startTimeForNewRequest = 0
+    this.endTimeForNewRequest = 0
 
     return this
   }
@@ -121,7 +87,13 @@ class An422Trade {
   // подготовка данных для поиска фрактала
   async prepair5Candles(interval) {
     const limitOfCandle = 4 // кол-во свечей для поиска сигнала
-    const candles2 = await getCandles(this.symbol, interval, limitOfCandle) // получаем первые n свечей
+    const candles2 = await getCandles(
+      this.symbol,
+      interval,
+      this.startTimeForNewRequest,
+      this.endTimeForNewRequest,
+      limitOfCandle
+    ) // получаем первые n свечей
     this.candles = candlesToObject(candles2) // преобрзауем массив свечей в объект
     //console.table(this.candles)
     //console.log(`alex412: prepair5Candles(): прилетело ${this.candles.length} свечей`) // удалить
@@ -158,10 +130,18 @@ class An422Trade {
     return this
   } //prepairDataforFindFractal(lastCandle
 
+  findTrueTimeInCandle(lastCandle) {
+    // const shiftTimeForTest = 1000 * 60 * 5 // 5 мин
+    if (!lastCandle.final) {
+      this.endTimeForNewRequest = lastCandle.startTime - this.shiftTime
+    } else this.endTimeForNewRequest = lastCandle.startTime
+    this.startTimeForNewRequest = this.endTimeForNewRequest - 3 * this.shiftTime // берем 4 свечки
+  }
+
   findSygnal(lastCandle, interval) {
     if (lastCandle.interval == interval) {
       // для сигнала № 1 и 2
-      this.BodyLength3 =
+      this.bodyLength3 =
         this.candles.at(-1).close / this.candles.at(-1).open - 1
       this.highShadow3 =
         this.candles.at(-1).high / this.candles.at(-1).close - 1
@@ -171,12 +151,10 @@ class An422Trade {
       this.findSygnal2()
 
       // для сигнала № 3
-      this.BodyLength3 =
-        this.candles.at(-2).close / this.candles.at(-2).open - 1
-      this.highShadow3 =
-        this.candles.at(-2).high / this.candles.at(-2).close - 1
+      // this.bodyLength3 = this.candles.at(-2).close / this.candles.at(-2).open - 1
+      // this.highShadow3 = this.candles.at(-2).high / this.candles.at(-2).close - 1
 
-      this.bodyLength2g = this.candles.at(-3).high / this.candles.at(-3).low - 1
+      // this.bodyLength2g = this.candles.at(-3).high / this.candles.at(-3).low - 1
       // this.findSygnal3()
 
       return this
@@ -199,11 +177,11 @@ class An422Trade {
       this.candles.at(-3).close > this.candles.at(-3).open && // первая свеча ЗЕЛЕНАЯ
       this.candles.at(-2).close > this.candles.at(-2).open && // вторая свеча ЗЕЛЕНАЯ
       this.candles.at(-1).close > this.candles.at(-1).open && // третья свеча ЗЕЛЕНАЯ
-      this.BodyLength3 >= 5 / 100 && // тело 3й свечи > 5%
-      this.bodyLength2g < this.BodyLength3 / 2 // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
+      this.bodyLength3 >= 5 / 100 && // тело 3й свечи > 5%
+      this.bodyLength2g < this.bodyLength3 / 2 // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
     ) {
-      if (this.BodyLength3 / this.highShadow3 < 5) {
-        // если верхняя тень длинная - то входим на середине верхней тени
+      if (this.bodyLength3 / this.highShadow3 < 5) {
+        // если верхняя тень длинная - то входим на середине верхней тени. 5 - вернхняя тень длинная. 50 - верхняя тень короткая.
         this.middleShadow =
           (this.candles.at(-1).close + this.candles.at(-1).high) / 2
       } else {
@@ -227,9 +205,9 @@ class An422Trade {
       this.candles.at(-3).close > this.candles.at(-3).open && // первая свеча ЗЕЛЕНАЯ
       this.candles.at(-2).close > this.candles.at(-2).open && // вторая свеча ЗЕЛЕНАЯ
       this.candles.at(-1).close > this.candles.at(-1).open && // третья свеча ЗЕЛЕНАЯ
-      this.BodyLength3 >= 1.2 / 100 && // тело 3й свечи < 5%
-      this.BodyLength3 < 5 / 100 && // тело 3й свечи < 5%
-      this.bodyLength2g < this.BodyLength3 / 2 && // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
+      this.bodyLength3 >= 1.2 / 100 && // тело 3й свечи < 5%
+      this.bodyLength3 < 5 / 100 && // тело 3й свечи < 5%
+      this.bodyLength2g < this.bodyLength3 / 2 && // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
       this.highShadow3 < this.lowShadow3 // верхняя тень < нижней тени
     ) {
       this.middleShadow = this.candles.at(-1).close
@@ -252,9 +230,9 @@ class An422Trade {
       this.candles.at(-3).close > this.candles.at(-3).open && // вторая свеча ЗЕЛЕНАЯ
       this.candles.at(-2).close > this.candles.at(-2).open && // третья свеча ЗЕЛЕНАЯ
       this.candles.at(-1).close < this.candles.at(-1).open && // четвертая свеча КРАСНАЯ
-      this.BodyLength3 >= 1.2 / 100 && // тело 3й свечи < 5%
-      this.BodyLength3 < 5 / 100 && // тело 3й свечи < 5%
-      this.bodyLength2g < this.BodyLength3 / 2 && // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
+      this.bodyLength3 >= 1.2 / 100 && // тело 3й свечи < 5%
+      this.bodyLength3 < 5 / 100 && // тело 3й свечи < 5%
+      this.bodyLength2g < this.bodyLength3 / 2 && // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
       this.highShadow3 > this.lowShadow3 // верхняя тень > нижней
     ) {
       this.middleShadow = this.candles.at(-1).open // входим после красной по цене ее открытия
@@ -271,13 +249,13 @@ class An422Trade {
     this.openShort = this.middleShadow
     this.sygnalTime = this.candles.at(-1).startTime // ВАЖНО УЧИТЫВАТЬ НА КОЛ-ВО СВЕЧЕЙ В ЗАПРОСЕ С БИРЖИ
 
-    if (this.BodyLength3 >= 1.2 / 100 && this.BodyLength3 < 2 / 100) {
+    if (this.bodyLength3 >= 1.2 / 100 && this.bodyLength3 < 2 / 100) {
       this.takeProfitConst = 0.01
       this.stopLossConst = 0.01
-    } else if (this.BodyLength3 >= 2 / 100 && this.BodyLength3 < 3 / 100) {
+    } else if (this.bodyLength3 >= 2 / 100 && this.bodyLength3 < 3 / 100) {
       this.takeProfitConst = 0.02
       this.stopLossConst = 0.02
-    } else if (this.BodyLength3 >= 3 / 100) {
+    } else if (this.bodyLength3 >= 3 / 100) {
       this.takeProfitConst = 0.03
       this.stopLossConst = 0.02
     }
