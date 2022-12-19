@@ -10,7 +10,7 @@ const timeFrames = {
   timeFrame1m: '1m',
 }
 
-const nameStr = 'Test_4.2.2'
+const nameStr = 'test_4.2.2'
 
 const nameStrategy = {
   notice4h41: `${nameStr} на ${timeFrames.timeFrame4h}`,

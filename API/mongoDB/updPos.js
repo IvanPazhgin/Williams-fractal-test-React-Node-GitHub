@@ -1,6 +1,6 @@
 const mongoClient = require('./mongoDB.init')
 
-async function updateСountPosition(
+async function updateCountPosition(
   nameOfCollection = 'users',
   newValues
   // apiOptions,
@@ -14,4 +14,4 @@ async function updateСountPosition(
   // console.log('newValues', newValues)
   await collection.updateOne(users[0], newValues)
 }
-module.exports = updateСountPosition
+module.exports = updateCountPosition

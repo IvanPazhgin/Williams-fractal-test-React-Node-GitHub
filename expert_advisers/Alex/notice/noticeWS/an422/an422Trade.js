@@ -7,7 +7,7 @@ const timestampToDateHuman = require('../../../../common.func/timestampToDateHum
 const mongoDBadd = require('../../../../../API/mongoDB/mongoDBadd')
 const { nameStr } = require('./input_parameters')
 const mongoDBfind = require('../../../../../API/mongoDB/mongoDBfind')
-const updateСountPosition = require('../../../../../API/mongoDB/updPos')
+const updateCountPosition = require('../../../../../API/mongoDB/updPos')
 const { apiOptions422 } = require('../../../../../config/api_options')
 
 /*
@@ -433,22 +433,21 @@ class An422Trade {
       if (this.enterOrderResult?.origQty > 0) {
         const summEnterToDeal =
           this.enterOrderResult.origQty * this.enterOrderResult.lastPrice
-        const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Шортанул ${this.enterOrderResult.origQty} монет ==--\nпо цене: ${this.enterOrderResult.lastPrice}\nЗадействовано: ${summEnterToDeal} USD`
+        const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== ${apiOptions.name} шортанул ${this.enterOrderResult.origQty} монет ==--\nпо цене: ${this.enterOrderResult.lastPrice}\nЗадействовано: ${summEnterToDeal} USD`
         sendInfoToUser(message)
 
         // фиксируем что мы в сделке
+        const currentPosition = usersInfo[0][apiOptions.name]
+        currentPosition[nameStr].countOfPosition = 1
+        currentPosition[nameStr].amountInPosition =
+          this.enterOrderResult?.origQty
+
         const newValues = {
           $set: {
-            [apiOptions.name]: {
-              [nameStr]: {
-                countOfPosition: 1,
-                count: this.enterOrderResult?.origQty,
-              },
-            },
+            [apiOptions.name]: currentPosition,
           },
         }
-
-        updateСountPosition('users', newValues)
+        updateCountPosition('users', newValues)
       } else {
         // console.log(`недостаточно средств для входа в сделку. Куплено: ${this.enterOrderResult.origQty} монет`)
       }
@@ -468,14 +467,15 @@ class An422Trade {
   // выход из сделки
   async closeDeal(apiOptions, usersInfo) {
     const inPosidion = usersInfo[0][apiOptions.name][nameStr].countOfPosition
-    const count = usersInfo[0][apiOptions.name][nameStr].count
-    if (count > 0 && inPosidion === 1) {
+    const amountInPosition =
+      usersInfo[0][apiOptions.name][nameStr].amountInPosition
+    if (amountInPosition > 0 && inPosidion === 1) {
       this.closeOrderResult = await submittingCloseOrder(
         apiOptions,
         this.symbol,
         'BUY',
         // this.enterOrderResult
-        count
+        amountInPosition
       )
     }
 
@@ -487,22 +487,20 @@ class An422Trade {
       ) // / optionsOfTrade.multiplier
         .toFixed(2)
 
-      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== Откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
+      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== ${apiOptions.name} откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
       sendInfoToUser(message)
 
-      //console.log('enterOrderResult после сделки: ', this.enterOrderResult)
       // фиксируем что мы вышли из сделки
+      const currentPosition = usersInfo[0][apiOptions.name]
+      currentPosition[nameStr].countOfPosition = 0
+      currentPosition[nameStr].amountInPosition = 0
+
       const newValues = {
         $set: {
-          [apiOptions.name]: {
-            [nameStr]: {
-              countOfPosition: 0,
-              count: 0,
-            },
-          },
+          [apiOptions.name]: currentPosition,
         },
       }
-      updateСountPosition('users', newValues)
+      updateCountPosition('users', newValues)
       this.reset() // если вышли из сделки, то обнуляем состояние сделки
     }
     return this
