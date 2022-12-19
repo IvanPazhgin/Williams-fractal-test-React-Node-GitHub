@@ -11,7 +11,7 @@ const getPositionAmount = require('../../../../../API/binance.engine/common/getP
 // const { optionsOfTrade } = require('../../../../../API/binance.engine/trade/api_options')
 const submittingCloseOrder = require('../../../../../API/binance.engine/trade/submittingCloseOrder')
 const submittingEnterOrder = require('../../../../../API/binance.engine/trade/submittingEnterOrder')
-const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
+const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.5param')
 const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 // const fractal_Bearish = require('../../../../common.func/fractal_Bearish')
@@ -113,11 +113,15 @@ class An42Trade {
     this.fractalHigh = 0 // хай фрактала для отмены сигнала
 
     // для TP SL
-    this.openCandleIsGreen = false // свеча, на которой вошли в сделку, оказалась зеленой
+    // this.openCandleIsGreen = false // свеча, на которой вошли в сделку, оказалась зеленой
 
     // для торговли
     this.enterOrderResult = {} // результат входа в сделку
     this.closeOrderResult = {} // результат выхода из сделки
+
+    // для запроса свечек на бирже
+    this.startTimeForNewRequest = 0
+    this.endTimeForNewRequest = 0
 
     return this
   }
@@ -125,8 +129,14 @@ class An42Trade {
   // подготовка данных для поиска фрактала
   async prepair5Candles(interval) {
     const limitOfCandle = 3 // кол-во свечей для поиска фрактала
-    const candles = await getCandles(this.symbol, interval, limitOfCandle) // получаем первые n свечей
-    this.candlesForFractal = candlesToObject(candles) // преобрзауем массив свечей в объект
+    const candles2 = await getCandles(
+      this.symbol,
+      interval,
+      this.startTimeForNewRequest,
+      this.endTimeForNewRequest,
+      limitOfCandle
+    ) // получаем первые n свечей
+    this.candlesForFractal = candlesToObject(candles2) // преобрзауем массив свечей в объект
     //console.table(this.candlesForFractal)
     //console.log(`alex412: prepair5Candles(): прилетело ${this.candlesForFractal.length} свечей`) // удалить
     return this
@@ -161,6 +171,13 @@ class An42Trade {
 
     return this
   } //prepairDataforFindFractal(lastCandle
+
+  findTrueTimeInCandle(lastCandle) {
+    if (!lastCandle.final) {
+      this.endTimeForNewRequest = lastCandle.startTime - this.shiftTime
+    } else this.endTimeForNewRequest = lastCandle.startTime
+    this.startTimeForNewRequest = this.endTimeForNewRequest - 2 * this.shiftTime // берем 3 свечки
+  }
 
   findSygnal(lastCandle, interval) {
     if (lastCandle.interval == interval) {

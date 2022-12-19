@@ -7,35 +7,35 @@ export const HistoryPage = () => {
   // const form = 'Williams'
   const { loading, request } = useHttp()
 
-  // useEffect(() => {
-  //   getDataFromMondoDB()
-  // }, [])
+  useEffect(() => {
+    getDataFromMondoDBall()
+  }, [])
 
   const [data, setData] = useState([])
 
-  async function getDataFromMondoDB42() {
-    let form = 'deals42'
-    try {
-      const data = await request('/history', 'POST', { form })
-      console.log(data)
-      setData(data.reverse()) //  установил данные в React
-    } catch (e) {}
-  }
+  // async function getDataFromMondoDB42() {
+  //   let form = 'deals42'
+  //   try {
+  //     const data = await request('/history', 'POST', { form })
+  //     console.log(data)
+  //     setData(data.reverse()) //  установил данные в React
+  //   } catch (e) {}
+  // }
 
-  async function getDataFromMondoDBW() {
-    const form = 'Williams'
-    try {
-      const data = await request('/history', 'POST', { form })
-      console.log(data)
-      setData(data.reverse())
-    } catch (e) {}
-  }
+  // async function getDataFromMondoDBW() {
+  //   const form = 'Williams'
+  //   try {
+  //     const data = await request('/history', 'POST', { form })
+  //     console.log(data)
+  //     setData(data.reverse())
+  //   } catch (e) {}
+  // }
 
   async function getDataFromMondoDBall() {
     const form = 'allDeals'
     try {
       const data = await request('/history', 'POST', { form })
-      console.log(data)
+      // console.log(data)
       setData(data.reverse())
     } catch (e) {}
   }
@@ -69,14 +69,15 @@ export const HistoryPage = () => {
           Статистика Williams
         </button>
         | */}
-        <button
+
+        {/* <button
           type="submit"
           class="btn btn-primary"
           onClick={getDataFromMondoDBall}
           disabled={loading}
         >
           Вся статистика
-        </button>
+        </button> */}
       </div>
 
       <div>

@@ -137,11 +137,12 @@ async function an42Logic(
                 // console.log(`${item.symbol}: Отменили сигнал. Очистили параметры сделки`)
               } // обнуляем состояние сигнала
 
-              // 2.2 на финальной свечке запускаем поиск сигнала на вход
-              await item.prepair5Candles(timeFrameSenior)
+              item.findTrueTimeInCandle(lastCandle) // готовим даты для запроса свечек
 
+              await item.prepair5Candles(timeFrameSenior) // запрос свечек
+
+              // 2.2 на финальной свечке запускаем поиск сигнала на вход
               item.findSygnal(lastCandle, timeFrameSenior)
-              //await item.prepairData(lastCandle, timeFrames.timeFrame2h)
             } // if (final)
           } // end of: if (!symbolObj.inPosition)
         } // if (item.symbol.includes(lastCandle.symbol))

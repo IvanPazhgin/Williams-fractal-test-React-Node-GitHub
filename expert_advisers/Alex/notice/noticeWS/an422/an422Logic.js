@@ -144,7 +144,6 @@ async function an422Logic(
 
               // 2.2 на финальной свечке запускаем поиск сигнала на вход
               item.findSygnal(lastCandle, timeFrameSenior)
-              //await item.prepairData(lastCandle, timeFrames.timeFrame2h)
             } // if (final)
           } // end of: if (!symbolObj.inPosition)
         } // if (item.symbol.includes(lastCandle.symbol))
