@@ -3,8 +3,8 @@ const getAvailableBalance = require('./getAvailableUSDT')
 const getLastAssetPrice = require('./getLastAssetPrice')
 const getPricePrecision = require('./getPricePrecision')
 
-async function calculateAmount(api_option, symbol, side) {
-  const amountOfUSDT = await getAvailableBalance(api_option)
+async function calculateAmount(api_option, symbol, side, entryAmountPercent) {
+  const amountOfUSDT = await getAvailableBalance(api_option, entryAmountPercent)
   const lastPrice = await getLastAssetPrice(api_option, symbol)
 
   const [assetDecimalPlaces, quantityPrecision] = await getPricePrecision(

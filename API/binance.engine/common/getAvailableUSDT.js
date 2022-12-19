@@ -1,7 +1,6 @@
-const { optionsOfTrade } = require('../../../config/api_options')
 const binanceUSDMClient = require('./binanceUSDMClient')
 
-async function getAvailableBalance(api_option) {
+async function getAvailableBalance(api_option, entryAmountPercent) {
   const client = binanceUSDMClient(api_option)
   try {
     const balance = await client.getBalance()
@@ -17,18 +16,16 @@ async function getAvailableBalance(api_option) {
       return console.error('Error: funds to trade from USDT')
     }
 
-    const amountValueMin =
-      usdtAvailable * (optionsOfTrade.entryAmountPercent / 100)
+    const amountValueMin = usdtAvailable * (entryAmountPercent / 100)
 
-    const amountValueMax =
-      usdtFullBalance * (optionsOfTrade.entryAmountPercent / 100)
+    const amountValueMax = usdtFullBalance * (entryAmountPercent / 100)
 
     if (amountValueMax > usdtAvailable) {
-      const message = `\nExecuting trade with ${optionsOfTrade.entryAmountPercent}% of ${usdtFullBalance} USDT => ${amountValueMax} USDT`
+      const message = `\n${api_option.name}: Executing trade with ${entryAmountPercent}% of ${usdtFullBalance} USDT => ${amountValueMax} USDT`
       console.log(message)
       return amountValueMax
     } else {
-      const message = `\nExecuting trade with ${optionsOfTrade.entryAmountPercent}% of ${usdtAvailable} USDT => ${amountValueMin} USDT`
+      const message = `\n${api_option.name}: Executing trade with ${entryAmountPercent}% of ${usdtAvailable} USDT => ${amountValueMin} USDT`
       console.log(message)
       return amountValueMin
     }

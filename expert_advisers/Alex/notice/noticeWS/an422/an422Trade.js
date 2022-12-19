@@ -5,7 +5,7 @@ const { sendInfoToUser } = require('../../../../../API/telegram/telegram.bot')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const mongoDBadd = require('../../../../../API/mongoDB/mongoDBadd')
-const { nameStr } = require('./input_parameters')
+const { nameStr, entryAmountPercent } = require('./input_parameters')
 const mongoDBfind = require('../../../../../API/mongoDB/mongoDBfind')
 const updateCountPosition = require('../../../../../API/mongoDB/updPos')
 const { apiOptions422 } = require('../../../../../config/api_options')
@@ -428,7 +428,8 @@ class An422Trade {
       this.enterOrderResult = await submittingEnterOrder(
         apiOptions,
         this.symbol,
-        'SELL'
+        'SELL',
+        entryAmountPercent
       )
       if (this.enterOrderResult?.origQty > 0) {
         const summEnterToDeal =

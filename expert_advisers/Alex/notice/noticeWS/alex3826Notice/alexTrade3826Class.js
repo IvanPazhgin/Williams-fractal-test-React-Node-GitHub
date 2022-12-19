@@ -3,11 +3,15 @@ const submittingCloseOrder = require('../../../../../API/binance.engine/trade/su
 const submittingEnterOrder = require('../../../../../API/binance.engine/trade/submittingEnterOrder')
 const getCandles = require('../../../../../API/binance.engine/usdm/getCandles.3param')
 const mongoDBadd = require('../../../../../API/mongoDB/mongoDBadd')
+const mongoDBfind = require('../../../../../API/mongoDB/mongoDBfind')
+const updateCountPosition = require('../../../../../API/mongoDB/updPos')
 const {
   sendInfo382ToUser,
 } = require('../../../../../API/telegram/telegram.bot')
+const { apiOptions422 } = require('../../../../../config/api_options')
 const candlesToObject = require('../../../../common.func/candlesToObject')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
+const { entryAmountPercent, nameStr } = require('./input_parameters3826')
 
 class alexTrade3826Class {
   constructor(symbol, nameStrategy) {
@@ -277,7 +281,8 @@ class alexTrade3826Class {
           )}\nВремя входа: ${timestampToDateHuman(this.positionTime)}`
           sendInfo382ToUser(message)
 
-          this.openDeal(apiOptions) // вход в сделку
+          // this.openDeal(apiOptions) // вход в сделку
+          this.beforeOpenDeal() // вход в сделку
         }
       }
     }
@@ -314,8 +319,9 @@ class alexTrade3826Class {
           }\nПрибыль = ${this.profit} USDT (${this.percent}% от депозита)`
           sendInfo382ToUser(message)
 
+          this.beforeCloseDeal()
           this.saveToMongoDB(interval)
-          this.closeDeal(apiOptions)
+          // this.closeDeal(apiOptions)
         } // условия выхода из сделки по TP
 
         // условия выхода из сделки по SL
@@ -342,8 +348,9 @@ class alexTrade3826Class {
           }\nУбыток = ${this.profit} USDT (${this.percent}% от депозита)`
           sendInfo382ToUser(message)
 
+          this.beforeCloseDeal()
           this.saveToMongoDB(interval)
-          this.closeDeal(apiOptions)
+          // this.closeDeal(apiOptions)
         } // отработка выхода из сделки по SL
       } // if (lastCandle.interval == interval)
     } // if (this.inPosition)
@@ -351,19 +358,44 @@ class alexTrade3826Class {
     return this
   }
 
+  async beforeOpenDeal() {
+    // запрашиваем в БД кол-во открытых сделок по данной стратегии
+    const usersInfo = await mongoDBfind('users')
+
+    apiOptions422.forEach((traderAPI) => {
+      this.openDeal(traderAPI, usersInfo)
+    })
+  }
+
   // вход в сделку
-  async openDeal(apiOptions) {
+  async openDeal(apiOptions, usersInfo) {
     //const result = await getPositionAmount(apiOptions)
     //if (result?.countOfPosition < apiOptions.countOfPosition) {
-    this.enterOrderResult = await submittingEnterOrder(
-      apiOptions,
-      this.symbol,
-      'SELL'
-    )
+    const inPosidion = usersInfo[0][apiOptions.name][nameStr].countOfPosition
+    if (inPosidion === 0) {
+      this.enterOrderResult = await submittingEnterOrder(
+        apiOptions,
+        this.symbol,
+        'SELL',
+        entryAmountPercent
+      )
+    }
+
     if (this.enterOrderResult?.origQty > 0) {
       const message = `${this.whitchSignal}\n\n🪙 Монета: ${this.symbol}\n⬇ Шортанул ${this.enterOrderResult.origQty} монет\nпо цене: ${this.enterOrderResult.lastPrice}`
       sendInfo382ToUser(message)
-      //this.inOneDeal.enterToDeal412() // фиксируем что мы в сделке
+
+      // фиксируем что мы в сделке
+      const currentPosition = usersInfo[0][apiOptions.name]
+      currentPosition[nameStr].countOfPosition = 1
+      currentPosition[nameStr].amountInPosition = this.enterOrderResult?.origQty
+
+      const newValues = {
+        $set: {
+          [apiOptions.name]: currentPosition,
+        },
+      }
+      updateCountPosition('users', newValues)
     } else {
       // console.log(`недостаточно средств для входа в сделку. Куплено: ${this.enterOrderResult.origQty} монет`)
     }
@@ -371,14 +403,26 @@ class alexTrade3826Class {
     return this
   }
 
+  async beforeCloseDeal() {
+    // запрашиваем в БД кол-во открытых сделок по данной стратегии
+    const usersInfo = await mongoDBfind('users')
+
+    apiOptions422.forEach((traderAPI) => {
+      this.closeDeal(traderAPI, usersInfo)
+    })
+  }
+
   // выход из сделки
-  async closeDeal(apiOptions) {
-    if (this.enterOrderResult?.origQty > 0) {
+  async closeDeal(apiOptions, usersInfo) {
+    const inPosidion = usersInfo[0][apiOptions.name][nameStr].countOfPosition
+    const amountInPosition =
+      usersInfo[0][apiOptions.name][nameStr].amountInPosition
+    if (amountInPosition > 0 && inPosidion === 1) {
       this.closeOrderResult = await submittingCloseOrder(
         apiOptions,
         this.symbol,
         'BUY',
-        this.enterOrderResult
+        amountInPosition
       )
     }
 
@@ -393,6 +437,17 @@ class alexTrade3826Class {
       const message = `${this.whitchSignal}\n\n🪙 Монета: ${this.symbol}\n--== Откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
       sendInfo382ToUser(message)
 
+      // фиксируем что мы вышли из сделки
+      const currentPosition = usersInfo[0][apiOptions.name]
+      currentPosition[nameStr].countOfPosition = 0
+      currentPosition[nameStr].amountInPosition = 0
+
+      const newValues = {
+        $set: {
+          [apiOptions.name]: currentPosition,
+        },
+      }
+      updateCountPosition('users', newValues)
       this.reset() // если вышли из сделки, то обнуляем состояние сделки
     }
     return this

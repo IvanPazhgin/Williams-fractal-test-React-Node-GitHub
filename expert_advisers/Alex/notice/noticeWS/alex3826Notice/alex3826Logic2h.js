@@ -11,10 +11,8 @@
 // подключен к торговому роботу
 
 const getLastCandle4s = require('../../../../../API/binance.engine/web.socket.usdm/getLastCandle4s')
-const {
-  sendInfo382ToUser,
-} = require('../../../../../API/telegram/telegram.bot')
-const { apiOptions } = require('../../../../../config/api_options')
+// const { sendInfo382ToUser } = require('../../../../../API/telegram/telegram.bot')
+// const { apiOptions } = require('../../../../../config/api_options')
 const timestampToDateHuman = require('../../../../common.func/timestampToDateHuman')
 const alexTrade3826Class = require('./alexTrade3826Class')
 const { timeFrames, nameStrategy } = require('./input_parameters3826')
@@ -90,13 +88,14 @@ async function alex3826Logic2h(symbols2h38) {
           if (item.inPosition) {
             if (!final) {
               // 1.1 для начала каждую секунду проверяем условие выхода из сделки по TP и SL
-              apiOptions.forEach((traderAPI) => {
-                item.closeShortPosition(
-                  lastCandle,
-                  timeFrames.timeFrame2h,
-                  traderAPI
-                )
-              })
+              item.closeShortPosition(lastCandle, timeFrames.timeFrame2h)
+              // apiOptions.forEach((traderAPI) => {
+              //   item.closeShortPosition(
+              //     lastCandle,
+              //     timeFrames.timeFrame2h,
+              //     traderAPI
+              //   )
+              // })
 
               // если вышли из сделки, то обнуляем состояние сделки:
               if (!item.inPosition) {
@@ -115,13 +114,14 @@ async function alex3826Logic2h(symbols2h38) {
             // (2) если не в сделке:
             // 2.1 ждем цену на рынке для входа по сигналу
             if (!final) {
-              apiOptions.forEach((traderAPI) => {
-                item.canShortPosition(
-                  lastCandle,
-                  timeFrames.timeFrame2h,
-                  traderAPI
-                )
-              })
+              item.canShortPosition(lastCandle, timeFrames.timeFrame2h)
+              // apiOptions.forEach((traderAPI) => {
+              //   item.canShortPosition(
+              //     lastCandle,
+              //     timeFrames.timeFrame2h,
+              //     traderAPI
+              //   )
+              // })
             } else {
               //if (final) {
               // если не вошли в сделку, то очищаем все параметры

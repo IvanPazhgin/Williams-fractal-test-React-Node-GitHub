@@ -1,14 +1,20 @@
 const binanceUSDMClient = require('../common/binanceUSDMClient')
 const calculateAmount = require('../common/calculateAmount')
 
-async function submittingEnterOrder(api_option, symbol, side) {
+async function submittingEnterOrder(
+  api_option,
+  symbol,
+  side,
+  entryAmountPercent
+) {
   const client = binanceUSDMClient(api_option)
 
   // Calculate amount
   const [amountForDeal, quantity, lastPrice] = await calculateAmount(
     api_option,
     symbol,
-    side
+    side,
+    entryAmountPercent
   )
 
   if (quantity > 0) {

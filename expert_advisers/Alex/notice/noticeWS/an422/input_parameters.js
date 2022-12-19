@@ -10,6 +10,7 @@ const timeFrames = {
   timeFrame1m: '1m',
 }
 
+const entryAmountPercent = 50 // 50% депозита будет использовано в одной сделке
 const nameStr = 'test_4.2.2'
 
 const nameStrategy = {
@@ -38,6 +39,7 @@ const options = {
 
 module.exports = {
   timeFrames,
+  entryAmountPercent,
   nameStr,
   nameStrategy,
   options,
