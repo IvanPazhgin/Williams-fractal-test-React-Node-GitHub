@@ -52,6 +52,8 @@ class An422Trade {
     this.lowShadow3 = 0 // нижняя тень 3й зеленой свечи
     this.bodyLength1g = 0 // длина тела 1й зеленой свечи
     this.bodyLength2g = 0 // длина тела 2й зеленой свечи
+    this.redCandleLength = 0 // длина тела 4й красной свечи (сигнал №4)
+    this.signal4 = false // для TP и SL
 
     // для сделки
     // this.sygnalSent = false
@@ -151,11 +153,13 @@ class An422Trade {
       this.findSygnal2()
 
       // для сигнала № 3
-      // this.bodyLength3 = this.candles.at(-2).close / this.candles.at(-2).open - 1
+      this.bodyLength3 =
+        this.candles.at(-2).close / this.candles.at(-2).open - 1
       // this.highShadow3 = this.candles.at(-2).high / this.candles.at(-2).close - 1
 
       // this.bodyLength2g = this.candles.at(-3).high / this.candles.at(-3).low - 1
       // this.findSygnal3()
+      this.findSygnal4()
 
       return this
     }
@@ -205,7 +209,7 @@ class An422Trade {
       this.candles.at(-3).close > this.candles.at(-3).open && // первая свеча ЗЕЛЕНАЯ
       this.candles.at(-2).close > this.candles.at(-2).open && // вторая свеча ЗЕЛЕНАЯ
       this.candles.at(-1).close > this.candles.at(-1).open && // третья свеча ЗЕЛЕНАЯ
-      this.bodyLength3 >= 1.2 / 100 && // тело 3й свечи < 5%
+      this.bodyLength3 >= 1.2 / 100 && // тело 3й свечи >= 1.2%
       this.bodyLength3 < 5 / 100 && // тело 3й свечи < 5%
       this.bodyLength2g < this.bodyLength3 / 2 && // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
       this.highShadow3 < this.lowShadow3 // верхняя тень < нижней тени
@@ -230,13 +234,33 @@ class An422Trade {
       this.candles.at(-3).close > this.candles.at(-3).open && // вторая свеча ЗЕЛЕНАЯ
       this.candles.at(-2).close > this.candles.at(-2).open && // третья свеча ЗЕЛЕНАЯ
       this.candles.at(-1).close < this.candles.at(-1).open && // четвертая свеча КРАСНАЯ
-      this.bodyLength3 >= 1.2 / 100 && // тело 3й свечи < 5%
+      this.bodyLength3 >= 1.2 / 100 && // тело 3й свечи >= 1.2%
       this.bodyLength3 < 5 / 100 && // тело 3й свечи < 5%
       this.bodyLength2g < this.bodyLength3 / 2 && // вся ДЛИНА 2й зеленой более чем в 2 раза меньше ТЕЛА 3й
       this.highShadow3 > this.lowShadow3 // верхняя тень > нижней
     ) {
       this.middleShadow = this.candles.at(-1).open // входим после красной по цене ее открытия
       this.whitchSignal = this.nameStrategy + ': 3 green, 1 red'
+      this.openShortCommon()
+    }
+    return this
+  }
+
+  findSygnal4() {
+    this.redCandleLength =
+      this.candles.at(-1).open / this.candles.at(-1).close - 1
+    if (
+      // три первых свечи - ЗЕЛЕНЫЕ
+      this.candles.at(-4).close > this.candles.at(-4).open && // первая свеча ЗЕЛЕНАЯ
+      this.candles.at(-3).close > this.candles.at(-3).open && // вторая свеча ЗЕЛЕНАЯ
+      this.candles.at(-2).close > this.candles.at(-2).open && // третья свеча ЗЕЛЕНАЯ
+      this.candles.at(-1).close < this.candles.at(-1).open && // четвертая свеча КРАСНАЯ
+      this.bodyLength3 >= 1.2 / 100 && // тело 3й свечи > 1.2%
+      this.bodyLength3 * 2 > this.redCandleLength // тело 3й зеленой в 2 раза больше тела красной
+    ) {
+      this.middleShadow = this.candles.at(-1).open // входим после красной по цене ее открытия
+      this.whitchSignal = this.nameStrategy + ': 3 green, 1 red'
+      this.signal4 = true
       this.openShortCommon()
     }
     return this
@@ -256,6 +280,11 @@ class An422Trade {
       this.takeProfitConst = 0.02
       this.stopLossConst = 0.02
     } else if (this.bodyLength3 >= 3 / 100) {
+      this.takeProfitConst = 0.03
+      this.stopLossConst = 0.02
+    }
+
+    if (this.signal4) {
       this.takeProfitConst = 0.03
       this.stopLossConst = 0.02
     }
