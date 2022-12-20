@@ -88,7 +88,7 @@ class An422Trade {
 
   // подготовка данных для поиска фрактала
   async prepair5Candles(interval) {
-    const limitOfCandle = 4 // кол-во свечей для поиска сигнала
+    const limitOfCandle = 6 // кол-во свечей для поиска сигнала
     const candles2 = await getCandles(
       this.symbol,
       interval,
@@ -137,7 +137,7 @@ class An422Trade {
     if (!lastCandle.final) {
       this.endTimeForNewRequest = lastCandle.startTime - this.shiftTime
     } else this.endTimeForNewRequest = lastCandle.startTime
-    this.startTimeForNewRequest = this.endTimeForNewRequest - 3 * this.shiftTime // берем 4 свечки
+    this.startTimeForNewRequest = this.endTimeForNewRequest - 5 * this.shiftTime // берем 6 свечек
   }
 
   findSygnal(lastCandle, interval) {
@@ -250,13 +250,15 @@ class An422Trade {
     this.redCandleLength =
       this.candles.at(-1).open / this.candles.at(-1).close - 1
     if (
-      // три первых свечи - ЗЕЛЕНЫЕ
-      this.candles.at(-4).close > this.candles.at(-4).open && // первая свеча ЗЕЛЕНАЯ
-      this.candles.at(-3).close > this.candles.at(-3).open && // вторая свеча ЗЕЛЕНАЯ
-      this.candles.at(-2).close > this.candles.at(-2).open && // третья свеча ЗЕЛЕНАЯ
-      this.candles.at(-1).close < this.candles.at(-1).open && // четвертая свеча КРАСНАЯ
-      this.bodyLength3 >= 1.2 / 100 && // тело 3й свечи > 1.2%
-      this.bodyLength3 * 2 > this.redCandleLength // тело 3й зеленой в 2 раза больше тела красной
+      // 5 зеленых, 1 красная
+      this.candles.at(-6).close > this.candles.at(-6).open && // первая свеча ЗЕЛЕНАЯ
+      this.candles.at(-5).close > this.candles.at(-5).open && // вторая свеча ЗЕЛЕНАЯ
+      this.candles.at(-4).close > this.candles.at(-4).open && // третья свеча ЗЕЛЕНАЯ
+      this.candles.at(-3).close > this.candles.at(-3).open && // четвертая свеча ЗЕЛЕНАЯ
+      this.candles.at(-2).close > this.candles.at(-2).open && // пятая свеча ЗЕЛЕНАЯ
+      this.candles.at(-1).close < this.candles.at(-1).open && // шестая свеча КРАСНАЯ
+      this.bodyLength3 >= 2 / 100 && // тело 5й свечи > 2%
+      this.bodyLength3 > this.redCandleLength / 2 // тело 5й зеленой в 2 раза больше тела красной
     ) {
       this.middleShadow = this.candles.at(-1).open // входим после красной по цене ее открытия
       this.whitchSignal = this.nameStrategy + ': 3 green, 1 red'
@@ -346,7 +348,7 @@ class An422Trade {
           } USD\n\nВремя сигнала: ${timestampToDateHuman(
             this.sygnalTime
           )}\nВремя входа: ${timestampToDateHuman(this.positionTime)}`
-          console.log(messageShort)
+          sendInfoToUser(messageShort)
 
           // this.openDeal(apiOptions) // вход в сделку
           this.beforeOpenDeal() // вход в сделку
@@ -499,7 +501,13 @@ class An422Trade {
     const inPosidion = usersInfo[0][apiOptions.name][nameStr].countOfPosition
     const amountInPosition =
       usersInfo[0][apiOptions.name][nameStr].amountInPosition
-    if (amountInPosition > 0 && inPosidion === 1) {
+
+    const serviceMessage = `${
+      apiOptions.name
+    } перед продажей\nin Posidion = ${inPosidion} (${typeof inPosidion})\namount In Position = ${amountInPosition} (${typeof amountInPosition})`
+    sendInfoToUser(serviceMessage)
+
+    if (amountInPosition > 0 && inPosidion == 1) {
       this.closeOrderResult = await submittingCloseOrder(
         apiOptions,
         this.symbol,
@@ -598,10 +606,10 @@ class An422Trade {
           this.sygnalTime
         )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
           this.positionTime
-        )}\n\n--== Мы в вариативной просадке ==--\nМеняем TAKE PROFIT на (точку входа - 0.1%): ${
+        )}\n\n--== Мы в просадке ==--\nМеняем TAKE PROFIT на (точку входа - 0.1%): ${
           this.takeProfit
         }`
-        //sendInfoToUser(message)
+        sendInfoToUser(message)
       }
     } else {
       if (!this.changedSL) {
@@ -615,10 +623,10 @@ class An422Trade {
           this.sygnalTime
         )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
           this.positionTime
-        )}\n\n--= Мы в вариативной прибыли ==--\nМеняем STOP LOSS на (точку входа - 0.1%): ${
+        )}\n\n--= Мы в прибыли ==--\nМеняем STOP LOSS на (точку входа - 0.1%): ${
           this.stopLoss
         }`
-        //sendInfoToUser(message)
+        sendInfoToUser(message)
         //this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
       }
     }
@@ -701,7 +709,7 @@ class An422Trade {
           // изменение SL: если мы в прибыли
           this.stopLoss = this.openShort * (1 - 0.001)
           this.changedSL = true
-          /*
+
           sendInfoToUser(
             `${this.whitchSignal}\nМонета: ${
               this.symbol
@@ -709,11 +717,11 @@ class An422Trade {
               this.sygnalTime
             )}\n\nВремя входа в позицию:\n${timestampToDateHuman(
               this.positionTime
-            )}\n\n--= Мы в вариативной прибыли > 0.8% ==--\nМеняем Stop Loss на (точку входа - 0.1%): ${
+            )}\n\n--= Мы в прибыли > 0.6% ==--\nМеняем Stop Loss на (точку входа - 0.1%): ${
               this.stopLoss
             }`
           )
-          */
+
           //this.inOneDeal.reset412() // фиксируем что мы можем заходить в следующую сделку
         } // if (!this.changedSL)
       } // if (lastCandle.close < this.openShort * (1-0.008))

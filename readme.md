@@ -63,8 +63,8 @@ off: 4.1.2 на 1h
 
 4.1.4.2 на 1h (off)
 
-4.2 на 30m (to MongoDB)
+off: 4.2 на 30m (to MongoDB)
 
-Фракталы Билла Вильямса (to MongoDB)
+off: Фракталы Билла Вильямса (to MongoDB)
 
 4.3 на 1h и 30m (off)
