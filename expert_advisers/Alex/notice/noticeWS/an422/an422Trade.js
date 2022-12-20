@@ -465,7 +465,7 @@ class An422Trade {
       if (this.enterOrderResult?.origQty > 0) {
         const summEnterToDeal =
           this.enterOrderResult.origQty * this.enterOrderResult.lastPrice
-        const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== ${apiOptions.name} шортанул ${this.enterOrderResult.origQty} монет ==--\nпо цене: ${this.enterOrderResult.lastPrice}\nЗадействовано: ${summEnterToDeal} USD`
+        const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n🔽 ${apiOptions.name} шортанул ${this.enterOrderResult.origQty} монет\nпо цене: ${this.enterOrderResult.lastPrice}\nЗадействовано: ${summEnterToDeal} USD`
         sendInfoToUser(message)
 
         // фиксируем что мы в сделке
@@ -473,6 +473,7 @@ class An422Trade {
         currentPosition[nameStr].countOfPosition = 1
         currentPosition[nameStr].amountInPosition =
           this.enterOrderResult?.origQty
+        currentPosition[nameStr].symbol = this.symbol
 
         const newValues = {
           $set: {
@@ -501,13 +502,14 @@ class An422Trade {
     const inPosidion = usersInfo[0][apiOptions.name][nameStr].countOfPosition
     const amountInPosition =
       usersInfo[0][apiOptions.name][nameStr].amountInPosition
+    const symbolInDB = usersInfo[0][apiOptions.name][nameStr].symbol
 
     const serviceMessage = `${
       apiOptions.name
     } перед продажей\nin Posidion = ${inPosidion} (${typeof inPosidion})\namount In Position = ${amountInPosition} (${typeof amountInPosition})`
     sendInfoToUser(serviceMessage)
 
-    if (amountInPosition > 0 && inPosidion == 1) {
+    if (amountInPosition > 0 && inPosidion == 1 && symbolInDB == this.symbol) {
       this.closeOrderResult = await submittingCloseOrder(
         apiOptions,
         this.symbol,
@@ -525,13 +527,14 @@ class An422Trade {
       ) // / optionsOfTrade.multiplier
         .toFixed(2)
 
-      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n--== ${apiOptions.name} откупил ${this.closeOrderResult.origQty} монет ==--\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
+      const message = `${this.whitchSignal}\n\nМонета: ${this.symbol}\n🔼 ${apiOptions.name} откупил ${this.closeOrderResult.origQty} монет\nпо цене: ${this.closeOrderResult.lastPrice}\nИтог: ${profit} USD`
       sendInfoToUser(message)
 
       // фиксируем что мы вышли из сделки
       const currentPosition = usersInfo[0][apiOptions.name]
       currentPosition[nameStr].countOfPosition = 0
       currentPosition[nameStr].amountInPosition = 0
+      currentPosition[nameStr].symbol = ''
 
       const newValues = {
         $set: {

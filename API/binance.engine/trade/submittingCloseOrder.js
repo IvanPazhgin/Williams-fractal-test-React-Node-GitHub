@@ -4,7 +4,8 @@ const getLastAssetPrice = require('../common/getLastAssetPrice')
 async function submittingCloseOrder(api_option, symbol, side, buyOrderResult) {
   const client = binanceUSDMClient(api_option)
   // Process bought fills and submit sell amount
-  const quantity = buyOrderResult.origQty
+  // const quantity = buyOrderResult.origQty
+  const quantity = buyOrderResult
   try {
     const orderRequest = {
       symbol: symbol,
